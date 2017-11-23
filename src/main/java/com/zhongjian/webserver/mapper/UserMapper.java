@@ -6,5 +6,11 @@ import com.zhongjian.webserver.pojo.User;
 
 @Mapper
 public interface UserMapper {
+	
 	User findUserById(Integer id);
+	
+	String findUserNameById(Integer id);
+	
+	void updateUser(String name);
+	
 }

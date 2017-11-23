@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.ExceptionHandle;
 
+@SuppressWarnings("serial")
 public class BusinessException extends Exception{
 	private int errorCode;
 
