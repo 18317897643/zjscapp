@@ -1,9 +1,10 @@
 package com.zhongjian.webserver.common;
 
-import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
+import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
+
 import java.util.Random;
 
 public class SendSmsUtil {
@@ -12,7 +13,7 @@ public class SendSmsUtil {
 	private static final String API_SECRET = "f7d177050b7c6719724059a1e5bd8203";
 	private static final String PRODUCT = "众健商城";
 
-	public static String sendCaptcha(String phoneNo,String captcha) throws ApiException {
+	public static void sendCaptcha(String phoneNo,String captcha) throws Exception {
 		// 阿里大于
 		TaobaoClient client = new DefaultTaobaoClient(API_URL, API_APPKEY, API_SECRET);
 		AlibabaAliqinFcSmsNumSendRequest req = new AlibabaAliqinFcSmsNumSendRequest();
@@ -22,10 +23,20 @@ public class SendSmsUtil {
 		req.setSmsParamString("{code:'" + captcha + "'}");
 		req.setRecNum(phoneNo);
 		req.setSmsTemplateCode("SMS_67251183");
-		client.execute(req);
-		return captcha;
+		AlibabaAliqinFcSmsNumSendResponse rsp = client.execute(req);
+		if (rsp.getErrorCode() == null) {
+		}else {
+			String msg = rsp.getSubMsg();
+			if (msg.contains("分级")) {
+				throw new Exception("一分钟内只能发5条短信");	
+			}
+			else if (msg.contains("时级")) {
+				throw new Exception("一小时内只能发5条短信");
+			}else if (msg.contains("天级")) {
+				throw new Exception("一天内只能发10条短信");
+			}
+		}
 	}
-
 	public static String randomCaptcha(int length) {
 		int maxNum = 10;
 		int maxLength = 10;

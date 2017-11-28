@@ -38,8 +38,8 @@ public class LoginAndRegisterController {
 			return ResultUtil.error(Status.GeneralError.getStatenum(), "该用户已注册");
 		}
 		} catch (Exception e) {
-			LoggingUtil.e("短信发送异常:" + e);
-			throw new BusinessException(Status.SeriousError.getStatenum(), "短信发送异常");
+			LoggingUtil.e("短信发送异常:" + e.getMessage());
+			throw new BusinessException(Status.SMSError.getStatenum(), e.getMessage());
 		}
 	}
 	

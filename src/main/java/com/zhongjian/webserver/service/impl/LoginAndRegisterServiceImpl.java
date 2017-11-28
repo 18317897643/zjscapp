@@ -5,7 +5,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.taobao.api.ApiException;
 import com.zhongjian.webserver.beanconfiguration.ExpiryMap;
 import com.zhongjian.webserver.common.SendSmsUtil;
 import com.zhongjian.webserver.mapper.UserMapper;
@@ -23,13 +22,13 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 	
 	private AtomicInteger sysID = null;
 	@Override
-	public void sendRegisterVerifyCode(String phoneNum) throws ApiException{
+	public void sendRegisterVerifyCode(String phoneNum) throws Exception{
 		//create VerifyCode
 		String captcha = SendSmsUtil.randomCaptcha(4);
-		//store the VerifyCode 		
-		expiryMap.put(phoneNum, captcha);
 		//send the sms
 	    SendSmsUtil.sendCaptcha(phoneNum, captcha);
+		//store the VerifyCode 		
+		expiryMap.put(phoneNum, captcha);
 	}
 	@Override
 	public boolean checkVerifyCode(String phoneNum, String code) {
