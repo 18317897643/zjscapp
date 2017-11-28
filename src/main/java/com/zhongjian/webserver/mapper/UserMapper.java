@@ -1,16 +1,30 @@
 package com.zhongjian.webserver.mapper;
 
-import org.apache.ibatis.annotations.Mapper;
+
+
+import org.apache.ibatis.annotations.Param;
 
 import com.zhongjian.webserver.pojo.User;
 
-@Mapper
 public interface UserMapper {
-	
-	User findUserById(Integer id);
-	
-	String findUserNameById(Integer id);
-	
-	void updateUser(String name);
-	
+    int deleteByPrimaryKey(Integer id);
+
+    int insert(User record);
+
+    int insertSelective(User record);
+
+    User selectByPrimaryKey(Integer id);
+
+    int updateByPrimaryKeySelective(User record);
+
+    int updateByPrimaryKey(User record);
+    
+    Integer checkUserNameExists(String userName);
+    
+    Integer selectUserMaxSysID();
+    
+    Integer checkUserNameAndPassword(@Param("userName") String userName,@Param("password") String password);
+    
+    Integer updatePassword(@Param("userName") String userName,@Param("password") String password);
+    
 }

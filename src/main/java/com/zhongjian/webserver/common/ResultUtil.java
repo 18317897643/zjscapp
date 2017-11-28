@@ -4,7 +4,7 @@ public class ResultUtil {
 
     public static Result<Object> success(Object object) {
         Result<Object> result = new Result<Object>();
-        result.setError_code(0);
+        result.setError_code(Status.Success.getStatenum());
         result.setError_message("成功");
         result.setData(object);
         return result;

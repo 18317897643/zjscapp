@@ -72,6 +72,23 @@ public class TokenManager {
 		}
 		return pass;
 	}
+	
+	public String checkTokenGetUser(String toKen) {
+		Set<Entry<String, String>>  set = user_token.entrySet();
+		Iterator<Entry<String, String>> iterator = set.iterator();
+		String theUsername = null;
+		while (iterator.hasNext()) {
+			Map.Entry<String,String> entry = (Map.Entry<String,String>) iterator.next();
+			if (entry.getValue().equals(toKen)) {
+				String userName = (String) entry.getKey();
+				tokenList.remove(userName);
+				tokenList.add(userName);
+				theUsername = userName;
+				break;
+			}
+		}
+		return theUsername;
+	}
   /**
    * 显示token
    */

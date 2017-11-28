@@ -7,14 +7,14 @@ server:
     keyAlias: undertow
   undertow:    
     io-threads: 3
-    worker-threads: 100
+    worker-threads: 20
 spring:
   mvc:
     throw-exception-if-no-handler-found: true
   datasource:  
     name: db  
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://127.0.0.1:3306/test1?useUnicode=true&characterEncoding=utf-8
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
@@ -34,7 +34,7 @@ spring:
     filters: stat
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1
     useGlobalDataSourceStat: true
-    druidLoginName: chendi
+    druidLoginName: zhongjian
     druidPassword: 123456
 mybatis:
   mapperLocations: classpath:mapper/*.xml

@@ -1,25 +1,543 @@
-<?xml version = "1.0" encoding = "UTF-8"?>
-<!DOCTYPE mapper PUBLIC
-        "-//mybatis.org//DTD com.example.Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zhongjian.webserver.mapper.UserMapper">
-	<resultMap id="result" type="User">
-		<result property="id" column="id" />
-		<result property="name" column="f_name" />
-		<result property="age" column="f_age" />
-		<result property="email" column="f_email" />
+	<resultMap id="BaseResultMap" type="com.zhongjian.webserver.pojo.User">
+		<id column="Id" property="id" jdbcType="INTEGER" />
+		<result column="UserName" property="username" jdbcType="VARCHAR" />
+		<result column="TrueName" property="truename" jdbcType="VARCHAR" />
+		<result column="Password" property="password" jdbcType="VARCHAR" />
+		<result column="PayPassword" property="paypassword" jdbcType="VARCHAR" />
+		<result column="CreateTime" property="createtime" jdbcType="TIMESTAMP" />
+		<result column="Sex" property="sex" jdbcType="VARCHAR" />
+		<result column="Phone" property="phone" jdbcType="VARCHAR" />
+		<result column="Email" property="email" jdbcType="VARCHAR" />
+		<result column="Alipay" property="alipay" jdbcType="VARCHAR" />
+		<result column="WxOpenId" property="wxopenid" jdbcType="VARCHAR" />
+		<result column="Birthday" property="birthday" jdbcType="TIMESTAMP" />
+		<result column="RemainPoints" property="remainpoints" jdbcType="DOUBLE" />
+		<result column="RemainAmount" property="remainamount" jdbcType="DOUBLE" />
+		<result column="RemainAmount_USD" property="remainamountUsd"
+			jdbcType="DOUBLE" />
+		<result column="RemainElecNum" property="remainelecnum"
+			jdbcType="DOUBLE" />
+		<result column="RemainVIPAmount" property="remainvipamount"
+			jdbcType="DOUBLE" />
+		<result column="RemainStream" property="remainstream" jdbcType="DOUBLE" />
+		<result column="CurStatus" property="curstatus" jdbcType="INTEGER" />
+		<result column="InviteCode" property="invitecode" jdbcType="INTEGER" />
+		<result column="BeInviteCode" property="beinvitecode" jdbcType="INTEGER" />
+		<result column="IsVIP" property="isvip" jdbcType="INTEGER" />
+		<result column="HeadPhoto" property="headphoto" jdbcType="VARCHAR" />
+		<result column="NickName" property="nickname" jdbcType="VARCHAR" />
+		<result column="IDCardPhoto" property="idcardphoto" jdbcType="VARCHAR" />
+		<result column="IDCardPhoto2" property="idcardphoto2" jdbcType="VARCHAR" />
+		<result column="IDCardPhoto3" property="idcardphoto3" jdbcType="VARCHAR" />
+		<result column="IDCardNo" property="idcardno" jdbcType="VARCHAR" />
+		<result column="IsAuth" property="isauth" jdbcType="INTEGER" />
+		<result column="Lev" property="lev" jdbcType="INTEGER" />
+		<result column="IsSubProxy" property="issubproxy" jdbcType="INTEGER" />
+		<result column="TotalCost" property="totalcost" jdbcType="DOUBLE" />
+		<result column="TeamTotalCost" property="teamtotalcost"
+			jdbcType="DOUBLE" />
+		<result column="SubTeamTotalCost" property="subteamtotalcost"
+			jdbcType="DOUBLE" />
+		<result column="SysID" property="sysid" jdbcType="INTEGER" />
+		<result column="AllowFenYong" property="allowfenyong" jdbcType="INTEGER" />
+		<result column="ProxyStar" property="proxystar" jdbcType="INTEGER" />
 	</resultMap>
-	<select id="findUserById" resultMap="result">
-		SELECT * FROM t_users where
-		id = #{id};
+	<sql id="Base_Column_List">
+		Id, UserName, TrueName, Password, PayPassword, CreateTime,
+		Sex, Phone,
+		Email, Alipay,
+		WxOpenId, Birthday, RemainPoints,
+		RemainAmount, RemainAmount_USD,
+		RemainElecNum,
+		RemainVIPAmount,
+		RemainStream, CurStatus, InviteCode, BeInviteCode, IsVIP, HeadPhoto,
+		NickName, IDCardPhoto, IDCardPhoto2, IDCardPhoto3, IDCardNo, IsAuth,
+		Lev, IsSubProxy,
+		TotalCost, TeamTotalCost, SubTeamTotalCost, SysID,
+		AllowFenYong, ProxyStar
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from tb_user
+		where Id = #{id,jdbcType=INTEGER}
 	</select>
-	<select id="findUserNameById" resultType="java.lang.String">
-		SELECT f_name FROM t_users where
-		id = #{id};
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		tb_user
+		where Id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.zhongjian.webserver.pojo.User">
+		insert into tb_user (Id,
+		UserName, TrueName,
+		Password, PayPassword, CreateTime,
+		Sex, Phone,
+		Email,
+		Alipay, WxOpenId, Birthday,
+		RemainPoints, RemainAmount,
+		RemainAmount_USD,
+		RemainElecNum, RemainVIPAmount, RemainStream,
+		CurStatus, InviteCode, BeInviteCode,
+		IsVIP, HeadPhoto, NickName,
+		IDCardPhoto, IDCardPhoto2, IDCardPhoto3,
+		IDCardNo, IsAuth, Lev,
+		IsSubProxy, TotalCost, TeamTotalCost,
+		SubTeamTotalCost, SysID,
+		AllowFenYong,
+		ProxyStar)
+		values (#{id,jdbcType=INTEGER},
+		#{username,jdbcType=VARCHAR},
+		#{truename,jdbcType=VARCHAR},
+		#{password,jdbcType=VARCHAR}, #{paypassword,jdbcType=VARCHAR},
+		#{createtime,jdbcType=TIMESTAMP},
+		#{sex,jdbcType=VARCHAR},
+		#{phone,jdbcType=VARCHAR},
+		#{email,jdbcType=VARCHAR},
+		#{alipay,jdbcType=VARCHAR}, #{wxopenid,jdbcType=VARCHAR},
+		#{birthday,jdbcType=TIMESTAMP},
+		#{remainpoints,jdbcType=DOUBLE},
+		#{remainamount,jdbcType=DOUBLE},
+		#{remainamountUsd,jdbcType=DOUBLE},
+		#{remainelecnum,jdbcType=DOUBLE}, #{remainvipamount,jdbcType=DOUBLE},
+		#{remainstream,jdbcType=DOUBLE},
+		#{curstatus,jdbcType=INTEGER},
+		#{invitecode,jdbcType=INTEGER},
+		#{beinvitecode,jdbcType=INTEGER},
+		#{isvip,jdbcType=INTEGER}, #{headphoto,jdbcType=VARCHAR},
+		#{nickname,jdbcType=VARCHAR},
+		#{idcardphoto,jdbcType=VARCHAR},
+		#{idcardphoto2,jdbcType=VARCHAR},
+		#{idcardphoto3,jdbcType=VARCHAR},
+		#{idcardno,jdbcType=VARCHAR}, #{isauth,jdbcType=INTEGER},
+		#{lev,jdbcType=INTEGER},
+		#{issubproxy,jdbcType=INTEGER},
+		#{totalcost,jdbcType=DOUBLE},
+		#{teamtotalcost,jdbcType=DOUBLE},
+		#{subteamtotalcost,jdbcType=DOUBLE}, #{sysid,jdbcType=INTEGER},
+		#{allowfenyong,jdbcType=INTEGER},
+		#{proxystar,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.zhongjian.webserver.pojo.User">
+		insert into tb_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				Id,
+			</if>
+			<if test="username != null">
+				UserName,
+			</if>
+			<if test="truename != null">
+				TrueName,
+			</if>
+			<if test="password != null">
+				Password,
+			</if>
+			<if test="paypassword != null">
+				PayPassword,
+			</if>
+			<if test="createtime != null">
+				CreateTime,
+			</if>
+			<if test="sex != null">
+				Sex,
+			</if>
+			<if test="phone != null">
+				Phone,
+			</if>
+			<if test="email != null">
+				Email,
+			</if>
+			<if test="alipay != null">
+				Alipay,
+			</if>
+			<if test="wxopenid != null">
+				WxOpenId,
+			</if>
+			<if test="birthday != null">
+				Birthday,
+			</if>
+			<if test="remainpoints != null">
+				RemainPoints,
+			</if>
+			<if test="remainamount != null">
+				RemainAmount,
+			</if>
+			<if test="remainamountUsd != null">
+				RemainAmount_USD,
+			</if>
+			<if test="remainelecnum != null">
+				RemainElecNum,
+			</if>
+			<if test="remainvipamount != null">
+				RemainVIPAmount,
+			</if>
+			<if test="remainstream != null">
+				RemainStream,
+			</if>
+			<if test="curstatus != null">
+				CurStatus,
+			</if>
+			<if test="invitecode != null">
+				InviteCode,
+			</if>
+			<if test="beinvitecode != null">
+				BeInviteCode,
+			</if>
+			<if test="isvip != null">
+				IsVIP,
+			</if>
+			<if test="headphoto != null">
+				HeadPhoto,
+			</if>
+			<if test="nickname != null">
+				NickName,
+			</if>
+			<if test="idcardphoto != null">
+				IDCardPhoto,
+			</if>
+			<if test="idcardphoto2 != null">
+				IDCardPhoto2,
+			</if>
+			<if test="idcardphoto3 != null">
+				IDCardPhoto3,
+			</if>
+			<if test="idcardno != null">
+				IDCardNo,
+			</if>
+			<if test="isauth != null">
+				IsAuth,
+			</if>
+			<if test="lev != null">
+				Lev,
+			</if>
+			<if test="issubproxy != null">
+				IsSubProxy,
+			</if>
+			<if test="totalcost != null">
+				TotalCost,
+			</if>
+			<if test="teamtotalcost != null">
+				TeamTotalCost,
+			</if>
+			<if test="subteamtotalcost != null">
+				SubTeamTotalCost,
+			</if>
+			<if test="sysid != null">
+				SysID,
+			</if>
+			<if test="allowfenyong != null">
+				AllowFenYong,
+			</if>
+			<if test="proxystar != null">
+				ProxyStar,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="username != null">
+				#{username,jdbcType=VARCHAR},
+			</if>
+			<if test="truename != null">
+				#{truename,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password,jdbcType=VARCHAR},
+			</if>
+			<if test="paypassword != null">
+				#{paypassword,jdbcType=VARCHAR},
+			</if>
+			<if test="createtime != null">
+				#{createtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="sex != null">
+				#{sex,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				#{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				#{email,jdbcType=VARCHAR},
+			</if>
+			<if test="alipay != null">
+				#{alipay,jdbcType=VARCHAR},
+			</if>
+			<if test="wxopenid != null">
+				#{wxopenid,jdbcType=VARCHAR},
+			</if>
+			<if test="birthday != null">
+				#{birthday,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remainpoints != null">
+				#{remainpoints,jdbcType=DOUBLE},
+			</if>
+			<if test="remainamount != null">
+				#{remainamount,jdbcType=DOUBLE},
+			</if>
+			<if test="remainamountUsd != null">
+				#{remainamountUsd,jdbcType=DOUBLE},
+			</if>
+			<if test="remainelecnum != null">
+				#{remainelecnum,jdbcType=DOUBLE},
+			</if>
+			<if test="remainvipamount != null">
+				#{remainvipamount,jdbcType=DOUBLE},
+			</if>
+			<if test="remainstream != null">
+				#{remainstream,jdbcType=DOUBLE},
+			</if>
+			<if test="curstatus != null">
+				#{curstatus,jdbcType=INTEGER},
+			</if>
+			<if test="invitecode != null">
+				#{invitecode,jdbcType=INTEGER},
+			</if>
+			<if test="beinvitecode != null">
+				#{beinvitecode,jdbcType=INTEGER},
+			</if>
+			<if test="isvip != null">
+				#{isvip,jdbcType=INTEGER},
+			</if>
+			<if test="headphoto != null">
+				#{headphoto,jdbcType=VARCHAR},
+			</if>
+			<if test="nickname != null">
+				#{nickname,jdbcType=VARCHAR},
+			</if>
+			<if test="idcardphoto != null">
+				#{idcardphoto,jdbcType=VARCHAR},
+			</if>
+			<if test="idcardphoto2 != null">
+				#{idcardphoto2,jdbcType=VARCHAR},
+			</if>
+			<if test="idcardphoto3 != null">
+				#{idcardphoto3,jdbcType=VARCHAR},
+			</if>
+			<if test="idcardno != null">
+				#{idcardno,jdbcType=VARCHAR},
+			</if>
+			<if test="isauth != null">
+				#{isauth,jdbcType=INTEGER},
+			</if>
+			<if test="lev != null">
+				#{lev,jdbcType=INTEGER},
+			</if>
+			<if test="issubproxy != null">
+				#{issubproxy,jdbcType=INTEGER},
+			</if>
+			<if test="totalcost != null">
+				#{totalcost,jdbcType=DOUBLE},
+			</if>
+			<if test="teamtotalcost != null">
+				#{teamtotalcost,jdbcType=DOUBLE},
+			</if>
+			<if test="subteamtotalcost != null">
+				#{subteamtotalcost,jdbcType=DOUBLE},
+			</if>
+			<if test="sysid != null">
+				#{sysid,jdbcType=INTEGER},
+			</if>
+			<if test="allowfenyong != null">
+				#{allowfenyong,jdbcType=INTEGER},
+			</if>
+			<if test="proxystar != null">
+				#{proxystar,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.zhongjian.webserver.pojo.User">
+		update tb_user
+		<set>
+			<if test="username != null">
+				UserName = #{username,jdbcType=VARCHAR},
+			</if>
+			<if test="truename != null">
+				TrueName = #{truename,jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				Password = #{password,jdbcType=VARCHAR},
+			</if>
+			<if test="paypassword != null">
+				PayPassword = #{paypassword,jdbcType=VARCHAR},
+			</if>
+			<if test="createtime != null">
+				CreateTime = #{createtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="sex != null">
+				Sex = #{sex,jdbcType=VARCHAR},
+			</if>
+			<if test="phone != null">
+				Phone = #{phone,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				Email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="alipay != null">
+				Alipay = #{alipay,jdbcType=VARCHAR},
+			</if>
+			<if test="wxopenid != null">
+				WxOpenId = #{wxopenid,jdbcType=VARCHAR},
+			</if>
+			<if test="birthday != null">
+				Birthday = #{birthday,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remainpoints != null">
+				RemainPoints = #{remainpoints,jdbcType=DOUBLE},
+			</if>
+			<if test="remainamount != null">
+				RemainAmount = #{remainamount,jdbcType=DOUBLE},
+			</if>
+			<if test="remainamountUsd != null">
+				RemainAmount_USD = #{remainamountUsd,jdbcType=DOUBLE},
+			</if>
+			<if test="remainelecnum != null">
+				RemainElecNum = #{remainelecnum,jdbcType=DOUBLE},
+			</if>
+			<if test="remainvipamount != null">
+				RemainVIPAmount = #{remainvipamount,jdbcType=DOUBLE},
+			</if>
+			<if test="remainstream != null">
+				RemainStream = #{remainstream,jdbcType=DOUBLE},
+			</if>
+			<if test="curstatus != null">
+				CurStatus = #{curstatus,jdbcType=INTEGER},
+			</if>
+			<if test="invitecode != null">
+				InviteCode = #{invitecode,jdbcType=INTEGER},
+			</if>
+			<if test="beinvitecode != null">
+				BeInviteCode = #{beinvitecode,jdbcType=INTEGER},
+			</if>
+			<if test="isvip != null">
+				IsVIP = #{isvip,jdbcType=INTEGER},
+			</if>
+			<if test="headphoto != null">
+				HeadPhoto = #{headphoto,jdbcType=VARCHAR},
+			</if>
+			<if test="nickname != null">
+				NickName = #{nickname,jdbcType=VARCHAR},
+			</if>
+			<if test="idcardphoto != null">
+				IDCardPhoto = #{idcardphoto,jdbcType=VARCHAR},
+			</if>
+			<if test="idcardphoto2 != null">
+				IDCardPhoto2 = #{idcardphoto2,jdbcType=VARCHAR},
+			</if>
+			<if test="idcardphoto3 != null">
+				IDCardPhoto3 = #{idcardphoto3,jdbcType=VARCHAR},
+			</if>
+			<if test="idcardno != null">
+				IDCardNo = #{idcardno,jdbcType=VARCHAR},
+			</if>
+			<if test="isauth != null">
+				IsAuth = #{isauth,jdbcType=INTEGER},
+			</if>
+			<if test="lev != null">
+				Lev = #{lev,jdbcType=INTEGER},
+			</if>
+			<if test="issubproxy != null">
+				IsSubProxy = #{issubproxy,jdbcType=INTEGER},
+			</if>
+			<if test="totalcost != null">
+				TotalCost = #{totalcost,jdbcType=DOUBLE},
+			</if>
+			<if test="teamtotalcost != null">
+				TeamTotalCost = #{teamtotalcost,jdbcType=DOUBLE},
+			</if>
+			<if test="subteamtotalcost != null">
+				SubTeamTotalCost = #{subteamtotalcost,jdbcType=DOUBLE},
+			</if>
+			<if test="sysid != null">
+				SysID = #{sysid,jdbcType=INTEGER},
+			</if>
+			<if test="allowfenyong != null">
+				AllowFenYong = #{allowfenyong,jdbcType=INTEGER},
+			</if>
+			<if test="proxystar != null">
+				ProxyStar = #{proxystar,jdbcType=INTEGER},
+			</if>
+		</set>
+		where Id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.zhongjian.webserver.pojo.User">
+		update tb_user
+		set
+		UserName = #{username,jdbcType=VARCHAR},
+		TrueName =
+		#{truename,jdbcType=VARCHAR},
+		Password = #{password,jdbcType=VARCHAR},
+		PayPassword = #{paypassword,jdbcType=VARCHAR},
+		CreateTime =
+		#{createtime,jdbcType=TIMESTAMP},
+		Sex = #{sex,jdbcType=VARCHAR},
+		Phone =
+		#{phone,jdbcType=VARCHAR},
+		Email = #{email,jdbcType=VARCHAR},
+		Alipay =
+		#{alipay,jdbcType=VARCHAR},
+		WxOpenId = #{wxopenid,jdbcType=VARCHAR},
+		Birthday = #{birthday,jdbcType=TIMESTAMP},
+		RemainPoints =
+		#{remainpoints,jdbcType=DOUBLE},
+		RemainAmount =
+		#{remainamount,jdbcType=DOUBLE},
+		RemainAmount_USD =
+		#{remainamountUsd,jdbcType=DOUBLE},
+		RemainElecNum =
+		#{remainelecnum,jdbcType=DOUBLE},
+		RemainVIPAmount =
+		#{remainvipamount,jdbcType=DOUBLE},
+		RemainStream =
+		#{remainstream,jdbcType=DOUBLE},
+		CurStatus =
+		#{curstatus,jdbcType=INTEGER},
+		InviteCode =
+		#{invitecode,jdbcType=INTEGER},
+		BeInviteCode =
+		#{beinvitecode,jdbcType=INTEGER},
+		IsVIP = #{isvip,jdbcType=INTEGER},
+		HeadPhoto = #{headphoto,jdbcType=VARCHAR},
+		NickName =
+		#{nickname,jdbcType=VARCHAR},
+		IDCardPhoto =
+		#{idcardphoto,jdbcType=VARCHAR},
+		IDCardPhoto2 =
+		#{idcardphoto2,jdbcType=VARCHAR},
+		IDCardPhoto3 =
+		#{idcardphoto3,jdbcType=VARCHAR},
+		IDCardNo =
+		#{idcardno,jdbcType=VARCHAR},
+		IsAuth = #{isauth,jdbcType=INTEGER},
+		Lev =
+		#{lev,jdbcType=INTEGER},
+		IsSubProxy = #{issubproxy,jdbcType=INTEGER},
+		TotalCost = #{totalcost,jdbcType=DOUBLE},
+		TeamTotalCost =
+		#{teamtotalcost,jdbcType=DOUBLE},
+		SubTeamTotalCost =
+		#{subteamtotalcost,jdbcType=DOUBLE},
+		SysID = #{sysid,jdbcType=INTEGER},
+		AllowFenYong = #{allowfenyong,jdbcType=INTEGER},
+		ProxyStar =
+		#{proxystar,jdbcType=INTEGER}
+		where Id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="checkUserNameExists" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		select Id from tb_user where UserName = #{username}
 	</select>
-
-	<update id="updateUser" parameterType="java.lang.String">
-		update t_users set
-		f_name=#{param} wher id=2
+	<select id="selectUserMaxSysID" resultType="java.lang.Integer">
+		select MAX(SysID) from tb_user;
+	</select>
+	<select id="checkUserNameAndPassword" resultType="java.lang.Integer">
+		select Id from tb_user where UserName = #{userName} and Password = #{password}
+	</select>
+	<update id="updatePassword">
+	    update tb_user set Password = #{password} where UserName = #{userName}
 	</update>
 </mapper>

@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +23,7 @@ public class TokenSerializationConfig {
 	@Autowired
 	private TokenManager tokenManager;
 
-	@Scheduled(cron = "* 0/1 * * * ?") // 每10分钟执行一次
+	@Scheduled(cron = "0 0/2 * * * ?") // 每10分钟执行一次
 	public void saveToken() {
 		String tokenJson = GsonUtil.GsonString(tokenManager);
 		if (tokenJson == null) {
@@ -56,5 +57,4 @@ public class TokenSerializationConfig {
 			}
 		}
 	}
-
 }

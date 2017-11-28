@@ -12,7 +12,6 @@ import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -30,7 +29,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 //Spring boot开启定时任务序列化token
 @EnableScheduling
 //线程池开启
-@EnableAsync
 public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);

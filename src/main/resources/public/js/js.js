@@ -9,12 +9,14 @@ function checked() {
 }
 var timeFlag = 60;
 var timeHandler;
+var flag = 0;
 function timeFun() {
     timeFlag--;
     $('#sendVer').html(timeFlag + '秒后可重发');
 
     if (timeFlag <= 0) {
         clearInterval(timeHandler);
+        timeFlag = 60;
         $('#sendVer').html('发送验证码');
         //$('#sendVer').removeClass('gray');
 
@@ -69,7 +71,7 @@ function reguser() {
                 if (newpassword == surepassword) {
                     $("#loadgif").show();
                     $.ajax({
-                        url: "/zhongjian/LoginAndRegister/RegisterUser",
+                        url: "/zhongjianmall/v1/LoginAndRegister/RegisterUser",
                         type: "post",
                         contentType: "application/json;charset=utf-8",
                         data: JSON.stringify({'phoneNum': phone,'password': surepassword,'verifyCode': tbcode,'inviteCode': usercode}),
@@ -111,6 +113,10 @@ function reguser() {
 
 /* 获取验证码*/
 function sendcode() {
+	if(flag == 1){
+		return;
+	}
+	flag = 1;
     $("#btngetcode").attr('disabled', true);
     var phone = $("#tbphone").val();
     var che = $('#weuiAgree').prop("checked");
@@ -121,20 +127,21 @@ function sendcode() {
          $.ajax({
              async: true,
              cache: false,
-             url: "/zhongjian/LoginAndRegister/SendRegisterVerifyCode",
+             url: "/zhongjianmall/v1/LoginAndRegister/SendRegisterVerifyCode",
              contentType: "application/json;charset=utf-8",
              type: "post",
-             data: JSON.stringify({'phoneNum': phone,}),
+             data: JSON.stringify({'phoneNum': phone}),
              datatype: "json",
              success: function (data) {
                  if (data.error_code == 0) {
                      timeHandler = setInterval(timeFun, 1000);
                      hideloadgetcode();
-          
+                     flag = 0;
                  }
                  else {
                      hideloadgetcode();
                      alert(data.error_message);
+                     flag = 0;
                  }
              }
          });
