@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.zhongjian.webserver.beanconfiguration.ExpiryMap;
+import com.zhongjian.webserver.common.ExpiryMap;
 import com.zhongjian.webserver.common.SendSmsUtil;
 import com.zhongjian.webserver.mapper.UserMapper;
 import com.zhongjian.webserver.pojo.User;
@@ -87,4 +87,9 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 		}
 		return false;
 	}
+	@Override
+	public Integer getUserIdByUserName(String userName) {
+		return userMapper.getUserIdByUserName(userName);
+	}
+	
 }

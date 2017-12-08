@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import com.zhongjian.webserver.Application;
 import com.zhongjian.webserver.service.LoginAndRegisterService;
+import com.zhongjian.webserver.service.PersonalCenterService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
@@ -20,10 +21,12 @@ public class AppTest {
   @Autowired
   LoginAndRegisterService loginAndRegisterService;
    
-	
+  @Autowired
+  PersonalCenterService personalCenterService;
+  
   @Test  
   public void AsyncTaskTest() throws InterruptedException, ExecutionException {  
-	 loginAndRegisterService.checkUserExists("177680770641");
+	 System.out.println(personalCenterService.getInformOfConsumption("15395068265"));
   } 
  
 }

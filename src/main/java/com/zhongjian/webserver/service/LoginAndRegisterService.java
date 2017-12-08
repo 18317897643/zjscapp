@@ -13,4 +13,6 @@ public interface LoginAndRegisterService {
 	boolean checkUserNameAndPassword(String phoneNum,String password);
 	
 	boolean modifyPassword(String phoneNum,String password);
+	
+	Integer getUserIdByUserName(String userName);
 }

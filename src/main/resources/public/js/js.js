@@ -71,7 +71,7 @@ function reguser() {
                 if (newpassword == surepassword) {
                     $("#loadgif").show();
                     $.ajax({
-                        url: "/zhongjianmall/v1/LoginAndRegister/RegisterUser",
+                        url: "/zjapp/v1/LoginAndRegister/RegisterUser",
                         type: "post",
                         contentType: "application/json;charset=utf-8",
                         data: JSON.stringify({'phoneNum': phone,'password': surepassword,'verifyCode': tbcode,'inviteCode': usercode}),
@@ -127,7 +127,7 @@ function sendcode() {
          $.ajax({
              async: true,
              cache: false,
-             url: "/zhongjianmall/v1/LoginAndRegister/SendRegisterVerifyCode",
+             url: "/zjapp/v1/LoginAndRegister/SendRegisterVerifyCode",
              contentType: "application/json;charset=utf-8",
              type: "post",
              data: JSON.stringify({'phoneNum': phone}),

@@ -540,4 +540,10 @@
 	<update id="updatePassword">
 	    update tb_user set Password = #{password} where UserName = #{userName}
 	</update>
+	<select id="selectPersonalInform" resultType="java.util.Map">
+		select SysID,Lev,NickName,HeadPhoto,RemainElecNum,RemainPoints,RemainVIPAmount from tb_user where UserName = #{userName}
+	</select>
+	<select id="getUserIdByUserName" resultType="java.lang.Integer">
+		select Id from tb_user where UserName = #{userName}
+	</select>
 </mapper>

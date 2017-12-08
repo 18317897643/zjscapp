@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhongjian.webserver.mapper.OrderMapper">
+
+	<select id="getUserOrderStatus" resultType="java.lang.Integer">
+		SELECT COUNT(1) FROM
+		tb_orderhead WHERE UserId = #{userId} AND CurStatus = -1
+		UNION ALL
+		SELECT COUNT(1) FROM tb_orderhead WHERE UserId = #{userId} AND
+		CurStatus = 0
+		UNION ALL
+		SELECT COUNT(1) FROM tb_orderhead WHERE UserId =
+		#{userId} AND CurStatus = 1
+		UNION ALL
+		SELECT COUNT(1) FROM tb_orderhead
+		WHERE UserId = #{userId} AND CurStatus = 2
+	</select>
+ <!-- 	<select id="getUserOrderStatus" resultType="java.lang.Integer">
+		SELECT oh.CreateTime,p.ProductName,p.Price,p.OldPrice,ol.ProductNum
+		,s.SpecName from tb_orderhead oh join tb_orderline ol join tb_product
+		p join tb_productspec s on oh.Id = ol.OrderId and oh.CurStatus = -1 and
+		oh.UserId = 365 and ol.ProductId = p.Id and ol.SpecId = s.Id
+	</select> --> 
+
+
+</mapper>

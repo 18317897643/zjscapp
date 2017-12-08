@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhongjian.webserver.mapper.ProductMapper">
+	<resultMap type="ProductCategory" id="ProductCategoryMap">
+		<id property="id" column="Id" />
+		<result property="categoryname" column="CategoryName" />
+		<result property="ord" column="Ord" />
+		<collection property="productSubCategories" ofType="ProductSubCategory">
+			<id column="SubId" property="id" />
+			<result column="SubCategoryName" property="categoryname" />
+			<result column="Icon" property="icon" />
+			<result column="SubOrd" property="ord" />
+		</collection>
+	</resultMap>
+	<select id="getProductOfCategory" resultMap="ProductCategoryMap">
+		select
+		c.Id,c.CategoryName,c.Ord,s.Id SubId,s.CategoryName SubCategoryName,s.Icon,s.Ord
+		SubOrd from tb_productcategory c JOIN tb_productsubcategory s on c.Id
+		= s.ParentId order by c.Ord,s.Ord
+	</select>
+
+</mapper>

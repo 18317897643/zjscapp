@@ -2,6 +2,8 @@ package com.zhongjian.webserver.mapper;
 
 
 
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
 
 import com.zhongjian.webserver.pojo.User;
@@ -27,4 +29,8 @@ public interface UserMapper {
     
     Integer updatePassword(@Param("userName") String userName,@Param("password") String password);
     
+    Map<String, Object> selectPersonalInform(String userName);
+    
+    Integer getUserIdByUserName(String userName);
+        
 }

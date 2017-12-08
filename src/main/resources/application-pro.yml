@@ -1,10 +1,7 @@
 server:
-  port: 8443
-  ssl:
-    key-store: classpath:keystore.p12
-    key-store-password: 123456
-    keyStoreType: PKCS12
-    keyAlias: undertow
+  adress: 127.0.0.1
+  port: 8080
+  context-path: /zjapp/v1
   undertow:    
     io-threads: 3
     worker-threads: 20
@@ -12,10 +9,10 @@ spring:
   mvc:
     throw-exception-if-no-handler-found: true
   datasource:  
-    name: db  
+    name: db
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://127.0.0.1:3306/test1?useUnicode=true&characterEncoding=utf-8
-    username: root
+    url: jdbc:mysql://192.168.1.236:3306/test1?useUnicode=true&characterEncoding=utf-8
+    username: tyf
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
     minIdle: 5
@@ -42,4 +39,4 @@ mybatis:
   configLocation: classpath:/mybatis-config.xml
 token:
   largeLenth: 2000
-  jsonFile: /home/zhongjianmall/json/token.json
+  jsonFile: /home/chendi/zhongjianmall/json/token.json

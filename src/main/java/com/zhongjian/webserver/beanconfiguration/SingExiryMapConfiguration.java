@@ -8,6 +8,8 @@ package com.zhongjian.webserver.beanconfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.zhongjian.webserver.common.ExpiryMap;
+
 @Configuration
 public class SingExiryMapConfiguration {
 
