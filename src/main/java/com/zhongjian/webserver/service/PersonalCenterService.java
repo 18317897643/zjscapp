@@ -18,4 +18,7 @@ public interface PersonalCenterService {
 	
 	//查看个人购物车信息
 	List<ShoppingCart> getShoppingCartInfo(Integer userId);
+	
+	//删除购物车数据
+	boolean delShoppingCartInfoById(Integer userId ,Integer id);
 }

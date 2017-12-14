@@ -38,4 +38,14 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	public  List<ShoppingCart>  getShoppingCartInfo(Integer userId) {
 		return shoppingCartMapper.getShoppingCartInfo(userId);
 	}
+
+	@Override
+	public boolean delShoppingCartInfoById(Integer userId, Integer id) {
+		if (shoppingCartMapper.delShoppingCartInfoById(userId, id) == 1) {
+			return true;
+		}else {
+			return false;
+		}
+		
+	}
 }

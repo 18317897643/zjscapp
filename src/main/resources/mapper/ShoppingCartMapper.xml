@@ -6,21 +6,22 @@
 		<result property="productnum" column="ProductNum" />
 		<association property="product" column="ProductId"
 			javaType="Product">
-			<id property="id" column="Id" />
 			<result property="productname" column="ProductName" />
 			<result property="price" column="Price" />
 			<result property="oldprice" column="OldPrice" />
 		</association>
 		<association property="productSpec" column="SpecId"
 			javaType="ProductSpec">
-			<id property="id" column="Id" />
 			<result property="specname" column="SpecName" />
 		</association>
 	</resultMap>
 	<select id="getShoppingCartInfo" resultMap="ShoppingCartMap">
-		select c.ProductNum,p.ProductName,p.Price,p.OldPrice,s.SpecName from
+		select c.Id,c.ProductNum,p.ProductName,p.Price,p.OldPrice,s.SpecName from
 		tb_shoppingcart c join tb_product p join tb_productspec s on p.Id =
 		c.ProductId and c.SpecId = s.Id and UserId = #{UserId}
 	</select>
+    <delete id="delShoppingCartInfoById">  
+        delete from tb_shoppingcart where Id = #{id} and UserId = #{UserId}
+    </delete>  
 
 </mapper>

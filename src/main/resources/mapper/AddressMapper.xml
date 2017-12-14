@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhongjian.webserver.mapper.AddressMapper">
+	<!-- <resultMap type="Address" id="AddressMap"> <id property="id" column="Id" 
+		/> <result property="detailaddress" column="DetailAddress" /> <result property="phone" 
+		column="Phone" /> <result property="name" column="Name" /> <association property="province" 
+		javaType="Province"> <result property="provincename" column="ProvinceName" 
+		/> </association> <association property="productSpec" column="SpecId" javaType="ProductSpec"> 
+		<result property="specname" column="SpecName" /> </association> </resultMap> -->
+	<select id="queryAddress" resultType="java.util.Map">
+		select
+		a.`Name`,a.`Phone`,a.`DetailAddress`,a.`IsDefault`,p.ProvinceName,c.CityName,r.RegionName
+		from tb_address a JOIN tb_province p on p.Id = a.ProvinceId JOIN
+		tb_city c on c.Id = a.CityId JOIN tb_region r on r.Id = a.RegionId
+		where ${condition} = #{param}
+	</select>
+
+	<insert id="addAddress">
+		INSERT INTO
+		tb_address(UserId,ProvinceId,CityId,RegionId,DetailAddress,Name,Phone,IsDefault)
+		VALUES(#{UserId,jdbcType=INTEGER},#{ProvinceId,jdbcType=INTEGER},#{CityId,jdbcType=INTEGER},
+		#{RegionId,jdbcType=INTEGER},#{DetailAddress,jdbcType=VARCHAR},#{Name,jdbcType=VARCHAR},#{Phone,jdbcType=VARCHAR},#{IsDefault,jdbcType=INTEGER})
+	</insert>
+
+	<delete id="deleteAddressById">
+		delete from tb_address where Id = #{arg0} and UserId
+		= #{arg1}
+	</delete>
+	
+	<update id="updateAddressById">
+		update tb_address set
+		ProvinceId=#{ProvinceId,jdbcType=INTEGER},CityId=#{CityId,jdbcType=INTEGER},
+		RegionId=#{RegionId,jdbcType=INTEGER},DetailAddress=#{DetailAddress,jdbcType=VARCHAR},
+		Name=#{Name,jdbcType=VARCHAR},Phone=#{Phone,jdbcType=INTEGER},IsDefault=#{IsDefault,jdbcType=INTEGER}
+		where Id =#{Id,jdbcType=INTEGER} and UserId=#{UserId,jdbcType=INTEGER}
+	</update>
+</mapper>

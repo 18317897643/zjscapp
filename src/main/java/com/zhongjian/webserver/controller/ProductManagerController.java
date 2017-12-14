@@ -27,8 +27,8 @@ public class ProductManagerController {
 	@Autowired
 	private ProductManagerService productManagerService;
 	
-	@ApiOperation(httpMethod = "POST", notes = "获取所有商品分类", value = "获取所有商品分类")
-	@RequestMapping(value = "/ProductManager/getProductOfCategory/{token}", method = RequestMethod.POST)
+	@ApiOperation(httpMethod = "GET", notes = "获取所有商品分类", value = "获取所有商品分类")
+	@RequestMapping(value = "/ProductManager/getProductOfCategory/{token}", method = RequestMethod.GET)
 	Result<Object> getProductOfCategory(@PathVariable("token") String token) throws BusinessException {
 		try {
 			// 检查token通过

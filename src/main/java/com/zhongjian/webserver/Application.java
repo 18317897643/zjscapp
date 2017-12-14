@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.web.DispatcherServletAutoConfigura
 import org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.HttpEncodingAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.HttpMessageConvertersAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.MultipartAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerPropertiesAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
@@ -20,7 +21,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Import({ DispatcherServletAutoConfiguration.class, EmbeddedServletContainerAutoConfiguration.class,
 		HttpEncodingAutoConfiguration.class, HttpMessageConvertersAutoConfiguration.class,
 		ServerPropertiesAutoConfiguration.class, PropertyPlaceholderAutoConfiguration.class,
-		WebMvcAutoConfiguration.class, })
+		WebMvcAutoConfiguration.class, MultipartAutoConfiguration.class})
 // 扫包的，默认扫描所在包的子包
 @ComponentScan
 // swageer2的配置你

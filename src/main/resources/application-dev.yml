@@ -1,6 +1,6 @@
 server:
-  #adress: 127.0.0.1
-  port: 8081
+  adress: 127.0.0.1
+  port: 8080
   context-path: /zjapp/v1
   undertow:    
     io-threads: 3
@@ -40,3 +40,8 @@ mybatis:
 token:
   largeLenth: 2000
   jsonFile: /home/chendi/zhongjianmall/json/token.json
+upload:
+  catalogue: /home/public/upload/pics/
+  httpCatalogue: /upload/pics/
+  maxFileSize: 30720KB
+  maxRequestSize: 102400KB
