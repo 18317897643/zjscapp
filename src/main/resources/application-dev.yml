@@ -29,7 +29,7 @@ spring:
     maxPoolPreparedStatementPerConnectionSize: -1
     removeAbandoned: true
     filters: stat
-    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1
+    connectionProperties: druid.stat.mergeSql=false;druid.stat.slowSqlMillis=1000
     useGlobalDataSourceStat: true
     druidLoginName: zhongjian
     druidPassword: 123456

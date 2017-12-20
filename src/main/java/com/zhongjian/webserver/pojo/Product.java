@@ -2,8 +2,10 @@ package com.zhongjian.webserver.pojo;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -15,11 +17,11 @@ public class Product {
 
     private String productname;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Integer categoryid;
 
     private Integer subcategoryid;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createtime;
 
     private Integer stocknum;
@@ -44,8 +46,20 @@ public class Product {
 
     private Integer commentnum;
 
-    private String htmltext;
+    private String producerno;
 
+    private String producertel;
+
+    private String producername;
+
+    private String placeofdelivery;
+
+    private String htmltext;
+    
+    private List<Productphoto> productphotos;
+    
+    private List<ProductSpec> productspecs;
+    
     public Integer getId() {
         return id;
     }
@@ -182,6 +196,38 @@ public class Product {
         this.commentnum = commentnum;
     }
 
+    public String getProducerno() {
+        return producerno;
+    }
+
+    public void setProducerno(String producerno) {
+        this.producerno = producerno;
+    }
+
+    public String getProducertel() {
+        return producertel;
+    }
+
+    public void setProducertel(String producertel) {
+        this.producertel = producertel;
+    }
+
+    public String getProducername() {
+        return producername;
+    }
+
+    public void setProducername(String producername) {
+        this.producername = producername;
+    }
+
+    public String getPlaceofdelivery() {
+        return placeofdelivery;
+    }
+
+    public void setPlaceofdelivery(String placeofdelivery) {
+        this.placeofdelivery = placeofdelivery;
+    }
+
     public String getHtmltext() {
         return htmltext;
     }
@@ -189,4 +235,23 @@ public class Product {
     public void setHtmltext(String htmltext) {
         this.htmltext = htmltext;
     }
+
+	public List<Productphoto> getProductphotos() {
+		return productphotos;
+	}
+
+	public void setProductphotos(List<Productphoto> productphotos) {
+		this.productphotos = productphotos;
+	}
+
+	public List<ProductSpec> getProductspecs() {
+		return productspecs;
+	}
+
+	public void setProductspecs(List<ProductSpec> productspecs) {
+		this.productspecs = productspecs;
+	}
+	
+	
+    
 }

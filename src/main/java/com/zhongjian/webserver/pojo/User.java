@@ -2,6 +2,7 @@ package com.zhongjian.webserver.pojo;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -16,7 +17,8 @@ public class User {
     private String password;
 
     private String paypassword;
-
+    
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createtime;
 
     private String sex;
@@ -28,7 +30,8 @@ public class User {
     private String alipay;
 
     private String wxopenid;
-
+    
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date birthday;
 
     private Double remainpoints;

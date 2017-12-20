@@ -3,10 +3,10 @@ package com.zhongjian.webserver.controller;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zhongjian.webserver.ExceptionHandle.BusinessException;
@@ -15,7 +15,6 @@ import com.zhongjian.webserver.common.Result;
 import com.zhongjian.webserver.common.ResultUtil;
 import com.zhongjian.webserver.common.Status;
 import com.zhongjian.webserver.common.TokenManager;
-import com.zhongjian.webserver.mapper.UserMapper;
 import com.zhongjian.webserver.service.AddressManagerService;
 import com.zhongjian.webserver.service.LoginAndRegisterService;
 
@@ -27,7 +26,7 @@ import io.swagger.annotations.ApiOperation;
 public class AddressManagerController {
 	
 	@Autowired
-	private TokenManager tokenManager; 
+	private TokenManager tokenManager ; 
 	
 	@Autowired
 	private LoginAndRegisterService loginAndRegisterService;
@@ -36,8 +35,8 @@ public class AddressManagerController {
 	private AddressManagerService addressManagerService;
 
 	@ApiOperation(httpMethod = "GET", notes = "获取该用户所有收货地址", value = "获取该用户所有收货地址")
-	@RequestMapping(value = "/AddressManager/getAllAddressOfUser/{token}", method = RequestMethod.GET)
-	Result<Object> getAllAddressOfUser(@PathVariable("token") String token) throws BusinessException {
+	@RequestMapping(value = "/AddressManager/getAllAddressOfUser", method = RequestMethod.GET)
+	Result<Object> getAllAddressOfUser(@RequestParam String token) throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
@@ -54,7 +53,7 @@ public class AddressManagerController {
 	
 	@ApiOperation(httpMethod = "GET", notes = "根据ID获取收货地址详情", value = "根据ID获取收货地址详情")
 	@RequestMapping(value = "/AddressManager/getAddressOfUserById/{token}/{id}", method = RequestMethod.GET)
-	Result<Object> getAddressOfUserById(@PathVariable("token") String token,@PathVariable("id") Integer id) throws BusinessException {
+	Result<Object> getAddressOfUserById(@RequestParam String token, Integer id) throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);

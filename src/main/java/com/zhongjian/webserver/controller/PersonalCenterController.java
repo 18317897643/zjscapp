@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zhongjian.webserver.ExceptionHandle.BusinessException;
@@ -37,8 +38,8 @@ public class PersonalCenterController {
 	LoginAndRegisterService loginAndRegisterService;
 
 	@ApiOperation(httpMethod = "GET", notes = "根据token获取个人中心数据", value = "初始化个人中心数据")
-	@RequestMapping(value = "/PersonalCenter/initPersonalCenterData/{token}", method = RequestMethod.GET)
-	Result<Object> initPersonalCenterData(@PathVariable("token") String token) throws BusinessException {
+	@RequestMapping(value = "/PersonalCenter/initPersonalCenterData", method = RequestMethod.GET)
+	Result<Object> initPersonalCenterData(@RequestParam String token) throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
@@ -59,15 +60,15 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "根据token获取待付款订单", value = "待付款")
-	@RequestMapping(value = "/PersonalCenter/itemsToBePaidFor/{token}", method = RequestMethod.GET)
-	Result<Object> itemsToBePaidFor(@PathVariable("token") String token) throws BusinessException {
+	@RequestMapping(value = "/PersonalCenter/itemsToBePaidFor", method = RequestMethod.GET)
+	Result<Object> itemsToBePaidFor(@RequestParam String token) throws BusinessException {
 		return null;
 	
 	}
 	
 	@ApiOperation(httpMethod = "GET", notes = "根据token获取购物车信息", value = "我的购物车")
-	@RequestMapping(value = "/PersonalCenter/getShoppingCartInfo/{token}", method = RequestMethod.GET)
-	Result<Object> getShoppingCartInfo(@PathVariable("token") String token) throws BusinessException {
+	@RequestMapping(value = "/PersonalCenter/getShoppingCartInfo", method = RequestMethod.GET)
+	Result<Object> getShoppingCartInfo(@RequestParam String token) throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
@@ -78,7 +79,7 @@ public class PersonalCenterController {
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			//根据用户Id获取购物车信息
 			
-			List<ShoppingCart> shoppingCartList = personalCenterService.getShoppingCartInfo(userId);
+			List<HashMap<String, Object>> shoppingCartList = personalCenterService.getShoppingCartInfo(userId);
 			return ResultUtil.success(shoppingCartList);
 		} catch (Exception e) {
 			LoggingUtil.e("获取购物车信息异常:" + e);
@@ -87,8 +88,8 @@ public class PersonalCenterController {
 	}
 	
 	@ApiOperation(httpMethod = "POST", notes = "根据token和shoppingCartId来删除", value = "删除购物车数据")
-	@RequestMapping(value = "/PersonalCenter/delShoppingCartInfo/{token}/{shoppingCartId}", method = RequestMethod.POST)
-	Result<Object> delShoppingCartById(@PathVariable("token") String token ,Integer shoppingCartId) throws BusinessException {
+	@RequestMapping(value = "/PersonalCenter/delShoppingCartInfo", method = RequestMethod.POST)
+	Result<Object> delShoppingCartById(@RequestParam String token ,Integer shoppingCartId) throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);

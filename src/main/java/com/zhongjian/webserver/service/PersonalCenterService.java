@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public interface PersonalCenterService {
 	
 	
 	//查看个人购物车信息
-	List<ShoppingCart> getShoppingCartInfo(Integer userId);
+	List<HashMap<String, Object>> getShoppingCartInfo(Integer userId);
 	
 	//删除购物车数据
 	boolean delShoppingCartInfoById(Integer userId ,Integer id);

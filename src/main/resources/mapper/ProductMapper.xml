@@ -12,11 +12,81 @@
 			<result column="SubOrd" property="ord" />
 		</collection>
 	</resultMap>
+
+
+	<resultMap type="Product" id="ProductDetails">
+		<id column="Id" property="id" />
+		<result column="CreateTime" property="createtime" />
+		<result column="ElecNum" property="elecnum" />
+		<result column="StockNum" property="stocknum" />
+		<result column="PlaceOfDelivery" property="placeofdelivery" />
+		<collection column="Id" property="productphotos" ofType="Productphoto"
+			select="selectProductPhotosById" fetchType="eager">
+			<result column="Photo" property="photo" />
+		</collection>
+		<collection column="Id" property="productspecs" ofType="ProductSpec"
+			select="selectProductSpecsById" fetchType="eager">
+			<result column="SpecName" property="specname" />
+		</collection>
+	</resultMap>
+
+	<resultMap type="ProductComment" id="ProductCommentMap">
+		<result column="Id" property="id" />
+		<result column="Price" property="price" />
+		<result column="Memo" property="memo" />
+		<result column="Star" property="star" />
+		<association column="UserId" property="user" javaType="User"
+			select="getUserInfo" fetchType="eager">
+			<result column="TrueName" property="truename" />
+			<result column="HeadPhoto" property="headphoto" />
+		</association>
+		<collection column="Id" property="productCommentPhotos"
+			ofType="ProductCommentPhoto" select="getCommetPhoto" fetchType="eager">
+			<result column="Photo" property="photo" />
+		</collection>
+	</resultMap>
+
 	<select id="getProductOfCategory" resultMap="ProductCategoryMap">
 		select
-		c.Id,c.CategoryName,c.Ord,s.Id SubId,s.CategoryName SubCategoryName,s.Icon,s.Ord
-		SubOrd from tb_productcategory c JOIN tb_productsubcategory s on c.Id
+		c.Id,c.CategoryName,c.Ord,s.Id SubId,s.CategoryName
+		SubCategoryName,s.Icon,s.Ord
+		SubOrd from tb_productcategory c JOIN
+		tb_productsubcategory s on c.Id
 		= s.ParentId order by c.Ord,s.Ord
 	</select>
-
+	<select id="findById" resultMap="ProductDetails" parameterType="integer">
+		select p.Id,p.Price,p.ElecNum,p.StockNum,p.PlaceOfDelivery from
+		tb_product
+		p where Id = #{id}
+	</select>
+	<select id="findProductHtmlTextById" resultType="java.lang.String" parameterType="integer">
+		select HtmlText from tb_product where Id = #{id}
+	</select>
+	<select id="selectProductPhotosById" resultType="Productphoto"
+		parameterType="integer">
+		select Photo from tb_productphoto where ProductId =
+		#{id} and CurStatus = 0
+	</select>
+	<select id="selectProductSpecsById" resultType="ProductSpec"
+		parameterType="integer">
+		select SpecName from tb_productspec where ProductId =
+		#{id} and CurStatus = 0
+	</select>
+	<select id="selectProductcommentById" resultMap="ProductCommentMap">
+		SELECT
+		Id,CreateTime,Memo,Star,UserId from tb_productcomment
+		WHERE ProductId =
+		#{productId}
+		and CurStatus = 1 limit ${page},${pageNum}
+	</select>
+	<select id="getUserInfo" resultType="User" parameterType="integer">
+		SELECT
+		TrueName,HeadPhoto from tb_user
+		WHERE Id = #{UserId}
+	</select>
+	<select id="getCommetPhoto" resultType="ProductCommentPhoto"
+		parameterType="integer">
+		SELECT Photo from tb_productcommentphoto where CommentId
+		= #{id}
+	</select>
 </mapper>
