@@ -17,5 +17,7 @@ public interface ProductMapper {
 	List<ProductComment> selectProductcommentById(@Param("productId") Integer productId,@Param("page") Integer page,@Param("pageNum") Integer pageNum);
 	
 	String findProductHtmlTextById(Integer id);
+	
+	Product getProductNumById(Integer id);
     	
 }

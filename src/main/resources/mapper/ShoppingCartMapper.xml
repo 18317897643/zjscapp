@@ -11,19 +11,40 @@
 			<result property="oldprice" column="OldPrice" />
 			<result property="producerno" column="ProducerNo" />
 			<result property="producername" column="ProducerName" />
+			<result property="elecnum" column="ElecNum" />
 		</association>
 		<association property="productSpec" column="SpecId"
 			javaType="ProductSpec">
 			<result property="specname" column="SpecName" />
+			<result property="elecnum" column="sElecNum" />
+			<result property="price" column="sPrice" />
 		</association>
 	</resultMap>
 	<select id="getShoppingCartInfo" resultMap="ShoppingCartMap">
-		select c.Id,c.ProductNum,p.ProducerNo,p.ProducerName,p.ProductName,p.Price,p.OldPrice,s.SpecName from
-		tb_shoppingcart c join tb_product p join tb_productspec s on p.Id =
-		c.ProductId and c.SpecId = s.Id and UserId = #{UserId}
+		select
+		c.Id,c.ProductNum,p.ProducerNo,p.ProducerName,p.ProductName,p.Price,p.OldPrice,p.ElecNum,s.SpecName,s.ElecNum
+		sElecNum,s.Price sPrice
+		from
+		tb_shoppingcart c join tb_product p join
+		tb_productspec s on p.Id
+		=
+		c.ProductId and c.SpecId = s.Id and UserId =
+		#{UserId}
 	</select>
-    <delete id="delShoppingCartInfoById">  
-        delete from tb_shoppingcart where Id = #{id} and UserId = #{UserId}
-    </delete>  
-
+	<insert id="addShoppingCartInfo">
+		insert into
+		tb_shoppingcart(UserId,ProductId,SpecId,ProductNum) VALUES
+		(#{UserId},#{productId},#{specId},#{productNum})
+	</insert>
+	<update id="setShoppingCartInfo">
+		update tb_shoppingcart set ProductNum = #{productNum}
+		where Id = #{shoppingCartId} and UserId = #{UserId}
+	</update>
+	<delete id="delShoppingCartInfoById">
+		delete from tb_shoppingcart where Id = #{id} and
+		UserId = #{UserId}
+	</delete>
+	<select id="getProudctIdByShoppingId" resultType="java.lang.Integer">
+		select productId from tb_shoppingcart where Id = #{shoppingCartId}
+	</select>
 </mapper>

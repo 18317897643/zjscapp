@@ -12,7 +12,7 @@
 		a.`Name`,a.`Phone`,a.`DetailAddress`,a.`IsDefault`,p.ProvinceName,c.CityName,r.RegionName
 		from tb_address a JOIN tb_province p on p.Id = a.ProvinceId JOIN
 		tb_city c on c.Id = a.CityId JOIN tb_region r on r.Id = a.RegionId
-		where ${condition} = #{param}
+		where ${condition} = #{param} ${additionalCondition}
 	</select>
 
 	<insert id="addAddress">

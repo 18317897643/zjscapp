@@ -1,19 +1,24 @@
 package com.zhongjian.webserver.controller;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zhongjian.webserver.ExceptionHandle.BusinessException;
+import com.zhongjian.webserver.common.ExpiryMap;
 import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.Result;
 import com.zhongjian.webserver.common.ResultUtil;
 import com.zhongjian.webserver.common.Status;
 import com.zhongjian.webserver.common.TokenManager;
+import com.zhongjian.webserver.pojo.User;
 import com.zhongjian.webserver.service.LoginAndRegisterService;
 
 import io.swagger.annotations.Api;
@@ -22,7 +27,11 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @Api(value = "/LoginAndRegister/", description = "用户登录注册模块")
 public class LoginAndRegisterController {
-
+	
+	@Autowired
+	@Qualifier("payPasswordModifyMap")
+	private ExpiryMap<String, String> payPasswordModifyMap;
+	
 	@Autowired
 	private TokenManager tokenManager;
 
@@ -35,13 +44,8 @@ public class LoginAndRegisterController {
 		try {
 			// receive the phone
 			String phoneNum = phoneMap.get("phoneNum");
-			// 查看数据是否已经有该用户
-			if (loginAndRegisterService.checkUserExists(phoneNum)) {
-				loginAndRegisterService.sendRegisterVerifyCode(phoneNum);
-				return ResultUtil.success();
-			} else {
-				return ResultUtil.error(Status.GeneralError.getStatenum(), "该用户已注册");
-			}
+			loginAndRegisterService.sendRegisterVerifyCode(phoneNum);
+			return ResultUtil.success();
 		} catch (Exception e) {
 			LoggingUtil.e("短信发送异常:" + e.getMessage());
 			throw new BusinessException(Status.SMSError.getStatenum(), e.getMessage());
@@ -179,11 +183,56 @@ public class LoginAndRegisterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "手机动态登录异常");
 		}
 	}
-	
-	@ApiOperation(httpMethod = "POST", notes = "支付密码设置", value = "支付密码设置")
-	@RequestMapping(value = "/LoginAndRegister/setPayPassword", method = RequestMethod.POST)
+	@ApiOperation(httpMethod = "POST", notes = "支付密码设置校验验证码", value = "支付密码设置校验验证码")
+	@RequestMapping(value = "/LoginAndRegister/verify", method = RequestMethod.POST)
 	Result<Object> setPayPassword(@RequestBody Map<String, String> userMap) throws BusinessException {
-		return null;
-		// receive the args
+		try {
+			// receive the args
+			String toKen = userMap.get("token");
+			String verifyCode = userMap.get("verifyCode");
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			if (loginAndRegisterService.checkVerifyCode(phoneNum, verifyCode)) {
+				//更改支付密码凭证
+				String payPasswordCertificate = UUID.randomUUID().toString();
+				payPasswordModifyMap.put(toKen, payPasswordCertificate);
+				return ResultUtil.success(payPasswordCertificate);
+			}else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "验证码错误");
+			}
+		} catch (Exception e) {
+			LoggingUtil.e("支付密码校验验证码异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "支付密码校验验证码异常");
+		}
+	}
+	@ApiOperation(httpMethod = "POST", notes = "支付密码设置", value = "支付密码设置")
+	@RequestMapping(value = "/LoginAndRegister/verify/{payPasswordCertificate}", method = RequestMethod.POST)
+	Result<Object> setPayPassword(@PathVariable("payPasswordCertificate") String payPasswordCertificate ,@RequestBody User user) throws BusinessException {
+		try {
+			// receive the args
+			String toKen = user.getToken();
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			//如果凭证不对
+			if (!payPasswordCertificate.equals(payPasswordModifyMap.get(toKen))) {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "凭证已失效");
+			}
+			payPasswordModifyMap.remove(toKen);
+			user.setUsername(phoneNum);
+			if (loginAndRegisterService.updateUser(user) == 1) {
+				return ResultUtil.success();
+			}else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "数据更新异常");
+			}
+		} catch (Exception e) {
+			LoggingUtil.e("支付密码设置异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "支付密码设置异常");
+		}
 	}
 }

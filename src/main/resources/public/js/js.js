@@ -120,7 +120,10 @@ function sendcode() {
     $("#btngetcode").attr('disabled', true);
     var phone = $("#tbphone").val();
     var che = $('#weuiAgree').prop("checked");
-    if (timeFlag != 60) return;
+    if (timeFlag != 60) {
+    	flag = 0;
+    	return;
+    }
     if (che == true) {
      if (phone.length == 11) {
          $("#loadgif").show();
@@ -140,19 +143,21 @@ function sendcode() {
                  }
                  else {
                      hideloadgetcode();
-                     alert(data.error_message);
                      flag = 0;
+                     alert(data.error_message);
                  }
              }
          });
      }
      else {
          hideloadgetcode();
+         flag = 0;
          alert("请输入正确的手机号");
      }
  }
  else {
      hideloadgetcode();
+     flag = 0;
      alert("必须同意用户协议");
  }
 }

@@ -15,13 +15,13 @@ public class AddressManagerServiceImpl implements AddressManagerService {
 	AddressMapper addressMapper;
 	
 	@Override
-	public Map<String, Object> getAllAdressByUserId(Integer userId) {
-		return addressMapper.queryAddress("a.UserId", userId);
+	public Map<String, Object> getAllAddressByUserId(Integer userId) {
+		return addressMapper.queryAddress("a.UserId", userId,"");
 	}
 
 	@Override
-	public Map<String, Object> getAdressById(Integer id) {
-		return addressMapper.queryAddress("a.Id", id);
+	public Map<String, Object> getAddressById(Integer id) {
+		return addressMapper.queryAddress("a.Id", id,"");
 	}
 
 	@Override
@@ -38,6 +38,11 @@ public class AddressManagerServiceImpl implements AddressManagerService {
 	@Override
 	public Integer updateAddressById(Map<String, Object> paramMap) {
 		return addressMapper.updateAddressById(paramMap);
+	}
+
+	@Override
+	public Map<String, Object> getDefaultAddressById(Integer userId) {
+		return addressMapper.queryAddress("a.UserId", userId,"and IsDefault = 1");
 	}
 
 	

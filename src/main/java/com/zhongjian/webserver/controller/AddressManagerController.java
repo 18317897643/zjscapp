@@ -34,8 +34,8 @@ public class AddressManagerController {
 	@Autowired
 	private AddressManagerService addressManagerService;
 
-	@ApiOperation(httpMethod = "GET", notes = "获取该用户所有收货地址", value = "获取该用户所有收货地址")
-	@RequestMapping(value = "/AddressManager/getAllAddressOfUser", method = RequestMethod.GET)
+	@ApiOperation(httpMethod = "POST", notes = "获取该用户所有收货地址", value = "获取该用户所有收货地址")
+	@RequestMapping(value = "/AddressManager/getAllAddressOfUser", method = RequestMethod.POST)
 	Result<Object> getAllAddressOfUser(@RequestParam String token) throws BusinessException {
 		try {
 			// 检查token通过
@@ -44,15 +44,15 @@ public class AddressManagerController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			return ResultUtil.success(addressManagerService.getAllAdressByUserId(userId));
+			return ResultUtil.success(addressManagerService.getAllAddressByUserId(userId));
 		} catch (Exception e) {
 			LoggingUtil.e("获取该用户所有收货地址发生异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "获取该用户所有收货地址发生异常");
 		}
 	}
 	
-	@ApiOperation(httpMethod = "GET", notes = "根据ID获取收货地址详情", value = "根据ID获取收货地址详情")
-	@RequestMapping(value = "/AddressManager/getAddressOfUserById/{token}/{id}", method = RequestMethod.GET)
+	@ApiOperation(httpMethod = "POST", notes = "根据ID获取收货地址详情", value = "根据ID获取收货地址详情")
+	@RequestMapping(value = "/AddressManager/getAddressOfUserById", method = RequestMethod.POST)
 	Result<Object> getAddressOfUserById(@RequestParam String token, Integer id) throws BusinessException {
 		try {
 			// 检查token通过
@@ -60,10 +60,26 @@ public class AddressManagerController {
 			if (phoneNum == null) {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
-			return ResultUtil.success(addressManagerService.getAdressById(id));
+			return ResultUtil.success(addressManagerService.getAddressById(id));
 		} catch (Exception e) {
 			LoggingUtil.e("获取收货地址详情发生异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "获取收货地址详情发生异常");
+		}
+	}
+	@ApiOperation(httpMethod = "POST", notes = "获取用户默认收货地址", value = "获取用户默认收货地址")
+	@RequestMapping(value = "/AddressManager/getDefaultAddressOfUser", method = RequestMethod.POST)
+	Result<Object> getDefaultAddressOfUser(@RequestParam String token) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(token);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			return ResultUtil.success(addressManagerService.getDefaultAddressById(userId));
+		} catch (Exception e) {
+			LoggingUtil.e("获取用户默认收货地址异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "获取用户默认收货地址生异常");
 		}
 	}
 	

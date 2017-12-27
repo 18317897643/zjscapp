@@ -15,7 +15,7 @@ import com.zhongjian.webserver.service.LoginAndRegisterService;
 public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 	
 	@Autowired
-	private ExpiryMap<String, String> expiryMap;
+	private ExpiryMap<String, String> verifyCodeExiryMap;
 	
 	@Autowired
 	private UserMapper userMapper;
@@ -28,11 +28,11 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 		//send the sms
 	    SendSmsUtil.sendCaptcha(phoneNum, captcha);
 		//store the VerifyCode 		
-		expiryMap.put(phoneNum, captcha);
+	    verifyCodeExiryMap.put(phoneNum, captcha);
 	}
 	@Override
 	public boolean checkVerifyCode(String phoneNum, String code) {
-		String verifyCode = expiryMap.get(phoneNum);
+		String verifyCode = verifyCodeExiryMap.get(phoneNum);
 		if (code.equals(verifyCode)) {
 			return true;
 		}
@@ -90,6 +90,10 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 	@Override
 	public Integer getUserIdByUserName(String userName) {
 		return userMapper.getUserIdByUserName(userName);
+	}
+	@Override
+	public Integer updateUser(User user) {
+		return userMapper.updateByUserNameSelective(user);
 	}
 	
 }

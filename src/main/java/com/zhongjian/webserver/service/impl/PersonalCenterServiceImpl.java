@@ -31,12 +31,10 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	public Map<String, Object> getInformOfConsumption(String userName) {
 		return userMapper.selectPersonalInform(userName);
 	}
-
 	@Override
 	public List<Integer> getUserOrderStatus(Integer userId) {
 		return orderMapper.getUserOrderStatus(userId);
 	}
-
 	@Override
 	public List<HashMap<String, Object>> getShoppingCartInfo(Integer userId) {
 		List<ShoppingCart> shoppingCarts = shoppingCartMapper.getShoppingCartInfo(userId);
@@ -66,7 +64,6 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 
 		return resultList;
 	}
-
 	@Override
 	public boolean delShoppingCartInfoById(Integer userId, Integer id) {
 		if (shoppingCartMapper.delShoppingCartInfoById(userId, id) == 1) {
@@ -75,5 +72,17 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 			return false;
 		}
 
+	}
+	@Override
+	public Integer addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum) {
+		return shoppingCartMapper.addShoppingCartInfo(userId, productId, specId, productNum);
+	}
+	@Override
+	public Integer setShoppingCartInfo(Integer userId, Integer shoppingCartId, Integer productNum) {
+		return shoppingCartMapper.setShoppingCartInfo(userId, shoppingCartId, productNum);
+	}
+	@Override
+	public Integer getProductIdByShoppingId(Integer shoppingCartId) {
+		return shoppingCartMapper.getProductIdByShoppingId(shoppingCartId);
 	}
 }

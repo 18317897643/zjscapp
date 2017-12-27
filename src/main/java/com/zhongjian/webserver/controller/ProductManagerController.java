@@ -1,8 +1,10 @@
 package com.zhongjian.webserver.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,8 +16,7 @@ import com.zhongjian.webserver.common.Result;
 import com.zhongjian.webserver.common.ResultUtil;
 import com.zhongjian.webserver.common.Status;
 import com.zhongjian.webserver.common.TokenManager;
-import com.zhongjian.webserver.mapper.ProductMapper;
-import com.zhongjian.webserver.pojo.Product;
+import com.zhongjian.webserver.dto.PANRequestMap;
 import com.zhongjian.webserver.pojo.ProductComment;
 import com.zhongjian.webserver.service.ProductManagerService;
 
@@ -32,8 +33,8 @@ public class ProductManagerController {
 	private ProductManagerService productManagerService;
 	
 	
-	@ApiOperation(httpMethod = "GET", notes = "获取所有商品分类", value = "获取所有商品分类")
-	@RequestMapping(value = "/ProductManager/getProductOfCategory", method = RequestMethod.GET)
+	@ApiOperation(httpMethod = "POST", notes = "获取所有商品分类", value = "获取所有商品分类")
+	@RequestMapping(value = "/ProductManager/getProductOfCategory", method = RequestMethod.POST)
 	Result<Object> getProductOfCategory(@RequestParam String token) throws BusinessException {
 		try {
 			// 检查token通过
@@ -48,8 +49,8 @@ public class ProductManagerController {
 		}
 	}
 	
-	@ApiOperation(httpMethod = "GET", notes = "获取商品详情", value = "获取商品详情")
-	@RequestMapping(value = "/ProductManager/getProductDetails", method = RequestMethod.GET)
+	@ApiOperation(httpMethod = "POST", notes = "获取商品详情", value = "获取商品详情")
+	@RequestMapping(value = "/ProductManager/getProductDetails", method = RequestMethod.POST)
 	Result<Object> getProductDetails(@RequestParam Integer productId,String token) throws BusinessException {
 		try {
 			// 检查token通过
@@ -78,12 +79,11 @@ public class ProductManagerController {
 			List<ProductComment> productComments = productManagerService.getProductComment(productId, page, pageNum);
 			return ResultUtil.success(productComments);
 		} catch (Exception e) {
-			LoggingUtil.e("获取商品详情异常:" + e);
+			LoggingUtil.e("获取商品评价详情异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "获取商品详情异常");
 		}
-	
 	}
-	
+	//web页面get请求获取productHtmlText
 	@ApiOperation(httpMethod = "GET", notes = "获取商品图文详情", value = "获取商品图文详情")
 	@RequestMapping(value = "/ProductManager/getProductImgAndText", method = RequestMethod.GET)
 	Result<Object> getProductImgAndText(@RequestParam Integer productId) throws BusinessException {
@@ -92,9 +92,18 @@ public class ProductManagerController {
 			String productComments = productManagerService.getProductHtmlText(productId);
 			return ResultUtil.success(productComments);
 		} catch (Exception e) {
+			LoggingUtil.e("获取商品图文详情异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "获取商品图文详情异常");
+		}
+	}
+	@ApiOperation(httpMethod = "POST", notes = "检查商品库存", value = "检查商品库存")
+	@RequestMapping(value = "/ProductManager/checkProductStoreNum", method = RequestMethod.POST)
+	Result<Object> checkProductStoreNum(@RequestBody List<PANRequestMap> pANRequestMaps) throws BusinessException {
+		try {
+			return ResultUtil.success(productManagerService.checkProductStoreNum(pANRequestMaps));
+		} catch (Exception e) {
 			LoggingUtil.e("获取商品详情异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "获取商品详情异常");
 		}
-	
-	}
+ 	}
 }

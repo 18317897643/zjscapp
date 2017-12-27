@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.pojo;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -10,6 +11,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class User {
     private Integer id;
 
+    //为了token校验
+    private String token;
+    
     private String username;
 
     private String truename;
@@ -34,17 +38,19 @@ public class User {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date birthday;
 
-    private Double remainpoints;
+    private BigDecimal coupon;
+    
+    private BigDecimal remainpoints;
 
-    private Double remainamount;
+    private BigDecimal remainamount;
 
-    private Double remainamountUsd;
+    private BigDecimal remainamountUsd;
 
-    private Double remainelecnum;
+    private BigDecimal remainelecnum;
 
-    private Double remainvipamount;
+    private BigDecimal remainvipamount;
 
-    private Double remainstream;
+    private BigDecimal remainstream;
 
     private Integer curstatus;
 
@@ -72,11 +78,11 @@ public class User {
 
     private Integer issubproxy;
 
-    private Double totalcost;
+    private BigDecimal totalcost;
 
-    private Double teamtotalcost;
+    private BigDecimal teamtotalcost;
 
-    private Double subteamtotalcost;
+    private BigDecimal subteamtotalcost;
 
     private Integer sysid;
 
@@ -92,7 +98,15 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
+    public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String getUsername() {
         return username;
     }
 
@@ -180,51 +194,51 @@ public class User {
         this.birthday = birthday;
     }
 
-    public Double getRemainpoints() {
+    public BigDecimal getRemainpoints() {
         return remainpoints;
     }
 
-    public void setRemainpoints(Double remainpoints) {
+    public void setRemainpoints(BigDecimal remainpoints) {
         this.remainpoints = remainpoints;
     }
 
-    public Double getRemainamount() {
+    public BigDecimal getRemainamount() {
         return remainamount;
     }
 
-    public void setRemainamount(Double remainamount) {
+    public void setRemainamount(BigDecimal remainamount) {
         this.remainamount = remainamount;
     }
 
-    public Double getRemainamountUsd() {
+    public BigDecimal getRemainamountUsd() {
         return remainamountUsd;
     }
 
-    public void setRemainamountUsd(Double remainamountUsd) {
+    public void setRemainamountUsd(BigDecimal remainamountUsd) {
         this.remainamountUsd = remainamountUsd;
     }
 
-    public Double getRemainelecnum() {
+    public BigDecimal getRemainelecnum() {
         return remainelecnum;
     }
 
-    public void setRemainelecnum(Double remainelecnum) {
+    public void setRemainelecnum(BigDecimal remainelecnum) {
         this.remainelecnum = remainelecnum;
     }
 
-    public Double getRemainvipamount() {
+    public BigDecimal getRemainvipamount() {
         return remainvipamount;
     }
 
-    public void setRemainvipamount(Double remainvipamount) {
+    public void setRemainvipamount(BigDecimal remainvipamount) {
         this.remainvipamount = remainvipamount;
     }
 
-    public Double getRemainstream() {
+    public BigDecimal getRemainstream() {
         return remainstream;
     }
 
-    public void setRemainstream(Double remainstream) {
+    public void setRemainstream(BigDecimal remainstream) {
         this.remainstream = remainstream;
     }
 
@@ -332,27 +346,27 @@ public class User {
         this.issubproxy = issubproxy;
     }
 
-    public Double getTotalcost() {
+    public BigDecimal getTotalcost() {
         return totalcost;
     }
 
-    public void setTotalcost(Double totalcost) {
+    public void setTotalcost(BigDecimal totalcost) {
         this.totalcost = totalcost;
     }
 
-    public Double getTeamtotalcost() {
+    public BigDecimal getTeamtotalcost() {
         return teamtotalcost;
     }
 
-    public void setTeamtotalcost(Double teamtotalcost) {
+    public void setTeamtotalcost(BigDecimal teamtotalcost) {
         this.teamtotalcost = teamtotalcost;
     }
 
-    public Double getSubteamtotalcost() {
+    public BigDecimal getSubteamtotalcost() {
         return subteamtotalcost;
     }
 
-    public void setSubteamtotalcost(Double subteamtotalcost) {
+    public void setSubteamtotalcost(BigDecimal subteamtotalcost) {
         this.subteamtotalcost = subteamtotalcost;
     }
 
@@ -379,4 +393,13 @@ public class User {
     public void setProxystar(Integer proxystar) {
         this.proxystar = proxystar;
     }
+
+	public BigDecimal getCoupon() {
+		return coupon;
+	}
+
+	public void setCoupon(BigDecimal coupon) {
+		this.coupon = coupon;
+	}
+    
 }

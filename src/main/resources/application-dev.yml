@@ -1,5 +1,5 @@
 server:
-  adress: 127.0.0.1
+  #adress: 127.0.0.1
   port: 8080
   context-path: /zjapp/v1
   undertow:    
@@ -45,3 +45,4 @@ upload:
   httpCatalogue: /upload/pics/
   maxFileSize: 30720KB
   maxRequestSize: 102400KB
+productTag: 1 

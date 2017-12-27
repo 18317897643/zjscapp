@@ -12,8 +12,6 @@
 			<result column="SubOrd" property="ord" />
 		</collection>
 	</resultMap>
-
-
 	<resultMap type="Product" id="ProductDetails">
 		<id column="Id" property="id" />
 		<result column="CreateTime" property="createtime" />
@@ -55,11 +53,16 @@
 		= s.ParentId order by c.Ord,s.Ord
 	</select>
 	<select id="findById" resultMap="ProductDetails" parameterType="integer">
-		select p.Id,p.Price,p.ElecNum,p.StockNum,p.PlaceOfDelivery from
+		select p.Tag,p.Id,p.Price,p.ElecNum,p.StockNum,p.PlaceOfDelivery from
 		tb_product
 		p where Id = #{id}
 	</select>
-	<select id="findProductHtmlTextById" resultType="java.lang.String" parameterType="integer">
+	<select id="getProductNumById" resultType="Product" parameterType="integer">
+		select Id,ProductName,StockNum from
+		tb_product where Id = #{id}
+	</select>
+	<select id="findProductHtmlTextById" resultType="java.lang.String"
+		parameterType="integer">
 		select HtmlText from tb_product where Id = #{id}
 	</select>
 	<select id="selectProductPhotosById" resultType="Productphoto"
@@ -69,7 +72,8 @@
 	</select>
 	<select id="selectProductSpecsById" resultType="ProductSpec"
 		parameterType="integer">
-		select SpecName from tb_productspec where ProductId =
+		select Id,SpecName,ElecNum,Price from tb_productspec
+		where ProductId =
 		#{id} and CurStatus = 0
 	</select>
 	<select id="selectProductcommentById" resultMap="ProductCommentMap">

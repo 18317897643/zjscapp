@@ -4,9 +4,11 @@ import java.util.Map;
 
 public interface AddressManagerService {
 
-	Map<String, Object> getAllAdressByUserId(Integer userId);
+	Map<String, Object> getAllAddressByUserId(Integer userId);
 	
-	Map<String, Object> getAdressById(Integer id);
+	Map<String, Object> getAddressById(Integer id);
+	
+	Map<String, Object> getDefaultAddressById(Integer userId);
 	
 	Integer addAddress(Map<String, Object> paramMap);
 	

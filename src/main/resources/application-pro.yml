@@ -45,3 +45,4 @@ upload:
   httpCatalogue: /upload/pics/
   maxFileSize: 30720KB
   maxRequestSize: 102400KB
+productTag: 1   

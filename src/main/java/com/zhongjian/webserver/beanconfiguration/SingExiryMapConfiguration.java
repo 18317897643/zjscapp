@@ -7,14 +7,21 @@ package com.zhongjian.webserver.beanconfiguration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import com.zhongjian.webserver.common.ExpiryMap;
 
 @Configuration
 public class SingExiryMapConfiguration {
 
-	@Bean
-	public ExpiryMap<String, String> createExiryMap() {
+	@Bean(name="verifyCodeExiryMap")
+	@Primary
+	public ExpiryMap<String, String> createVerifyCodeExiryMap() {
+		return new ExpiryMap<String,String>();
+	}
+	
+	@Bean(name="payPasswordModifyMap")
+	public ExpiryMap<String, String> createPayPasswordModifyMap() {
 		return new ExpiryMap<String,String>();
 	}
 }

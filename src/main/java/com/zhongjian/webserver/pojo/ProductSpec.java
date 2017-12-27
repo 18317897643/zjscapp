@@ -1,6 +1,8 @@
 package com.zhongjian.webserver.pojo;
 
 
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -16,6 +18,10 @@ public class ProductSpec {
 
     private Integer curstatus;
 
+    private Integer elecnum;
+    
+    private BigDecimal price;
+    
     public Integer getId() {
         return id;
     }
@@ -55,4 +61,20 @@ public class ProductSpec {
     public void setCurstatus(Integer curstatus) {
         this.curstatus = curstatus;
     }
+
+	public Integer getElecNum() {
+		return elecnum;
+	}
+
+	public void setElecNum(Integer elecmum) {
+		this.elecnum = elecmum;
+	}
+
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
 }

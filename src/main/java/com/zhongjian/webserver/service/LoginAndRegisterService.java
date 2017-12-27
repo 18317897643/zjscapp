@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.service;
 
+import com.zhongjian.webserver.pojo.User;
 
 public interface LoginAndRegisterService {
 	void sendRegisterVerifyCode(String phoneNum) throws Exception;
@@ -15,4 +16,6 @@ public interface LoginAndRegisterService {
 	boolean modifyPassword(String phoneNum,String password);
 	
 	Integer getUserIdByUserName(String userName);
+	
+	Integer updateUser(User user);
 }
