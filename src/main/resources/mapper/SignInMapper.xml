@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhongjian.webserver.mapper.SignInMapper">
+	<insert id="addSignRecord">
+		insert into
+		tb_signin(UserId,SignTime)VALUES(#{UserId,jdbcType=INTEGER},#{SignTime,jdbcType=DATE})
+	</insert>
+	<select id="getLastSignTimeByUserId" resultType="java.util.Date">
+		SELECT
+		LastSignTime from tb_signintermediate where UserId =
+		#{UserId,jdbcType=INTEGER};
+	</select>
+	<select id="getContinueDayByUserId" resultType="java.lang.Integer">
+		SELECT
+		ContinueDay from tb_signintermediate where UserId =
+		#{UserId,jdbcType=INTEGER};
+	</select>
+	<select id="getAwardsByUserId" resultType="SigninAward">
+		SELECT
+		Sevendaysaward,Fourteendaysaward,Thirtydaysaward FROM tb_signinaward
+		WHERE UserId = #{UserId,jdbcType=INTEGER} AND Date LIKE
+		#{CurrentDate,jdbcType=VARCHAR}
+	</select>
+	<select id="getTheMonthSignData" resultType="java.sql.Date">
+		SELECT SignTime FROM
+		tb_signin where UserId = #{UserId,jdbcType=INTEGER} AND
+		SignTime like
+		#{CurrentDate,jdbcType=VARCHAR}
+	</select>
+	<insert id="addSigninTermediateByUserId">
+		insert into
+		tb_signintermediate(UserId,LastSignTime,ContinueDay)VALUES(#{UserId,jdbcType=INTEGER},#{LastSignTime,jdbcType=DATE},#{ContinueDay,jdbcType=INTEGER})
+	</insert>
+	<insert id="addSigninAward">
+		insert into
+		tb_signinaward(UserId,Date)VALUES(#{UserId,jdbcType=INTEGER},#{CurrentDate,jdbcType=DATE})
+	</insert>
+	<update id="updateSigninTermediateByUserId">
+		UPDATE tb_signintermediate SET LastSignTime =
+		#{LastSignTime,jdbcType=DATE},ContinueDay = ContinueDay + 1 where
+		#{UserId,jdbcType=INTEGER}
+	</update>
+	<update id="reSetContinueDayByUserId">
+		UPDATE tb_signintermediate SET LastSignTime =
+		#{LastSignTime,jdbcType=DATE},ContinueDay = 1 where
+		#{UserId,jdbcType=INTEGER}
+	</update>
+	<update id="updateSigninAwardSeven">
+		UPDATE tb_signinaward SET Sevendaysaward =
+		#{Sevendaysaward,jdbcType=INTEGER} WHERE UserId =
+		#{UserId,jdbcType=INTEGER} AND Date LIKE
+		#{CurrentDate,jdbcType=VARCHAR} AND Sevendaysaward = #{Condition}
+	</update>
+	<update id="updateSigninAwardFourteen">
+		UPDATE tb_signinaward SET Fourteendaysaward =
+		#{Fourteendaysaward,jdbcType=INTEGER} WHERE UserId =
+		#{UserId,jdbcType=INTEGER} AND Date
+		LIKE
+		#{CurrentDate,jdbcType=VARCHAR}
+		AND Fourteendaysaward = #{Condition}
+	</update>
+	<update id="updateSigninAwardThirty">
+		UPDATE tb_signinaward SET Thirtydaysaward =
+		#{Thirtydaysaward,jdbcType=INTEGER} WHERE UserId =
+		#{UserId,jdbcType=INTEGER} AND Date
+		LIKE
+		#{CurrentDate,jdbcType=VARCHAR}
+		AND Thirtydaysaward = #{Condition}
+	</update>
+	<delete id="deleteDatedSignInData">
+		DELETE FROM tb_signin where SignTime NOT LIKE
+		#{CurrentDate,jdbcType=VARCHAR}
+	</delete>
+	<delete id="deleteDatedSignAwardData">
+		DELETE FROM tb_signinaward where Date NOT LIKE
+		#{CurrentDate,jdbcType=VARCHAR}
+	</delete>
+</mapper>
