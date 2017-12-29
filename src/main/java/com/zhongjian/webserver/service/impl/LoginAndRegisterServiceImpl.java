@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.service.impl;
 
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,7 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 		user.setInvitecode(currentThreadSysID);
 		user.setHeadphoto("/upload/pics/nohead.png");
 		user.setSysid(currentThreadSysID);
+		user.setCreatetime(new Date());
 		userMapper.insertSelective(user);
 	}
 

@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.controller;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +96,7 @@ public class AddressManagerController {
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			addressMap.put("UserId", userId);
+			addressMap.put("CreateTime", new Date());
 			//添加收货地址
 			if (addressManagerService.addAddress(addressMap) == 1) {
 				return ResultUtil.success();

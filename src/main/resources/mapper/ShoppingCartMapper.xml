@@ -33,8 +33,8 @@
 	</select>
 	<insert id="addShoppingCartInfo">
 		insert into
-		tb_shoppingcart(UserId,ProductId,SpecId,ProductNum) VALUES
-		(#{UserId},#{productId},#{specId},#{productNum})
+		tb_shoppingcart(UserId,ProductId,SpecId,ProductNum,CreateTime) VALUES
+		(#{UserId},#{productId},#{specId},#{productNum},#{CreateTime})
 	</insert>
 	<update id="setShoppingCartInfo">
 		update tb_shoppingcart set ProductNum = #{productNum}

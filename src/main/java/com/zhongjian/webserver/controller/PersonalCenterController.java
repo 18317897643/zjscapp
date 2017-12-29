@@ -1,6 +1,7 @@
 package com.zhongjian.webserver.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -147,7 +148,7 @@ public class PersonalCenterController {
 			}
 			//获取用户Id
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			if (personalCenterService.addShoppingCartInfo(userId, productId, specId,productNum) == 1) {
+			if (personalCenterService.addShoppingCartInfo(userId, productId, specId,productNum,new Date()) == 1) {
 				return ResultUtil.success();
 			} else {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "数据库添加购物车记录失败");

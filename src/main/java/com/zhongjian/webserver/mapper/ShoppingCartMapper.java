@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.mapper;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -12,7 +13,7 @@ public interface ShoppingCartMapper {
 	 
 	 Integer delShoppingCartInfoById(@Param("UserId") Integer userId ,@Param("id") Integer id);
 	 
-	 Integer addShoppingCartInfo(@Param("UserId") Integer userId,@Param("productId") Integer productId,@Param("specId") Integer specId ,@Param("productNum") Integer productNum);
+	 Integer addShoppingCartInfo(@Param("UserId") Integer userId,@Param("productId") Integer productId,@Param("specId") Integer specId ,@Param("productNum") Integer productNum,@Param("CreateTime") Date CreateTime);
 	 
 	 Integer setShoppingCartInfo(@Param("UserId") Integer userId,@Param("shoppingCartId") Integer shoppingCartId,@Param("productNum") Integer productNum);
 	 

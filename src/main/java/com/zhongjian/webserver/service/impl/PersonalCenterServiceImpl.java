@@ -1,6 +1,7 @@
 package com.zhongjian.webserver.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,8 +75,8 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 
 	}
 	@Override
-	public Integer addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum) {
-		return shoppingCartMapper.addShoppingCartInfo(userId, productId, specId, productNum);
+	public Integer addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum,Date CreateTime) {
+		return shoppingCartMapper.addShoppingCartInfo(userId, productId, specId, productNum,CreateTime);
 	}
 	@Override
 	public Integer setShoppingCartInfo(Integer userId, Integer shoppingCartId, Integer productNum) {

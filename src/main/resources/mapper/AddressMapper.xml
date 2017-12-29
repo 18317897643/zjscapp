@@ -17,9 +17,9 @@
 
 	<insert id="addAddress">
 		INSERT INTO
-		tb_address(UserId,ProvinceId,CityId,RegionId,DetailAddress,Name,Phone,IsDefault)
+		tb_address(UserId,ProvinceId,CityId,RegionId,DetailAddress,Name,Phone,IsDefault,CreateTime)
 		VALUES(#{UserId,jdbcType=INTEGER},#{ProvinceId,jdbcType=INTEGER},#{CityId,jdbcType=INTEGER},
-		#{RegionId,jdbcType=INTEGER},#{DetailAddress,jdbcType=VARCHAR},#{Name,jdbcType=VARCHAR},#{Phone,jdbcType=VARCHAR},#{IsDefault,jdbcType=INTEGER})
+		#{RegionId,jdbcType=INTEGER},#{DetailAddress,jdbcType=VARCHAR},#{Name,jdbcType=VARCHAR},#{Phone,jdbcType=VARCHAR},#{IsDefault,jdbcType=INTEGER},#{CreateTime})
 	</insert>
 
 	<delete id="deleteAddressById">
