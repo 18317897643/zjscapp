@@ -18,6 +18,9 @@
 		<result column="ElecNum" property="elecnum" />
 		<result column="StockNum" property="stocknum" />
 		<result column="PlaceOfDelivery" property="placeofdelivery" />
+		<result column="ProducerNo" property="producerno" />
+		<result column="Producertel" property="producertel" />
+		<result column="ProducerName" property="producername" />
 		<collection column="Id" property="productphotos" ofType="Productphoto"
 			select="selectProductPhotosById" fetchType="eager">
 			<result column="Photo" property="photo" />
@@ -44,7 +47,7 @@
 		</collection>
 	</resultMap>
 
-	<select id="getProductOfCategory" resultMap="ProductCategoryMap">
+	<select id="getCategory" resultMap="ProductCategoryMap">
 		select
 		c.Id,c.CategoryName,c.Ord,s.Id SubId,s.CategoryName
 		SubCategoryName,s.Icon,s.Ord
@@ -53,13 +56,17 @@
 		= s.ParentId order by c.Ord,s.Ord
 	</select>
 	<select id="findById" resultMap="ProductDetails" parameterType="integer">
-		select p.Tag,p.Id,p.Price,p.ElecNum,p.StockNum,p.PlaceOfDelivery from
+		select
+		p.Tag,p.Id,p.Price,p.Freight,p.ElecNum,p.StockNum,p.PlaceOfDelivery,p.ProducerNo,p.Producertel,p.ProducerName
+		from
 		tb_product
 		p where Id = #{id}
 	</select>
-	<select id="getProductNumById" resultType="Product" parameterType="integer">
+	<select id="getProductNumById" resultType="Product"
+		parameterType="integer">
 		select Id,ProductName,StockNum from
-		tb_product where Id = #{id}
+		tb_product where Id =
+		#{id}
 	</select>
 	<select id="findProductHtmlTextById" resultType="java.lang.String"
 		parameterType="integer">
@@ -92,5 +99,9 @@
 		parameterType="integer">
 		SELECT Photo from tb_productcommentphoto where CommentId
 		= #{id}
+	</select>
+	<select id="getProductOfCategory" resultMap="ProductCategoryMap">
+		SELECT * from
+		tb_product where SubCategoryId = #{SubCategoryId}
 	</select>
 </mapper>

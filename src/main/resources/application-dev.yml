@@ -45,4 +45,7 @@ upload:
   httpCatalogue: /upload/pics/
   maxFileSize: 30720KB
   maxRequestSize: 102400KB
-productTag: 1 
+malldata:
+  productTag: 2
+  vipNeedPay: 3000
+  subProxyNeedPay: 50000

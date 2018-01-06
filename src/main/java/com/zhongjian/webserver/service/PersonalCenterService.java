@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.zhongjian.webserver.pojo.ProxyApply;
+
 public interface PersonalCenterService {
 
 	//查看钱包信息
@@ -28,4 +30,10 @@ public interface PersonalCenterService {
 	boolean delShoppingCartInfoById(Integer userId ,Integer id);
 	
 	Integer getProductIdByShoppingId(Integer shoppingCartId);
+	
+	//判断代理申请是否已经申请过了
+	boolean isAlreadyApply(Integer UserId);
+	
+	ProxyApply getProxyApply(Integer UserId);
+	
 }

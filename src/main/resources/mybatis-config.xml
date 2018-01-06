@@ -19,7 +19,7 @@
 		<!-- 指定 MyBatis 如何自动映射 数据基表的列 NONE：不隐射　PARTIAL:部分  FULL:全部  -->
 		<setting name="autoMappingBehavior" value="PARTIAL" />
 		<!-- 这是默认的执行类型  （SIMPLE: 简单； REUSE: 执行器可能重复使用prepared statements语句；BATCH: 执行器可以重复执行语句和批量更新）  -->
-		<setting name="defaultExecutorType" value="SIMPLE" />
+		<setting name="defaultExecutorType" value="REUSE" />
 		
 		<setting name="defaultStatementTimeout" value="25" />
 		

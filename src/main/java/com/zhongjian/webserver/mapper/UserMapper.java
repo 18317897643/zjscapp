@@ -1,7 +1,5 @@
 package com.zhongjian.webserver.mapper;
 
-
-
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
@@ -25,5 +23,7 @@ public interface UserMapper {
     Integer getUserIdByUserName(String userName);
     
     Integer updateByUserNameSelective(User user);
+    
+    Integer InviteCodeIsExists(Integer inviteCode);
         
 }

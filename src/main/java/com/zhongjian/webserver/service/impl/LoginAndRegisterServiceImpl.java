@@ -97,5 +97,12 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 	public Integer updateUser(User user) {
 		return userMapper.updateByUserNameSelective(user);
 	}
+	@Override
+	public boolean InviteCodeIsExists(Integer inviteCode) {
+		if (userMapper.InviteCodeIsExists(inviteCode) == 1) {
+			return true;
+		}
+		return false;
+	}
 	
 }

@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.zhongjian.webserver.mapper.OrderMapper;
+import com.zhongjian.webserver.mapper.ProxyApplyMapper;
 import com.zhongjian.webserver.mapper.ShoppingCartMapper;
 import com.zhongjian.webserver.mapper.UserMapper;
 import com.zhongjian.webserver.pojo.Product;
+import com.zhongjian.webserver.pojo.ProxyApply;
 import com.zhongjian.webserver.pojo.ShoppingCart;
 import com.zhongjian.webserver.service.PersonalCenterService;
 
@@ -27,6 +29,9 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 
 	@Autowired
 	ShoppingCartMapper shoppingCartMapper;
+	
+	@Autowired
+	ProxyApplyMapper proxyApplyMapper;
 
 	@Override
 	public Map<String, Object> getInformOfConsumption(String userName) {
@@ -85,5 +90,18 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	@Override
 	public Integer getProductIdByShoppingId(Integer shoppingCartId) {
 		return shoppingCartMapper.getProductIdByShoppingId(shoppingCartId);
+	}
+	@Override
+	public boolean isAlreadyApply(Integer UserId) {
+		Integer curStatus = proxyApplyMapper.queryProxyApplyCurStatus(UserId);
+		if (curStatus == null || curStatus == -1) {
+			return false;
+		}else {
+			return true;
+		}
+	}
+	@Override
+	public ProxyApply getProxyApply(Integer UserId) {
+		return proxyApplyMapper.queryProxyApply(UserId);
 	}
 }

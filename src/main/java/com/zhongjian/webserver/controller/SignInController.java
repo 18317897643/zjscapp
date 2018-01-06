@@ -2,6 +2,8 @@ package com.zhongjian.webserver.controller;
 
 import java.text.ParseException;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,26 +25,33 @@ import io.swagger.annotations.ApiOperation;
 
 @RestController
 @Api(value = "/SignIn/", description = "签到模块")
-@RequestMapping(value="/SignIn")
+@RequestMapping(value = "/SignIn")
 public class SignInController {
 	@Autowired
 	private TokenManager tokenManager;
-	
+
 	@Autowired
 	LoginAndRegisterService loginAndRegisterService;
-	
+
 	@Autowired
 	SignInService signInService;
-	
+
 	/**
 	 * 获取签到数据
+	 * 
 	 * @param token
-	 * @return 
-	 * @throws BusinessException 
+	 * @return
+	 * @throws BusinessException
 	 */
 	@ApiOperation(httpMethod = "GET", notes = "获取签到数据", value = "获取签到数据")
-	@RequestMapping(value = "/init/{token}",method = RequestMethod.GET)
-	public Result<Object> init(@PathVariable("token") String toKen) throws BusinessException {
+	@RequestMapping(value = "/init/{token}", method = RequestMethod.GET)
+	public Result<Object> init(@PathVariable("token") String toKen, HttpServletResponse response)
+			throws BusinessException {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		response.addHeader("Access-Control-Allow-Methods", "*");
+		response.addHeader("Access-Control-Max-Age", "100");
+		response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+		response.addHeader("Access-Control-Allow-Credentials", "false");
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
@@ -55,49 +64,63 @@ public class SignInController {
 			LoggingUtil.e("获取签到数据异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "获取签到数据异常");
 		}
-	
+
 	}
+
 	/**
 	 * 签到
+	 * 
 	 * @param token
-	 * @return 
-	 * @throws BusinessException 
-	 * @throws ParseException 
-	 */	
+	 * @return
+	 * @throws BusinessException
+	 * @throws ParseException
+	 */
 	@ApiOperation(httpMethod = "POST", notes = "签到", value = "签到")
-	@RequestMapping(value = "/Signing/{token}",method = RequestMethod.POST)
-	public Result<Object> Signing(@PathVariable("token") String toKen) throws BusinessException {
+	@RequestMapping(value = "/Signing/{token}", method = RequestMethod.POST)
+	public Result<Object> Signing(@PathVariable("token") String toKen, HttpServletResponse response) throws BusinessException {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		response.addHeader("Access-Control-Allow-Methods", "*");
+		response.addHeader("Access-Control-Max-Age", "100");
+		response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+		response.addHeader("Access-Control-Allow-Credentials", "false");
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
-			//获取UserId
+			// 获取UserId
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			//签到核心逻辑
+			// 签到核心逻辑
 			if (signInService.Signing(UserId)) {
 				return ResultUtil.success("签到成功");
-			}else{
+			} else {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "今天你已经签到过了");
-			}	
+			}
 		} catch (Exception e) {
 			LoggingUtil.e("签到异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "签到异常");
 		}
-	
+
 	}
-	
+
 	/**
 	 * 领取奖励
+	 * 
 	 * @param token
 	 * @param awardType
-	 * @return 
-	 * @throws BusinessException 
+	 * @return
+	 * @throws BusinessException
 	 */
 	@ApiOperation(httpMethod = "POST", notes = "领取奖励", value = "领取奖励")
-	@RequestMapping(value = "/drawAward/{token}",method = RequestMethod.POST)
-	public Result<Object> drawAward(@PathVariable("token") String toKen,@RequestParam String awardType) throws BusinessException {
+	@RequestMapping(value = "/drawAward/{token}", method = RequestMethod.POST)
+	public Result<Object> drawAward(@PathVariable("token") String toKen, @RequestParam String awardType, HttpServletResponse response)
+			throws BusinessException {
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		response.addHeader("Access-Control-Allow-Methods", "*");
+		response.addHeader("Access-Control-Max-Age", "100");
+		response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+		response.addHeader("Access-Control-Allow-Credentials", "false");
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
@@ -107,13 +130,13 @@ public class SignInController {
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (signInService.markAreadyAward(UserId, awardType)) {
 				return ResultUtil.success("领取成功");
-			}else {
+			} else {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "领取错误");
 			}
 		} catch (Exception e) {
 			LoggingUtil.e("领取签到奖励异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "领取签到奖励异常");
 		}
-	
+
 	}
 }

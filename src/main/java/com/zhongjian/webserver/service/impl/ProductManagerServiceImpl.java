@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.zhongjian.webserver.beanconfiguration.MallData;
 import com.zhongjian.webserver.dto.PANRequestMap;
 import com.zhongjian.webserver.dto.PANResponseMap;
 import com.zhongjian.webserver.mapper.ProductMapper;
@@ -22,12 +22,12 @@ public class ProductManagerServiceImpl implements ProductManagerService {
 	@Autowired
 	private ProductMapper productMapper;
 
-	@Value("${productTag}")
-	private Integer productTag;
+	@Autowired
+	MallData mallData;
 
 	@Override
 	public List<ProductCategory> getProductOfCategory() {
-		return productMapper.getProductOfCategory();
+		return productMapper.getCategory();
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class ProductManagerServiceImpl implements ProductManagerService {
 		}
 
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		if (product.getTag().equals(productTag)) {
+		if (product.getTag().equals(mallData.getProductTag())) {
 			map.put("beLongToVIP", true);
 		} else {
 			map.put("beLongToVIP", false);

@@ -22,7 +22,7 @@ public class TokenSerializationConfig {
 	@Autowired
 	private TokenManager tokenManager;
 
-	@Scheduled(cron = "0 0/30 * * * ?") // 每30分钟执行一次
+	@Scheduled(cron = "0 0/1 * * * ?") // 每30分钟执行一次
 	public void saveToken() {
 		String tokenJson = GsonUtil.GsonString(tokenManager);
 		if (tokenJson == null) {

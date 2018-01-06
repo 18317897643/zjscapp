@@ -1,5 +1,5 @@
 server:
-  #adress: 127.0.0.1
+  adress: 127.0.0.1
   port: 8081
   context-path: /zjapp/v1
   undertow:    
@@ -38,11 +38,14 @@ mybatis:
   typeAliasesPackage: com.zhongjian.webserver.pojo
   configLocation: classpath:/mybatis-config.xml
 token:
-  largeLenth: 2000
+  largeLenth: 5000
   jsonFile: /home/chendi/zhongjianmall/json/token.json
 upload:
   catalogue: /home/public/upload/pics/
   httpCatalogue: /upload/pics/
   maxFileSize: 30720KB
   maxRequestSize: 102400KB
-productTag: 1   
+malldata:
+  productTag: 1
+  vipNeedPay: 3000
+  subProxyNeedPay: 50000   

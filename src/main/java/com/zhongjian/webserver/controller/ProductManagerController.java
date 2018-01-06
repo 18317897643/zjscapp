@@ -3,6 +3,7 @@ package com.zhongjian.webserver.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,9 +33,9 @@ public class ProductManagerController {
 	private ProductManagerService productManagerService;
 	
 	
-	@ApiOperation(httpMethod = "POST", notes = "获取所有商品分类", value = "获取所有商品分类")
-	@RequestMapping(value = "/ProductManager/getProductOfCategory", method = RequestMethod.POST)
-	Result<Object> getProductOfCategory(@RequestParam String token) throws BusinessException {
+	@ApiOperation(httpMethod = "GET", notes = "获取所有商品分类", value = "获取所有商品分类")
+	@RequestMapping(value = "/ProductManager/getProductOfCategory/{token}", method = RequestMethod.GET)
+	Result<Object> getProductOfCategory(@PathVariable("token") String token) throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);

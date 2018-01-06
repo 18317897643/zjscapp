@@ -14,7 +14,13 @@
 		tb_city c on c.Id = a.CityId JOIN tb_region r on r.Id = a.RegionId
 		where ${condition} = #{param} ${additionalCondition}
 	</select>
-
+	<select id="queryAllAddress" resultType="java.util.Map">
+		select
+		a.`Name`,a.`Phone`,a.`DetailAddress`,a.`IsDefault`,p.ProvinceName,c.CityName,r.RegionName
+		from tb_address a JOIN tb_province p on p.Id = a.ProvinceId JOIN
+		tb_city c on c.Id = a.CityId JOIN tb_region r on r.Id = a.RegionId
+		where a.UserId = #{param}
+	</select>
 	<insert id="addAddress">
 		INSERT INTO
 		tb_address(UserId,ProvinceId,CityId,RegionId,DetailAddress,Name,Phone,IsDefault,CreateTime)

@@ -6,15 +6,23 @@
 		<result property="productnum" column="ProductNum" />
 		<association property="product" column="ProductId"
 			javaType="Product">
+			<result property="id" column="pId" />
 			<result property="productname" column="ProductName" />
+			<result property="freight" column="Freight" />
 			<result property="price" column="Price" />
 			<result property="oldprice" column="OldPrice" />
 			<result property="producerno" column="ProducerNo" />
 			<result property="producername" column="ProducerName" />
+			<result property="producertel" column="ProducerName" />
 			<result property="elecnum" column="ElecNum" />
+			<collection column="pId" property="productphotos" ofType="Productphoto"
+				select="selectProductPhotosById" fetchType="eager">
+				<result column="Photo" property="photo" />
+			</collection>
 		</association>
 		<association property="productSpec" column="SpecId"
 			javaType="ProductSpec">
+			<result property="id" column="sId" />
 			<result property="specname" column="SpecName" />
 			<result property="elecnum" column="sElecNum" />
 			<result property="price" column="sPrice" />
@@ -22,13 +30,17 @@
 	</resultMap>
 	<select id="getShoppingCartInfo" resultMap="ShoppingCartMap">
 		select
-		c.Id,c.ProductNum,p.ProducerNo,p.ProducerName,p.ProductName,p.Price,p.OldPrice,p.ElecNum,s.SpecName,s.ElecNum
+		c.Id,c.ProductNum,p.Id pId,p.Freight,
+		p.ProducerNo,p.ProducerName,p.Producertel,p.ProductName,p.Price,p.OldPrice,p.ElecNum,s.Id
+		sId,s.SpecName,s.ElecNum
 		sElecNum,s.Price sPrice
 		from
-		tb_shoppingcart c join tb_product p join
+		tb_shoppingcart c
+		join tb_product p join
 		tb_productspec s on p.Id
 		=
-		c.ProductId and c.SpecId = s.Id and UserId =
+		c.ProductId and
+		c.SpecId = s.Id and UserId =
 		#{UserId}
 	</select>
 	<insert id="addShoppingCartInfo">
@@ -44,7 +56,13 @@
 		delete from tb_shoppingcart where Id = #{id} and
 		UserId = #{UserId}
 	</delete>
-	<select id="getProudctIdByShoppingId" resultType="java.lang.Integer">
-		select productId from tb_shoppingcart where Id = #{shoppingCartId}
+	<select id="getProductIdByShoppingId" resultType="java.lang.Integer">
+		select
+		productId from tb_shoppingcart where Id = #{shoppingCartId}
+	</select>
+	<select id="selectProductPhotosById" resultType="Productphoto"
+		parameterType="integer">
+		select Photo from tb_productphoto where ProductId =
+		#{id} and CurStatus = 0 limit 1
 	</select>
 </mapper>

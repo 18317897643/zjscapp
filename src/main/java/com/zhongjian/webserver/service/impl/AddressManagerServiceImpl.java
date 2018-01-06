@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.service.impl;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,8 @@ public class AddressManagerServiceImpl implements AddressManagerService {
 	AddressMapper addressMapper;
 	
 	@Override
-	public Map<String, Object> getAllAddressByUserId(Integer userId) {
-		return addressMapper.queryAddress("a.UserId", userId,"");
+	public List<Map<String, Object>> getAllAddressByUserId(Integer userId) {
+		return addressMapper.queryAllAddress(userId);
 	}
 
 	@Override

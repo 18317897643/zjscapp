@@ -89,6 +89,21 @@ public class TokenManager {
 		}
 		return theUsername;
 	}
+	
+	//清除一个toKen
+	public void releaseToken(String toKen) {
+		Set<Entry<String, String>>  set = user_token.entrySet();
+		Iterator<Entry<String, String>> iterator = set.iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<String,String> entry = (Map.Entry<String,String>) iterator.next();
+			if (entry.getValue().equals(toKen)) {
+				String userName = (String) entry.getKey();
+				tokenList.remove(userName);
+				iterator.remove();
+				break;
+			}
+		}
+	}
   /**
    * 显示token
    */

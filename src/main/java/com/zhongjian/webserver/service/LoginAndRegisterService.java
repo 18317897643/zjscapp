@@ -18,4 +18,6 @@ public interface LoginAndRegisterService {
 	Integer getUserIdByUserName(String userName);
 	
 	Integer updateUser(User user);
+
+	boolean InviteCodeIsExists(Integer inviteCode);
 }

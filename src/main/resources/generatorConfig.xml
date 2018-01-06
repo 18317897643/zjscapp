@@ -34,8 +34,6 @@ useUnicode=true&amp;characterEncoding=utf8" userId="root" password="123456">
             <property name="enableSubPackages" value="true"/>    
         </javaClientGenerator>    
         <!-- 要生成的表      tableName：数据库中的表名或视图名 domainObjectName：实体类名-->    
-        <table tableName="tb_signin" domainObjectName="Signin" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
-        <table tableName="tb_signinaward" domainObjectName="SigninAward" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
-        <table tableName="tb_signintermediate" domainObjectName="SigninTermediate" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="tb_proxyapply" domainObjectName="ProxyApply" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
     </context>    
 </generatorConfiguration>  

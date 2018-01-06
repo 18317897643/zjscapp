@@ -1,10 +1,11 @@
 package com.zhongjian.webserver.service;
 
+import java.util.List;
 import java.util.Map;
 
 public interface AddressManagerService {
 
-	Map<String, Object> getAllAddressByUserId(Integer userId);
+	List<Map<String, Object>> getAllAddressByUserId(Integer userId);
 	
 	Map<String, Object> getAddressById(Integer id);
 	

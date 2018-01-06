@@ -31,6 +31,7 @@ public class SignInServiceImpl implements SignInService {
 		if (lastSignTime == null) {
 			signInMapper.addSigninTermediateByUserId(UserId, new Date(), 1);
 			signInMapper.addSignRecord(UserId, new Date());
+			//领取奖励
 		} else {
 			Calendar dateCalendar = Calendar.getInstance();
 			dateCalendar.setTime(lastSignTime);
@@ -69,6 +70,7 @@ public class SignInServiceImpl implements SignInService {
 				if (signinAward == null) {
 					// 插入一条数据
 					signInMapper.addSigninAward(UserId, currentDate);
+					//领取奖励
 				}
 				// 更新tb_tb_signintermediate
 				signInMapper.updateSigninTermediateByUserId(UserId, currentDate);

@@ -10,7 +10,7 @@ import com.zhongjian.webserver.pojo.ProductComment;
 
 public interface ProductMapper {
         
-	List<ProductCategory> getProductOfCategory();
+	List<ProductCategory> getCategory();
 	
 	Product findById(Integer id);
 	
@@ -19,5 +19,7 @@ public interface ProductMapper {
 	String findProductHtmlTextById(Integer id);
 	
 	Product getProductNumById(Integer id);
+	
+    List<Product> getProductOfCategory(Integer SubCategoryId);
     	
 }
