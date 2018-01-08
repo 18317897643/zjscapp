@@ -104,5 +104,14 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 		}
 		return false;
 	}
+	@Override
+	public boolean checkUserNameAndPayPassword(String phoneNum, String password) {
+		Integer integer = userMapper.checkUserNameAndPayPassword(phoneNum, password);
+		if (integer == null) {
+			//不通过
+			return false;
+		}
+		return true;
+	}
 	
 }

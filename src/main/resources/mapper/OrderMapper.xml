@@ -37,4 +37,8 @@
 		UPDATE
 		tb_orderhead SET Score = #{Score} WHERE Id = #{Id}
 	</update>
+	<insert id="insertOrderHeadCo">
+		INSERT INTO tb_orderHeadColleciton (OrderNoCName,OrderNoC,TolAmount) VALUES (#{orderNoCName},#{orderNoC},#{tolAmount,jdbcType=DECIMAL})
+	</insert>
+	
 </mapper>

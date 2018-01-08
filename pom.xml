@@ -109,6 +109,17 @@
 			<artifactId>jiguang-common</artifactId>
 			<version>1.0.3</version>
 		</dependency>
+		<dependency>
+			<groupId>taobao</groupId>
+			<artifactId>alipay</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>

@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -285,7 +286,25 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "更新昵称异常");
 		}
 	}
-
+	@ApiOperation(httpMethod = "POST", notes = "验证支付密码", value = "验证支付密码")
+	@RequestMapping(value = "/PersonalCenter/verifyPayPassword", method = RequestMethod.POST)
+	Result<Object> verifyPayPassword(@RequestParam String toKen, String payPassword) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			if (loginAndRegisterService.checkUserNameAndPayPassword(phoneNum, payPassword)) {
+				return ResultUtil.success();
+			}else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "请输入正确的支付密码");
+			}
+		} catch (Exception e) {
+			LoggingUtil.e("验证支付密码:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "验证支付密码异常");
+		}
+	}
 	@ApiOperation(httpMethod = "POST", notes = "设置邀请码", value = "设置邀请码")
 	@RequestMapping(value = "/PersonalCenter/updateInviteCode/{token}", method = RequestMethod.POST)
 	Result<Object> updateInviteCode(@PathVariable("token") String toKen, @RequestParam Integer inviteCode)
@@ -312,7 +331,6 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "更新昵称异常");
 		}
 	}
-
 	@ApiOperation(httpMethod = "POST", notes = "生成订单", value = "生成订单")
 	@RequestMapping(value = "/PersonalCenter/createOrder/{token}", method = RequestMethod.POST)
 	Result<Object> createOrder(@PathVariable("token") String toKen, @RequestBody List<OrderHeadDto> orderHeads)
@@ -324,8 +342,9 @@ public class PersonalCenterController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			orderHandleService.createOrder(orderHeads, UserId);
-			return ResultUtil.success();
+			//result中有总金额和单号，再去拼接签名返回给客户端
+			HashMap<String, Object> result = orderHandleService.createOrder(orderHeads, UserId);
+			return ResultUtil.success(orderHandleService.createAliSignature((String)result.get("orderNoCollectionName"), ((BigDecimal)result.get("totalAmountCo")).toString()));
 		} catch (RuntimeException e) {
 			throw new BusinessException(Status.GeneralError.getStatenum(), e.getMessage());
 		} catch (Exception e) {

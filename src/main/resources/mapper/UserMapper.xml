@@ -407,13 +407,17 @@
 		select Id from
 		tb_user where UserName = #{userName} and Password = #{password}
 	</select>
+	<select id="checkUserNameAndPayPassword" resultType="java.lang.Integer">
+		select Id from
+		tb_user where UserName = #{userName} and PayPassword = #{payPassword}
+	</select>
 	<update id="updatePassword">
 		update tb_user set Password = #{password} where
 		UserName = #{userName}
 	</update>
 	<select id="selectPersonalInform" resultType="java.util.Map">
 		select
-		UserName,SysID,Lev,IsSubProxy,NickName,HeadPhoto,RemainElecNum,RemainPoints,RemainVIPAmount,Coupon,Phone,TrueName,IDCardNo,InviteCode
+		UserName,SysID,Lev,IsSubProxy,NickName,HeadPhoto,RemainElecNum,RemainPoints,RemainVIPAmount,Coupon,Phone,TrueName,IDCardNo,InviteCode,PayPassword
 		from tb_user where UserName = #{userName}
 	</select>
 	<select id="getUserIdByUserName" resultType="java.lang.Integer">

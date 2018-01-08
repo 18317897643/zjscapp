@@ -16,6 +16,8 @@ public interface UserMapper {
     
     Integer checkUserNameAndPassword(@Param("userName") String userName,@Param("password") String password);
     
+    Integer checkUserNameAndPayPassword(@Param("userName") String userName,@Param("payPassword") String payPassword);
+    
     Integer updatePassword(@Param("userName") String userName,@Param("password") String password);
     
     Map<String, Object> selectPersonalInform(String userName);

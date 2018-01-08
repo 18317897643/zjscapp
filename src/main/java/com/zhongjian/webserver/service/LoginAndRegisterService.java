@@ -20,4 +20,6 @@ public interface LoginAndRegisterService {
 	Integer updateUser(User user);
 
 	boolean InviteCodeIsExists(Integer inviteCode);
+	
+	boolean checkUserNameAndPayPassword(String phoneNum,String password);
 }
