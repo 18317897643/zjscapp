@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.zhongjian.webserver.dto.PANRequestMap;
 import com.zhongjian.webserver.dto.PANResponseMap;
+import com.zhongjian.webserver.pojo.Product;
 import com.zhongjian.webserver.pojo.ProductCategory;
 import com.zhongjian.webserver.pojo.ProductComment;
 
@@ -19,5 +20,7 @@ public interface ProductManagerService {
 	String getProductHtmlText(Integer id);
 	
 	List<PANResponseMap> checkProductStoreNum(List<PANRequestMap> pANRequestMaps);
+	
+	List<Product> getSubProductOfCategory(Integer subCategoryId);
 	
 }

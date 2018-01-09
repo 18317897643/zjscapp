@@ -78,4 +78,9 @@ public class ProductManagerServiceImpl implements ProductManagerService {
 		return pANResponseMaps;
 	}
 
+	@Override
+	public List<Product> getSubProductOfCategory(Integer subCategoryId) {
+		return productMapper.getProductsOfSubCategory(subCategoryId);
+	}
+
 }

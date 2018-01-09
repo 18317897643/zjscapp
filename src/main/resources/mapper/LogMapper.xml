@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhongjian.webserver.mapper.LogMapper">
+	<insert id="insertCouponRecord">
+		insert into tb_couponrecord
+		(UserId,CreateTime,Amount,AddSub,Memo,CurStatus) VALUES
+		(#{UserId},#{CreateTime},#{Amount},#{AddSub},#{Memo},0)
+	</insert>
+	<insert id="insertElecRecord">
+		insert into tb_elecrecord
+		(UserId,CreateTime,Amount,AddSub,Memo,CurStatus) VALUES
+		(#{UserId},#{CreateTime},#{Amount},#{AddSub},#{Memo},0})
+	</insert>
+	<insert id="insertVipRemainRecord">
+		insert into tb_vipremainrecord
+		(UserId,CreateTime,Amount,AddSub,Memo,CurStatus) VALUES
+		(#{UserId},#{CreateTime},#{Amount},#{AddSub},#{Memo},0)
+	</insert>
+	
+	<insert id="insertPointRecord">
+		insert into tb_pointrecord
+		(UserId,CreateTime,Amount,AddSub,Memo,CurStatus) VALUES
+		(#{UserId},#{CreateTime},#{Amount},#{AddSub},#{Memo},0)
+	</insert>
+</mapper>

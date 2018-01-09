@@ -11,7 +11,7 @@ public interface AddressManagerService {
 	
 	Map<String, Object> getDefaultAddressById(Integer userId);
 	
-	Integer addAddress(Map<String, Object> paramMap);
+	void addAddress(Map<String, Object> paramMap);
 	
 	Integer deleteAddressById(Integer id,Integer UserId);
 	

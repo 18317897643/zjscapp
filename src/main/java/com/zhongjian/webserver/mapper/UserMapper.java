@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.mapper;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
@@ -27,5 +28,9 @@ public interface UserMapper {
     Integer updateByUserNameSelective(User user);
     
     Integer InviteCodeIsExists(Integer inviteCode);
-        
+    
+    Map<String, Object> selectUserQuotaForUpdate(Integer id);
+    
+    void updateUserQuota(Map<String, Object> quotaMap);
+    
 }

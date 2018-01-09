@@ -408,8 +408,10 @@
 		tb_user where UserName = #{userName} and Password = #{password}
 	</select>
 	<select id="checkUserNameAndPayPassword" resultType="java.lang.Integer">
-		select Id from
-		tb_user where UserName = #{userName} and PayPassword = #{payPassword}
+		select Id
+		from
+		tb_user where UserName = #{userName} and PayPassword =
+		#{payPassword}
 	</select>
 	<update id="updatePassword">
 		update tb_user set Password = #{password} where
@@ -425,7 +427,17 @@
 		tb_user where UserName = #{userName}
 	</select>
 	<select id="InviteCodeIsExists" resultType="java.lang.Integer">
-		SELECT COUNT(1) FROM tb_user where InviteCode = #{InviteCode};
+		SELECT COUNT(1) FROM
+		tb_user where InviteCode = #{InviteCode};
 	</select>
-
+	<select id="selectUserQuotaForUpdate" resultType="java.util.Map">
+		SELECT
+		Coupon,RemainPoints,RemainElecNum,RemainVIPAmount,RemainStream,TotalCost
+		FROM tb_user WHERE Id = #{Id} FOR UPDATE;
+	</select>
+	<update id="updateUserQuota" parameterType="java.util.Map">
+		update tb_user set
+		Coupon = #{Coupon},RemainPoints = #{RemainPoints},RemainElecNum = #{RemainElecNum},RemainVIPAmount =
+		#{RemainVIPAmount},RemainStream = #{RemainStream},TotalCost = #{TotalCost} where Id = #{UserId}
+	</update>
 </mapper>

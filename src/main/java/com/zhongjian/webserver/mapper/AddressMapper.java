@@ -16,4 +16,7 @@ public interface AddressMapper {
 	Integer deleteAddressById(Integer id, Integer UserId);
 
 	Integer updateAddressById(Map<String, Object> paramMap);
+	
+	void setZero(Integer UserId);
+	
 }

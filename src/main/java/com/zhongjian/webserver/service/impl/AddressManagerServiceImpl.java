@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zhongjian.webserver.mapper.AddressMapper;
 import com.zhongjian.webserver.service.AddressManagerService;
@@ -26,9 +27,14 @@ public class AddressManagerServiceImpl implements AddressManagerService {
 	}
 
 	@Override
-	public Integer addAddress(Map<String, Object> paramMap) {
-		return addressMapper.addAddress(paramMap);
-		
+	@Transactional
+	public void addAddress(Map<String, Object> paramMap) {
+		if ((Integer)paramMap.get("IsDefault") == 1) {
+			addressMapper.setZero((Integer)paramMap.get("UserId"));
+			addressMapper.addAddress(paramMap);
+		}else {
+			
+		}
 	}
 
 	@Override
@@ -43,7 +49,9 @@ public class AddressManagerServiceImpl implements AddressManagerService {
 
 	@Override
 	public Map<String, Object> getDefaultAddressById(Integer userId) {
-		return addressMapper.queryAddress("a.UserId", userId,"and IsDefault = 1");
+		Map<String, Object> map = addressMapper.queryAddress("a.UserId", userId,"and IsDefault = 1");
+		return map;
+		
 	}
 
 	

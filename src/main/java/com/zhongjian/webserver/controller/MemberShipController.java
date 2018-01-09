@@ -56,31 +56,35 @@ public class MemberShipController {
 			//获取用户等级信息
 			Map<String, Object> map = personalCenterService.getInformOfConsumption(phoneNum);
 			Integer lev = (Integer)map.get("Lev");
-			Integer IsSubProxy = (Integer)map.get("IsSubProxy");
+//			Integer IsSubProxy = (Integer)map.get("IsSubProxy");
 			HashMap<String, HashMap<String, Integer>> result = new HashMap<>();
 			HashMap<String, Integer> vipResult = new HashMap<>();
-			HashMap<String, Integer> subProxyResult = new HashMap<>();
+//			HashMap<String, Integer> subProxyResult = new HashMap<>();
 			Integer vipNeedPay = mallData.getVipNeedPay();
-			Integer subProxyNeedPay = mallData.getSubProxyNeedPay();
+//			Integer subProxyNeedPay = mallData.getSubProxyNeedPay();
+//			if (lev == 0) {
+//				vipResult.put("isExit", 1);
+//				vipResult.put("needPay", vipNeedPay);
+//				subProxyResult.put("isExit", 1);
+//				subProxyResult.put("needPay", subProxyNeedPay);
+//			}else if(lev == 1){
+//				vipResult.put("isExit", 0);
+//				subProxyResult.put("isExit", 1);
+//				subProxyResult.put("needPay", subProxyNeedPay - vipNeedPay);
+//			}else if(lev == 2 && IsSubProxy == 0){
+//				vipResult.put("isExit", 0);
+//				subProxyResult.put("isExit", 1);
+//				subProxyResult.put("needPay", subProxyNeedPay - 9000);
+//			}else {
+//				vipResult.put("isExit", 0);
+//				subProxyResult.put("isExit", 0);
+//			}
 			if (lev == 0) {
 				vipResult.put("isExit", 1);
 				vipResult.put("needPay", vipNeedPay);
-				subProxyResult.put("isExit", 1);
-				subProxyResult.put("needPay", subProxyNeedPay);
-			}else if(lev == 1){
-				vipResult.put("isExit", 0);
-				subProxyResult.put("isExit", 1);
-				subProxyResult.put("needPay", subProxyNeedPay - vipNeedPay);
-			}else if(lev == 2 && IsSubProxy == 0){
-				vipResult.put("isExit", 0);
-				subProxyResult.put("isExit", 1);
-				subProxyResult.put("needPay", subProxyNeedPay - 9000);
-			}else {
-				vipResult.put("isExit", 0);
-				subProxyResult.put("isExit", 0);
 			}
 			result.put("VIP", vipResult);
-			result.put("SubProxy", subProxyResult);
+//			result.put("SubProxy", subProxyResult);
 			return ResultUtil.success(result);
 		} catch (Exception e) {
 			LoggingUtil.e("会员升级界面初始数据异常:" + e);

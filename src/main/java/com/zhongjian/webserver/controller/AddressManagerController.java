@@ -25,13 +25,13 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @Api(value = "/AddressManager/", description = "收货地址管理")
 public class AddressManagerController {
-	
+
 	@Autowired
-	private TokenManager tokenManager ; 
-	
+	private TokenManager tokenManager;
+
 	@Autowired
 	private LoginAndRegisterService loginAndRegisterService;
-	
+
 	@Autowired
 	private AddressManagerService addressManagerService;
 
@@ -51,7 +51,7 @@ public class AddressManagerController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "获取该用户所有收货地址发生异常");
 		}
 	}
-	
+
 	@ApiOperation(httpMethod = "POST", notes = "根据ID获取收货地址详情", value = "根据ID获取收货地址详情")
 	@RequestMapping(value = "/AddressManager/getAddressOfUserById", method = RequestMethod.POST)
 	Result<Object> getAddressOfUserById(@RequestParam String token, Integer id) throws BusinessException {
@@ -67,6 +67,7 @@ public class AddressManagerController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "获取收货地址详情发生异常");
 		}
 	}
+
 	@ApiOperation(httpMethod = "POST", notes = "获取用户默认收货地址", value = "获取用户默认收货地址")
 	@RequestMapping(value = "/AddressManager/getDefaultAddressOfUser", method = RequestMethod.POST)
 	Result<Object> getDefaultAddressOfUser(@RequestParam String token) throws BusinessException {
@@ -83,7 +84,7 @@ public class AddressManagerController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "获取用户默认收货地址生异常");
 		}
 	}
-	
+
 	@ApiOperation(httpMethod = "POST", notes = "添加收货地址", value = "添加收货地址")
 	@RequestMapping(value = "/AddressManager/addAddressByUser", method = RequestMethod.POST)
 	Result<Object> addAddressByUser(@RequestBody Map<String, Object> addressMap) throws BusinessException {
@@ -97,18 +98,15 @@ public class AddressManagerController {
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			addressMap.put("UserId", userId);
 			addressMap.put("CreateTime", new Date());
-			//添加收货地址
-			if (addressManagerService.addAddress(addressMap) == 1) {
-				return ResultUtil.success();
-			}else {
-				return ResultUtil.error(Status.GeneralError.getStatenum(), "数据库添加收货地址记录失败");
-			}
+			// 添加收货地址
+			addressManagerService.addAddress(addressMap);
+			return ResultUtil.success();
 		} catch (Exception e) {
 			LoggingUtil.e("获取收货地址详情发生异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "获取收货地址详情发生异常");
 		}
 	}
-	
+
 	@ApiOperation(httpMethod = "POST", notes = "删除收货地址", value = "删除收货地址")
 	@RequestMapping(value = "/AddressManager/deleteAddressById", method = RequestMethod.POST)
 	Result<Object> deleteAddressById(@RequestBody Map<String, Object> map) throws BusinessException {
@@ -120,11 +118,11 @@ public class AddressManagerController {
 			if (phoneNum == null) {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
-         	Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			//删除收货地址
-			if (addressManagerService.deleteAddressById(id,userId) == 1) {
+			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			// 删除收货地址
+			if (addressManagerService.deleteAddressById(id, userId) == 1) {
 				return ResultUtil.success();
-			}else {
+			} else {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "数据库删除收货地址记录失败,传入的Id有误");
 			}
 		} catch (Exception e) {
@@ -132,7 +130,7 @@ public class AddressManagerController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "删除收货地址发生异常");
 		}
 	}
-	
+
 	@ApiOperation(httpMethod = "POST", notes = "更新收货地址", value = "更新收货地址")
 	@RequestMapping(value = "/AddressManager/updateAddressById", method = RequestMethod.POST)
 	Result<Object> updateAddressById(@RequestBody Map<String, Object> addressMap) throws BusinessException {
@@ -143,12 +141,12 @@ public class AddressManagerController {
 			if (phoneNum == null) {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
-         	Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			//更新收货地址
-         	addressMap.put("UserId", userId);
+			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			// 更新收货地址
+			addressMap.put("UserId", userId);
 			if (addressManagerService.updateAddressById(addressMap) == 1) {
 				return ResultUtil.success();
-			}else {
+			} else {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "数据库更新收货地址记录失败,传入的Id有误");
 			}
 		} catch (Exception e) {

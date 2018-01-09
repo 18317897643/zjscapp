@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import com.zhongjian.webserver.pojo.Product;
 import com.zhongjian.webserver.pojo.ProductCategory;
 import com.zhongjian.webserver.pojo.ProductComment;
+import com.zhongjian.webserver.pojo.Tag;
 
 public interface ProductMapper {
         
@@ -21,5 +22,9 @@ public interface ProductMapper {
 	Product getProductNumById(Integer id);
 	
     List<Product> getProductOfCategory(Integer SubCategoryId);
+    
+    List<Tag> getAllTagProduct();
+    
+    List<Product> getProductsOfSubCategory(Integer subCategoryId);
     	
 }

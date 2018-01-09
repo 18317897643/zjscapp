@@ -34,14 +34,9 @@ public class ProductManagerController {
 	
 	
 	@ApiOperation(httpMethod = "GET", notes = "获取所有商品分类", value = "获取所有商品分类")
-	@RequestMapping(value = "/ProductManager/getProductOfCategory/{token}", method = RequestMethod.GET)
-	Result<Object> getProductOfCategory(@PathVariable("token") String token) throws BusinessException {
+	@RequestMapping(value = "/ProductManager/getProductOfCategory", method = RequestMethod.GET)
+	Result<Object> getProductOfCategory() throws BusinessException {
 		try {
-			// 检查token通过
-			String phoneNum = tokenManager.checkTokenGetUser(token);
-			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
-			}
 			return ResultUtil.success(productManagerService.getProductOfCategory());
 		} catch (Exception e) {
 			LoggingUtil.e("获取所有商品并分类处异常:" + e);
@@ -49,15 +44,20 @@ public class ProductManagerController {
 		}
 	}
 	
-	@ApiOperation(httpMethod = "POST", notes = "获取商品详情", value = "获取商品详情")
-	@RequestMapping(value = "/ProductManager/getProductDetails", method = RequestMethod.POST)
-	Result<Object> getProductDetails(@RequestParam Integer productId,String token) throws BusinessException {
+	@ApiOperation(httpMethod = "GET", notes = "获取二级分类商品", value = "获取二级分类商品")
+	@RequestMapping(value = "/ProductManager/getProductOfCategory/{SubCategoryId}", method = RequestMethod.GET)
+	Result<Object> getProductsOfSubCategory(@PathVariable("SubCategoryId") Integer subCategoryId) throws BusinessException {
 		try {
-			// 检查token通过
-			String phoneNum = tokenManager.checkTokenGetUser(token);
-			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
-			}
+			return ResultUtil.success(productManagerService.getSubProductOfCategory(subCategoryId));
+		} catch (Exception e) {
+			LoggingUtil.e("获取所有商品并分类处异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "获取所有商品并分类处异常");
+		}
+	}
+	@ApiOperation(httpMethod = "GET", notes = "获取商品详情", value = "获取商品详情")
+	@RequestMapping(value = "/ProductManager/getProductDetails", method = RequestMethod.GET)
+	Result<Object> getProductDetails(@RequestParam Integer productId) throws BusinessException {
+		try {
 			//获取商品详情
 			return ResultUtil.success(productManagerService.getProductDetails(productId));
 		} catch (Exception e) {
@@ -67,15 +67,10 @@ public class ProductManagerController {
 	
 	}
 	
-	@ApiOperation(httpMethod = "POST", notes = "获取商品评价详情", value = "获取商品评价详情")
-	@RequestMapping(value = "/ProductManager/getProductCommentById", method = RequestMethod.POST)
-	Result<Object> getProductCommentById(@RequestParam Integer productId,String token,Integer page,Integer pageNum) throws BusinessException {
+	@ApiOperation(httpMethod = "GET", notes = "获取商品评价详情", value = "获取商品评价详情")
+	@RequestMapping(value = "/ProductManager/getProductCommentById", method = RequestMethod.GET)
+	Result<Object> getProductCommentById(@RequestParam Integer productId,Integer page,Integer pageNum) throws BusinessException {
 		try {
-			// 检查token通过
-			String phoneNum = tokenManager.checkTokenGetUser(token);
-			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
-			}
 			List<ProductComment> productComments = productManagerService.getProductComment(productId, page, pageNum);
 			return ResultUtil.success(productComments);
 		} catch (Exception e) {

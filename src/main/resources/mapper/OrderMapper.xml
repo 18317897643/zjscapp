@@ -18,6 +18,17 @@
 		SELECT ElecNum from
 		tb_productspec where Id = #{SpecId}
 	</select>
+	<select id="getDetailsFormorderheadC" resultType="java.util.Map">
+		SELECT
+		TolAmount,OrderNoC from tb_orderheadcolleciton where OrderNoCName =
+		#{orderNoCName};
+	</select>
+	<select id="getNeedSubDetailsOfOrderHead" resultType="java.util.Map">
+		SELECT
+		UserId,UseElecNum,UseCoupon,UsePointNum,UseVIPRemainNum from
+		tb_orderhead where OrderNo =
+		#{orderNo};
+	</select>
 	<insert id="insertOrderHead" useGeneratedKeys="true"
 		keyProperty="id" parameterType="com.zhongjian.webserver.dto.OrderHeadDto">
 		INSERT INTO
@@ -38,7 +49,28 @@
 		tb_orderhead SET Score = #{Score} WHERE Id = #{Id}
 	</update>
 	<insert id="insertOrderHeadCo">
-		INSERT INTO tb_orderHeadColleciton (OrderNoCName,OrderNoC,TolAmount) VALUES (#{orderNoCName},#{orderNoC},#{tolAmount,jdbcType=DECIMAL})
+		INSERT INTO tb_orderHeadColleciton
+		(OrderNoCName,OrderNoC,TolAmount,CurStatus) VALUES
+		(#{orderNoCName},#{orderNoC},#{tolAmount,jdbcType=DECIMAL},0)
 	</insert>
-	
+	<update id="updateOrderHeadCoCur">
+		UPDATE tb_orderHeadColleciton set CurStatus = 1 WHERE
+		CurStatus = 0
+	</update>
+	<update id="updateOrderHeadStatusToWP">
+		UPDATE tb_orderhead set CurStatus = 0 WHERE
+		CurStatus
+		= -1 and OrderNo = #{OrderNo}
+	</update>
+	<update id="updateOrderHeadStatus">
+		UPDATE tb_orderhead set CurStatus = #{CurStatus} and
+		OrderNo = #{OrderNo}
+	</update>
+	<insert id="insertPreSubQuata">
+		INSERT INTO tb_preorderuse
+		(UserId,PreUseCoupon,PreUseElec,PreUsePoints,PreUseVipremain,ExpireTime)
+		VALUES
+		(#{UserId},#{PreUseCoupon},#{PreUseElec},#{PreUsePoints},#{PreUseVipremain},#{ExpireTime})
+	</insert>
+
 </mapper>

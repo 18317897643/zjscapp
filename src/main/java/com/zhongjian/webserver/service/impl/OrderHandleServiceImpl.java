@@ -19,11 +19,14 @@ import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
+import com.mysql.fabric.xmlrpc.base.Data;
 import com.zhongjian.webserver.alipay.AlipayConfig;
 import com.zhongjian.webserver.common.RandomUtil;
 import com.zhongjian.webserver.dto.OrderHeadDto;
 import com.zhongjian.webserver.dto.OrderLineDto;
+import com.zhongjian.webserver.mapper.LogMapper;
 import com.zhongjian.webserver.mapper.OrderMapper;
+import com.zhongjian.webserver.mapper.UserMapper;
 import com.zhongjian.webserver.service.OrderHandleService;
 
 @Service
@@ -32,14 +35,28 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 	@Autowired
 	OrderMapper orderMapper;
 
+	@Autowired
+	UserMapper userMapper;
+
+	@Autowired
+	LogMapper logMapper;
+
 	@Override
 	@Transactional
 	public HashMap<String, Object> createOrder(List<OrderHeadDto> orderHeads, Integer UserId) {
 		String theCurrentOrderNoCollectionName = "CB" + RandomUtil.getFlowNumber();
 		ArrayList<String> theCurrentOrderNoCollections = new ArrayList<>();
-		ArrayList<BigDecimal> TotalAmountCoList = new ArrayList<>();
-		BigDecimal TotalAmountCo = new BigDecimal("0.00");
-		TotalAmountCoList.add(TotalAmountCo);
+		ArrayList<BigDecimal> TotalEveryAmountCoList = new ArrayList<>();
+		BigDecimal TotalRealPayCo = new BigDecimal("0.00");
+		BigDecimal TotalCouponCo = new BigDecimal("0.00");
+		BigDecimal TotalElecNumCo = new BigDecimal("0.00");
+		BigDecimal TotalPointNumCo = new BigDecimal("0.00");
+		BigDecimal TotalVIPRemainCo = new BigDecimal("0.00");
+		TotalEveryAmountCoList.add(TotalRealPayCo);
+		TotalEveryAmountCoList.add(1, TotalCouponCo);
+		TotalEveryAmountCoList.add(2, TotalElecNumCo);
+		TotalEveryAmountCoList.add(3, TotalPointNumCo);
+		TotalEveryAmountCoList.add(4, TotalVIPRemainCo);
 		orderHeads.forEach(e -> {
 			if (e.getFreight().compareTo(BigDecimal.ZERO) == -1 || e.getRealPay().compareTo(BigDecimal.ZERO) == -1
 					|| e.getUseCoupon().compareTo(BigDecimal.ZERO) == -1
@@ -51,7 +68,11 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 							.add(e.getUsePointNum()).add(e.getRealPay()).equals(e.getTotalAmount())) {
 				throw new RuntimeException("数据校验不通过");
 			} else {
-				TotalAmountCoList.set(0, TotalAmountCoList.get(0).add(e.getTotalAmount()));
+				TotalEveryAmountCoList.set(0, TotalEveryAmountCoList.get(0).add(e.getRealPay()));
+				TotalEveryAmountCoList.set(1, TotalEveryAmountCoList.get(1).add(e.getUseCoupon()));
+				TotalEveryAmountCoList.set(2, TotalEveryAmountCoList.get(2).add(e.getUseElecNum()));
+				TotalEveryAmountCoList.set(3, TotalEveryAmountCoList.get(3).add(e.getUsePointNum()));
+				TotalEveryAmountCoList.set(4, TotalEveryAmountCoList.get(4).add(e.getUseVIPRemainNum()));
 				e.setCreateTime(new Date());
 				String theCurrentOrderNo = "B" + RandomUtil.getFlowNumber();
 				theCurrentOrderNoCollections.add(theCurrentOrderNo);
@@ -77,6 +98,7 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 				orderMapper.updateOrderHeadScore(score.get(0), orderId);
 			}
 		});
+		// 记录父订单
 		String theCurrentOrderNoCollectionsStr = "";
 		for (int i = 0; i < theCurrentOrderNoCollections.size(); i++) {
 			if (theCurrentOrderNoCollections.size() - 1 == i) {
@@ -85,19 +107,120 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 			theCurrentOrderNoCollectionsStr = theCurrentOrderNoCollectionsStr + theCurrentOrderNoCollections.get(i)
 					+ "|";
 		}
-		orderMapper.insertOrderHeadCo(theCurrentOrderNoCollectionName, theCurrentOrderNoCollectionsStr,TotalAmountCoList.get(0));
+		orderMapper.insertOrderHeadCo(theCurrentOrderNoCollectionName, theCurrentOrderNoCollectionsStr,
+				TotalEveryAmountCoList.get(0));
+
+		// 预扣
+		if (TotalEveryAmountCoList.get(0).compareTo(BigDecimal.ZERO) != 0) {
+			orderMapper.insertPreSubQuata(UserId, TotalEveryAmountCoList.get(1), TotalEveryAmountCoList.get(2),
+					TotalEveryAmountCoList.get(3), TotalEveryAmountCoList.get(4), new Date());
+		}
 		HashMap<String, Object> result = new HashMap<>();
 		result.put("orderNoCollectionName", theCurrentOrderNoCollectionsStr);
-		result.put("totalAmountCo", TotalAmountCoList.get(0));
+		result.put("totalRealPayCo", TotalEveryAmountCoList.get(0));
 		return result;
 	}
 
 	@Override
-	public void test(String orderNo) {
+	@Transactional
+	public boolean handleOrder(String orderNo, String totalAmount, String seller_id, String app_id) {
 		// 查询对应的子订单信息
+		if (!seller_id.equals(AlipayConfig.BUSINESSID) || !app_id.equals(AlipayConfig.APPID)) {
+			return false;
+		}
 		if (orderNo.startsWith("CB")) {
+			Map<String, Object> map = orderMapper.getDetailsFormorderheadC(orderNo);
+			if (!map.get("TolAmount").toString().equals(totalAmount)) {
+				return false;
+			} else {
+				if (orderMapper.updateOrderHeadCoCur() == 1) {
+					String orderNoCName = (String) map.get("OrderNoC");
+					String[] orderNoC = orderNoCName.split("|");
+					int orderNoClenth = orderNoC.length;
+					for (int i = 0; i < orderNoClenth; i++) {
+						// 查看订单积分，现金币，购物币，红包使用情况去扣
+						// 需要扣除的
+						Map<String, Object> needSubMap = orderMapper.getNeedSubDetailsOfOrderHead(orderNoC[i]);
+						Integer userId = (Integer) needSubMap.get("UserId");
+						BigDecimal useCoupon = (BigDecimal) needSubMap.get("UseCoupon");
+						BigDecimal usePointNum = (BigDecimal) needSubMap.get("UsePointNum");
+						BigDecimal useElecNum = (BigDecimal) needSubMap.get("UseElecNum");
+						BigDecimal useVIPRemainNum = (BigDecimal) needSubMap.get("UseVIPRemainNum");
+						Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(userId);
+						BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).subtract(useCoupon);
+						BigDecimal remainPoints = ((BigDecimal) curQuota.get("RemainPoints")).subtract(usePointNum);
+						BigDecimal remainElecNum = ((BigDecimal) curQuota.get("RemainElecNum")).subtract(useElecNum);
+						BigDecimal remainVIPAmount = ((BigDecimal) curQuota.get("RemainVIPAmount"))
+								.subtract(useVIPRemainNum);
+						curQuota.put("Coupon", remainCoupon);
+						curQuota.put("RemainPoints", remainPoints);
+						curQuota.put("RemainElecNum", remainElecNum);
+						curQuota.put("RemainVIPAmount", remainVIPAmount);
+						curQuota.put("UserId", userId);
+						userMapper.updateUserQuota(curQuota);
+						// 记录日志
+						Date curDate = new Date();
+						if (useCoupon.compareTo(BigDecimal.ZERO) == 1) {
+							logMapper.insertCouponRecord(userId, curDate, useCoupon, "-", "购买商品，订单号：" + orderNoC[i]);
+						}
+						if (useElecNum.compareTo(BigDecimal.ZERO) == 1) {
+							logMapper.insertElecRecord(userId, curDate, useElecNum, "-", "购买商品，订单号：" + orderNoC[i]);
+						}
+						if (usePointNum.compareTo(BigDecimal.ZERO) == 1) {
+							logMapper.insertPointRecord(userId, curDate, usePointNum, "-", "购买商品，订单号：" + orderNoC[i]);
+						}
+						if (remainVIPAmount.compareTo(BigDecimal.ZERO) == 1) {
+							logMapper.insertVipRemainRecord(userId, curDate, useVIPRemainNum, "-",
+									"购买商品，订单号：" + orderNoC[i]);
+						}
+						// 更改订单状态
+						orderMapper.updateOrderHeadStatus(0, orderNoC[i]);
+					}
+				} else {
+					// 让支付宝不要再回调
+					return true;
+				}
+			}
 
 		} else if (orderNo.startsWith("B")) {
+			if (orderMapper.updateOrderHeadStatusToWP(orderNo) == 1) {
+				// 查看订单积分，现金币，购物币，红包使用情况去扣
+				// 需要扣除的
+				Map<String, Object> needSubMap = orderMapper.getNeedSubDetailsOfOrderHead(orderNo);
+				Integer userId = (Integer) needSubMap.get("UserId");
+				BigDecimal useCoupon = (BigDecimal) needSubMap.get("UseCoupon");
+				BigDecimal usePointNum = (BigDecimal) needSubMap.get("UsePointNum");
+				BigDecimal useElecNum = (BigDecimal) needSubMap.get("UseElecNum");
+				BigDecimal useVIPRemainNum = (BigDecimal) needSubMap.get("UseVIPRemainNum");
+				Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(userId);
+				BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).subtract(useCoupon);
+				BigDecimal remainPoints = ((BigDecimal) curQuota.get("RemainPoints")).subtract(usePointNum);
+				BigDecimal remainElecNum = ((BigDecimal) curQuota.get("RemainElecNum")).subtract(useElecNum);
+				BigDecimal remainVIPAmount = ((BigDecimal) curQuota.get("RemainVIPAmount")).subtract(useVIPRemainNum);
+				curQuota.put("Coupon", remainCoupon);
+				curQuota.put("RemainPoints", remainPoints);
+				curQuota.put("RemainElecNum", remainElecNum);
+				curQuota.put("RemainVIPAmount", remainVIPAmount);
+				curQuota.put("UserId", userId);
+				userMapper.updateUserQuota(curQuota);
+				// 记录日志
+				Date curDate = new Date();
+				if (useCoupon.compareTo(BigDecimal.ZERO) == 1) {
+					logMapper.insertCouponRecord(userId, curDate, useCoupon, "-", "购买商品，订单号：" + orderNo);
+				}
+				if (useElecNum.compareTo(BigDecimal.ZERO) == 1) {
+					logMapper.insertElecRecord(userId, curDate, useElecNum, "-", "购买商品，订单号：" + orderNo);
+				}
+				if (usePointNum.compareTo(BigDecimal.ZERO) == 1) {
+					logMapper.insertPointRecord(userId, curDate, usePointNum, "-", "购买商品，订单号：" + orderNo);
+				}
+				if (remainVIPAmount.compareTo(BigDecimal.ZERO) == 1) {
+					logMapper.insertVipRemainRecord(userId, curDate, useVIPRemainNum, "-", "购买商品，订单号：" + orderNo);
+				}
+			} else {
+				// 让支付宝不要再回调
+				return true;
+			}
 
 		} else if (orderNo.startsWith("VO")) {
 
@@ -106,8 +229,11 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 		} else if (orderNo.startsWith("GS")) {
 
 		} else {
+			return false;
 		}
+		return false;
 	}
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public String createAliSignature(String out_trade_no, String totalAmount) throws AlipayApiException {
@@ -141,7 +267,7 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 		model.setTimeoutExpress(orderMap.get("timeout_express")); // 交易超时时间
 		model.setTotalAmount(orderMap.get("total_amount")); // 支付金额
 		model.setProductCode(orderMap.get("product_code")); // 销售产品码
-		model.setSellerId(AlipayConfig.BusinessId); // 商家id
+		model.setSellerId(AlipayConfig.BUSINESSID); // 商家id
 		ali_request.setBizModel(model);
 		ali_request.setNotifyUrl(AlipayConfig.notify_url); // 回调地址
 		AlipayTradeAppPayResponse response = null;

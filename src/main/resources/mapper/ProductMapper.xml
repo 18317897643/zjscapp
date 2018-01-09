@@ -46,7 +46,15 @@
 			<result column="Photo" property="photo" />
 		</collection>
 	</resultMap>
-
+	<resultMap id="ProductOfTagMap" type="Tag">
+		<result column="tagName" property="tagName" />
+		<collection column="tagId" property="productsOfTag" ofType="Product"
+			select="getProductsOfTag" fetchType="eager">
+			<result column="ProductName" property="productname" />
+			<result column="Price" property="price" />
+			<result column="ElecNum" property="elecnum" />
+		</collection>
+	</resultMap>
 	<select id="getCategory" resultMap="ProductCategoryMap">
 		select
 		c.Id,c.CategoryName,c.Ord,s.Id SubId,s.CategoryName
@@ -104,4 +112,18 @@
 		SELECT * from
 		tb_product where SubCategoryId = #{SubCategoryId}
 	</select>
+	<select id="getAllTagProduct" resultMap="ProductOfTagMap">
+		select tagId,tagName
+		from tb_tag order by ord
+	</select>
+	<select id="getProductsOfTag" resultType="Product">
+		select
+		Id,ProductName,Price,ElecNum from tb_product where Tag = #{tagId}
+	</select>
+	<select id="getProductsOfSubCategory" resultType="Product">
+		select
+		Id,ProductName,Price,ElecNum from tb_product where SubCategoryId =
+		#{SubCategoryId}
+	</select>
+
 </mapper>

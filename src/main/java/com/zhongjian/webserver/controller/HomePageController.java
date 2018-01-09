@@ -1,7 +1,6 @@
 package com.zhongjian.webserver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,14 +29,9 @@ public class HomePageController {
 	
 	//  "picList": [],"tile": null 有可能出现
 	@ApiOperation(httpMethod = "GET", notes = "首页初始化数据", value = "首页初始化数据")
-	@RequestMapping(value = "/initHomePage/{token}", method = RequestMethod.GET)
-	Result<Object> initHomePage(@PathVariable("token") String toKen) throws BusinessException {
+	@RequestMapping(value = "/initHomePage", method = RequestMethod.GET)
+	Result<Object> initHomePage() throws BusinessException {
 		try {
-			// 检查token通过
-			String phoneNum = tokenManager.checkTokenGetUser(toKen);
-			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
-			}
 			return ResultUtil.success(homePageService.initHomePage());
 		} catch (Exception e) {
 			LoggingUtil.e("首页初始化数据异常:" + e);

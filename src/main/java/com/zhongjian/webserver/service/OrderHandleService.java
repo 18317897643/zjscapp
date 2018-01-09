@@ -10,7 +10,7 @@ public interface OrderHandleService {
 
 	HashMap<String, Object> createOrder(List<OrderHeadDto> orderHeads, Integer UserId);
 
-	void test(String orderNo);
+	boolean handleOrder(String orderNo, String totalAmount,String seller_id ,String app_id);
 	
 	String createAliSignature(String out_trade_no, String totalAmount) throws AlipayApiException;
 }
