@@ -22,5 +22,4 @@ public interface ProductManagerService {
 	List<PANResponseMap> checkProductStoreNum(List<PANRequestMap> pANRequestMaps);
 	
 	List<Product> getSubProductOfCategory(Integer subCategoryId);
-	
 }

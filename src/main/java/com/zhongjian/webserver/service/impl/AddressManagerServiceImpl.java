@@ -46,9 +46,5 @@ public class AddressManagerServiceImpl implements AddressManagerService {
 	public Map<String, Object> getDefaultAddressById(Integer userId) {
 		Map<String, Object> map = addressMapper.queryAddress("a.UserId", userId,"and IsDefault = 1");
 		return map;
-		
 	}
-
-	
-	
 }

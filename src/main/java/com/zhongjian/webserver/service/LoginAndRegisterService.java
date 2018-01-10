@@ -22,4 +22,12 @@ public interface LoginAndRegisterService {
 	boolean InviteCodeIsExists(Integer inviteCode);
 	
 	boolean checkUserNameAndPayPassword(String phoneNum,String password);
+	
+	boolean userIsFreeze(String userName);
+	
+	boolean userFundsIsFreeze(String userName);
+	
+	boolean userNewExclusiveIsDraw (String userName);
+	
+	Integer drawNewExclusive(String userName);
 }

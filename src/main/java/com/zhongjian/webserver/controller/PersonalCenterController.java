@@ -112,13 +112,11 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "根据token获取该用户手机号", value = "根据token获取该用户手机号")
-	@RequestMapping(value = "/PersonalCenter/getUserPhoneNum", method = RequestMethod.POST)
-	Result<Object> initPersonalCenterData(@RequestBody Map<String, String> tokenMap) throws BusinessException {
+	@RequestMapping(value = "/PersonalCenter/getUserPhoneNum/{token}", method = RequestMethod.POST)
+	Result<Object> getUserPhoneNum(@PathVariable("token") String token) throws BusinessException {
 		try {
-			// receive the args
-			String toKen = tokenMap.get("token");
 			// 检查token通过
-			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
@@ -131,9 +129,26 @@ public class PersonalCenterController {
 
 	@ApiOperation(httpMethod = "GET", notes = "根据token获取待付款订单", value = "待付款")
 	@RequestMapping(value = "/PersonalCenter/itemsToBePaidFor", method = RequestMethod.GET)
-	Result<Object> itemsToBePaidFor(@RequestParam String token) throws BusinessException {
+	Result<Object> itemsToBePaidFor(@PathVariable("token") String token) throws BusinessException {
 		return null;
 
+	}
+
+	@ApiOperation(httpMethod = "GET", notes = "获取订单详情", value = "获取订单详情")
+	@RequestMapping(value = "/PersonalCenter/getOrderDetails/{token}/{orderId}", method = RequestMethod.GET)
+	Result<Object> getOrderDetails(@PathVariable("token") String token, @PathVariable("orderId") Integer orderId)
+			throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(token);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			return ResultUtil.success(personalCenterService.getOrderDetailsById(orderId));
+		} catch (Exception e) {
+			LoggingUtil.e("获取订单详情异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "获取订单详情异常");
+		}
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "根据token获取购物车信息", value = "我的购物车")
@@ -296,6 +311,9 @@ public class PersonalCenterController {
 			if (phoneNum == null) {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
+			if (loginAndRegisterService.userFundsIsFreeze(phoneNum)) {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "平台币值已冻结");
+			}
 			if (loginAndRegisterService.checkUserNameAndPayPassword(phoneNum, payPassword)) {
 				return ResultUtil.success();
 			} else {
@@ -350,24 +368,25 @@ public class PersonalCenterController {
 			HashMap<String, Object> exceptResult = new HashMap<>();
 			BigDecimal totalRealPayCo = (BigDecimal) result.get("totalRealPayCo");
 			BigDecimal totalNotRealPayCo = (BigDecimal) result.get("totalNotRealPayCo");
-			String orderNoCollectionName = (String)result.get("orderNoCollectionName");
+			String orderNoCollectionName = (String) result.get("orderNoCollectionName");
 			if (totalRealPayCo.compareTo(BigDecimal.ZERO) == 0) {
-				//不需要通过支付宝付款
+				// 不需要通过支付宝付款
 				exceptResult.put("type", "1");
 				exceptResult.put("orderNoC", result.get("orderNoCollectionName"));
 			} else {
 				if (totalNotRealPayCo.compareTo(BigDecimal.ZERO) == 0) {
-					//不需要平台币值
+					// 不需要平台币值
 					exceptResult.put("type", "2");
-					exceptResult.put("singData", orderHandleService.createAliSignature(orderNoCollectionName,totalRealPayCo.toString()));
-				}else {
-					//交杂
+					exceptResult.put("singData",
+							orderHandleService.createAliSignature(orderNoCollectionName, totalRealPayCo.toString()));
+				} else {
+					// 混合支付
 					exceptResult.put("type", "3");
-					exceptResult.put("singData", orderHandleService.createAliSignature(orderNoCollectionName,totalRealPayCo.toString()));
+					exceptResult.put("singData",
+							orderHandleService.createAliSignature(orderNoCollectionName, totalRealPayCo.toString()));
 				}
 			}
-			return ResultUtil
-					.success(exceptResult);
+			return ResultUtil.success(exceptResult);
 		} catch (RuntimeException e) {
 			throw new BusinessException(Status.GeneralError.getStatenum(), e.getMessage());
 		} catch (Exception e) {
@@ -375,7 +394,7 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "生成订单异常");
 		}
 	}
-	
+
 	@ApiOperation(httpMethod = "POST", notes = "生成VIP订单", value = "生成VIP订单")
 	@RequestMapping(value = "/PersonalCenter/createVOrder/{token}", method = RequestMethod.POST)
 	Result<Object> createVOrder(@PathVariable("token") String toKen, @RequestBody List<OrderHeadDto> orderHeads)
@@ -399,30 +418,76 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "生成订单异常");
 		}
 	}
-	
-//	@ApiOperation(httpMethod = "POST", notes = "直接处理orderC订单", value = "处理orderC订单")
-//	@RequestMapping(value = "/PersonalCenter/handleOrderC/{token}", method = RequestMethod.POST)
-//	Result<Object> handleOrderC(@PathVariable("token") String toKen, @RequestParam String orderNoC)
-//			throws BusinessException {
-//		try {
-//			// 检查token通过
-//			String phoneNum = tokenManager.checkTokenGetUser(toKen);
-//			if (phoneNum == null) {
-//				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
-//			}
-//			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-//			//通过订单查询
-//			
-//			// result中有总金额和单号，再去拼接签名返回给客户端
-//			HashMap<String, Object> result = orderHandleService.createOrder(orderHeads, UserId);
-//			return ResultUtil
-//					.success(orderHandleService.createAliSignature((String) result.get("orderNoCollectionName"),
-//							((BigDecimal) result.get("totalAmountCo")).toString()));
-//		} catch (RuntimeException e) {
-//			throw new BusinessException(Status.GeneralError.getStatenum(), e.getMessage());
-//		} catch (Exception e) {
-//			LoggingUtil.e("生成订单异常:" + e);
-//			throw new BusinessException(Status.SeriousError.getStatenum(), "生成订单异常");
-//		}
-//	}
+
+	@ApiOperation(httpMethod = "POST", notes = "同步处理支付订单", value = "同步处理支付订单")
+	@RequestMapping(value = "/PersonalCenter/syncHandleOrderC/{token}", method = RequestMethod.POST)
+	Result<Object> syncHandleOrderC(@PathVariable("token") String toKen, @RequestParam String orderNoC,
+			@RequestParam Integer platformMoneyAmount) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			// 通过订单查询
+			if (UserId == orderHandleService.getUserIdByOrderC(orderNoC)) {
+				// 继续处理订单
+				// 直接订单同步处理
+				if (orderHandleService.syncHandleOrder(orderNoC, platformMoneyAmount)) {
+					return ResultUtil.success();
+				} else {
+					return ResultUtil.error(Status.GeneralError.getStatenum(), "金额有误或是订单已支付过了");
+				}
+			} else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "您确定是该用户生成的订单吗");
+			}
+
+		} catch (Exception e) {
+			LoggingUtil.e("支付订单异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "支付订单异常");
+		}
+	}
+
+	@ApiOperation(httpMethod = "GET", notes = "查看该用户是否领取新人红包", value = "查看该用户是否领取新人红包")
+	@RequestMapping(value = "/PersonalCenter/checkNewExclusive/{token}", method = RequestMethod.GET)
+	Result<Object> checkNewExclusive(@PathVariable("token") String toKen) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			if (loginAndRegisterService.userNewExclusiveIsDraw(phoneNum)) {
+				// 领过了
+				return ResultUtil.success(1);
+			} else {
+				// 可以领取
+				return ResultUtil.success(0);
+			}
+		} catch (Exception e) {
+			LoggingUtil.e("查看该用户是否领取新人红包异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "查看该用户是否领取新人红包异常");
+		}
+	}
+
+	@ApiOperation(httpMethod = "POST", notes = "领取新人红包", value = "领取新人红包")
+	@RequestMapping(value = "/PersonalCenter/drawNewExclusive/{token}", method = RequestMethod.POST)
+	Result<Object> drawNewExclusive(@PathVariable("token") String toKen) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			if (loginAndRegisterService.drawNewExclusive(phoneNum) == 1) {
+				return ResultUtil.success();
+			} else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "已经领取过");
+			}
+		} catch (Exception e) {
+			LoggingUtil.e("领取新人红包异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "领取新人红包异常");
+		}
+	}
 }

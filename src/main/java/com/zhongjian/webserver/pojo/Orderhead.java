@@ -2,6 +2,7 @@ package com.zhongjian.webserver.pojo;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,11 +21,14 @@ public class Orderhead {
 
     private Integer isdistributed;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date receivedtime;
 
     private Integer discount;
 
     private BigDecimal totalamount;
+    
+    private BigDecimal usecoupon;
 
     private BigDecimal useelecnum;
 
@@ -72,6 +76,8 @@ public class Orderhead {
     private String expressname;
 
     private String expressno;
+    
+    private List<Orderline> orderlines;
 
     public Integer getId() {
         return id;
@@ -320,4 +326,20 @@ public class Orderhead {
     public void setExpressno(String expressno) {
         this.expressno = expressno;
     }
+
+	public BigDecimal getUsecoupon() {
+		return usecoupon;
+	}
+
+	public void setUsecoupon(BigDecimal usecoupon) {
+		this.usecoupon = usecoupon;
+	}
+
+	public List<Orderline> getOrderlines() {
+		return orderlines;
+	}
+
+	public void setOrderlines(List<Orderline> orderlines) {
+		this.orderlines = orderlines;
+	}
 }

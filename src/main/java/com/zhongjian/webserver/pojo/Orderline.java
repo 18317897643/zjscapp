@@ -7,73 +7,73 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
 public class Orderline {
-    private Integer id;
+	private Integer id;
 
-    private Integer orderid;
+	private Integer orderid;
 
-    private Integer productid;
+	private String productname;
 
-    private Integer specid;
+	private String specname;
 
-    private Integer productnum;
+	private Integer productnum;
 
-    private BigDecimal price;
+	private BigDecimal price;
 
-    private BigDecimal amount;
+	private BigDecimal amount;
 
-    public Integer getId() {
-        return id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public Integer getOrderid() {
-        return orderid;
-    }
+	public Integer getOrderid() {
+		return orderid;
+	}
 
-    public void setOrderid(Integer orderid) {
-        this.orderid = orderid;
-    }
+	public void setOrderid(Integer orderid) {
+		this.orderid = orderid;
+	}
 
-    public Integer getProductid() {
-        return productid;
-    }
+	public String getProductname() {
+		return productname;
+	}
 
-    public void setProductid(Integer productid) {
-        this.productid = productid;
-    }
+	public void setProductname(String productname) {
+		this.productname = productname;
+	}
 
-    public Integer getSpecid() {
-        return specid;
-    }
+	public String getSpecname() {
+		return specname;
+	}
 
-    public void setSpecid(Integer specid) {
-        this.specid = specid;
-    }
+	public void setSpecname(String specname) {
+		this.specname = specname;
+	}
 
-    public Integer getProductnum() {
-        return productnum;
-    }
+	public Integer getProductnum() {
+		return productnum;
+	}
 
-    public void setProductnum(Integer productnum) {
-        this.productnum = productnum;
-    }
+	public void setProductnum(Integer productnum) {
+		this.productnum = productnum;
+	}
 
-    public BigDecimal getPrice() {
-        return price;
-    }
+	public BigDecimal getPrice() {
+		return price;
+	}
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
+	public BigDecimal getAmount() {
+		return amount;
+	}
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
 }

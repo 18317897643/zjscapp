@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.zhongjian.webserver.pojo.Orderhead;
 import com.zhongjian.webserver.pojo.ProxyApply;
 
 public interface PersonalCenterService {
@@ -35,5 +36,8 @@ public interface PersonalCenterService {
 	boolean isAlreadyApply(Integer UserId);
 	
 	ProxyApply getProxyApply(Integer UserId);
+	
+	Orderhead getOrderDetailsById(Integer id);
+	
 	
 }

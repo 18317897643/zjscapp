@@ -399,6 +399,16 @@
 		resultType="java.lang.Integer">
 		select Id from tb_user where UserName = #{username}
 	</select>
+	<select id="checkUserFundOrCurSta" parameterType="java.lang.String"
+		resultType="java.util.Map">
+		select CurStatus,FundStatus from tb_user where UserName =
+		#{username}
+	</select>
+	<select id="checkUserNewExclusive" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		select NewExclusive from tb_user where UserName =
+		#{username}
+	</select>
 	<select id="selectUserMaxSysID" resultType="java.lang.Integer">
 		select MAX(SysID)
 		from tb_user;
@@ -437,7 +447,13 @@
 	</select>
 	<update id="updateUserQuota" parameterType="java.util.Map">
 		update tb_user set
-		Coupon = #{Coupon},RemainPoints = #{RemainPoints},RemainElecNum = #{RemainElecNum},RemainVIPAmount =
-		#{RemainVIPAmount},RemainStream = #{RemainStream},TotalCost = #{TotalCost} where Id = #{UserId}
+		Coupon = #{Coupon},RemainPoints = #{RemainPoints},RemainElecNum =
+		#{RemainElecNum},RemainVIPAmount =
+		#{RemainVIPAmount},RemainStream =
+		#{RemainStream},TotalCost = #{TotalCost} where Id = #{UserId}
+	</update>
+	<update id="updateNewExclusiveDraw" parameterType="java.lang.String">
+		update tb_user
+		set NewExclusive = 1 where UserName = #{UserName} and NewExclusive = 0
 	</update>
 </mapper>

@@ -12,6 +12,7 @@ import com.zhongjian.webserver.mapper.OrderMapper;
 import com.zhongjian.webserver.mapper.ProxyApplyMapper;
 import com.zhongjian.webserver.mapper.ShoppingCartMapper;
 import com.zhongjian.webserver.mapper.UserMapper;
+import com.zhongjian.webserver.pojo.Orderhead;
 import com.zhongjian.webserver.pojo.Product;
 import com.zhongjian.webserver.pojo.ProxyApply;
 import com.zhongjian.webserver.pojo.ShoppingCart;
@@ -100,5 +101,9 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	@Override
 	public ProxyApply getProxyApply(Integer UserId) {
 		return proxyApplyMapper.queryProxyApply(UserId);
+	}
+	@Override
+	public Orderhead getOrderDetailsById(Integer id) {
+		return orderMapper.getOrderDetailsById(id);
 	}
 }

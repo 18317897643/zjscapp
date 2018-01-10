@@ -46,13 +46,26 @@
 			<result column="Photo" property="photo" />
 		</collection>
 	</resultMap>
-	<resultMap id="ProductOfTagMap" type="Tag">
-		<result column="tagName" property="tagName" />
-		<collection column="tagId" property="productsOfTag" ofType="Product"
-			select="getProductsOfTag" fetchType="eager">
+	<resultMap type="Tag" id="TagMap">
+		<id column="tagId" property="tagId" />
+		<id column="tagName" property="tagName" />
+		<collection property="productsOfTag" ofType="Product">
+			<id column="Id" property="id" />
 			<result column="ProductName" property="productname" />
 			<result column="Price" property="price" />
 			<result column="ElecNum" property="elecnum" />
+			<collection property="productphotos" ofType="Productphoto">
+				<result column="Photo" property="photo" />
+			</collection>
+		</collection>
+	</resultMap>
+	<resultMap id="SubCategoryProductMap" type="Product">
+		<id column="Id" property="id" />
+		<result column="ProductName" property="productname" />
+		<result column="Price" property="price" />
+		<result column="ElecNum" property="elecnum" />
+		<collection property="productphotos" ofType="Productphoto">
+			<result column="Photo" property="photo" />
 		</collection>
 	</resultMap>
 	<select id="getCategory" resultMap="ProductCategoryMap">
@@ -112,18 +125,16 @@
 		SELECT * from
 		tb_product where SubCategoryId = #{SubCategoryId}
 	</select>
-	<select id="getAllTagProduct" resultMap="ProductOfTagMap">
-		select tagId,tagName
-		from tb_tag order by ord
-	</select>
-	<select id="getProductsOfTag" resultType="Product">
-		select
-		Id,ProductName,Price,ElecNum from tb_product where Tag = #{tagId}
-	</select>
-	<select id="getProductsOfSubCategory" resultType="Product">
-		select
-		Id,ProductName,Price,ElecNum from tb_product where SubCategoryId =
+	<select id="getProductsOfSubCategory" resultMap="SubCategoryProductMap">
+		select tp.Id,ProductName,Price,ElecNum,Photo from tb_product
+		tp,tb_productphoto th where tp.Id = th.ProductId and SubCategoryId =
 		#{SubCategoryId}
 	</select>
-
+	<select id="getAllTagProduct" resultMap="TagMap">
+		SELECT
+		tg.tagId,tg.tagName,tp.Id,tp.ProducerName,tp.Price,tp.ElecNum,th.Photo
+		from tb_tag tg,tb_product tp,tb_productphoto th where tg.tagId =
+		tp.Tag and tp.Id = th.ProductId and tp.CurStatus = 0 and th.CurStatus
+		= 0 order by tg.ord
+	</select>
 </mapper>
