@@ -16,6 +16,7 @@ import com.zhongjian.webserver.common.Result;
 import com.zhongjian.webserver.common.ResultUtil;
 import com.zhongjian.webserver.common.Status;
 import com.zhongjian.webserver.common.TokenManager;
+import com.zhongjian.webserver.mapper.UtilMapper;
 import com.zhongjian.webserver.service.AddressManagerService;
 import com.zhongjian.webserver.service.LoginAndRegisterService;
 
@@ -34,6 +35,9 @@ public class AddressManagerController {
 
 	@Autowired
 	private AddressManagerService addressManagerService;
+	
+	@Autowired
+	private UtilMapper utilMapper;
 
 	@ApiOperation(httpMethod = "POST", notes = "获取该用户所有收货地址", value = "获取该用户所有收货地址")
 	@RequestMapping(value = "/AddressManager/getAllAddressOfUser", method = RequestMethod.POST)
@@ -153,5 +157,11 @@ public class AddressManagerController {
 			LoggingUtil.e("更新收货地址发生异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "更新收货地址发生异常");
 		}
+	}
+	@ApiOperation(httpMethod = "GET", notes = "获取plist文件", value = "获取plist文件")
+	@RequestMapping(value = "/AddressManager/getPlist", method = RequestMethod.GET)
+	Result<Object> getPlist()  {
+		return ResultUtil.success(utilMapper.getPlist());
+		
 	}
 }

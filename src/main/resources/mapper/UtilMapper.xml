@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhongjian.webserver.mapper.UtilMapper">
+	<resultMap id="Plist" type="Province">
+		<id column="pid" property="id" />
+		<id column="pname" property="provincename" />
+		<collection property="citys" ofType="City">
+			<id column="cid" property="id" />
+			<result column="cname" property="cityname" />
+			<collection property="regions" ofType="Region">
+				<result column="rid" property="id" />
+				<result column="rname" property="regionname" />
+			</collection>
+		</collection>
+	</resultMap>
+	<select id="getPlist" resultMap="Plist">
+		SELECT p.Id
+		pid,p.ProvinceName
+		pname,c.Id cid,c.CityName cname,r.Id
+		rid,r.RegionName rname from
+		tb_province p,tb_city c,tb_region r where
+		p.Id = c.ProvinceId AND c.Id
+		= r.CityID
+	</select>
+</mapper>

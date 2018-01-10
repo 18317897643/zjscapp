@@ -10,16 +10,16 @@
 	</select>
 	<select id="queryAllAddress" resultType="java.util.Map">
 		select
-		a.`Name`,a.`Phone`,a.`DetailAddress`,a.`IsDefault`,p.ProvinceName,c.CityName,r.RegionName
+		a.Id,a.`Name`,a.`Phone`,a.`DetailAddress`,a.`IsDefault`,p.ProvinceName,c.CityName,r.RegionName
 		from tb_address a JOIN tb_province p on p.Id = a.ProvinceId JOIN
 		tb_city c on c.Id = a.CityId JOIN tb_region r on r.Id = a.RegionId
-		where a.UserId = #{param}
+		where a.UserId = #{param} And Curstatus = 0
 	</select>
 	<insert id="addAddress">
 		INSERT INTO
-		tb_address(UserId,ProvinceId,CityId,RegionId,DetailAddress,Name,Phone,IsDefault,CreateTime)
-		VALUES(#{UserId,jdbcType=INTEGER},#{ProvinceId,jdbcType=INTEGER},#{CityId,jdbcType=INTEGER},
-		#{RegionId,jdbcType=INTEGER},#{DetailAddress,jdbcType=VARCHAR},#{Name,jdbcType=VARCHAR},#{Phone,jdbcType=VARCHAR},#{IsDefault,jdbcType=INTEGER},#{CreateTime})
+		tb_address(UserId,CountryId,ProvinceId,CityId,RegionId,DetailAddress,Name,Phone,IsDefault,CurStatus,CreateTime)
+		VALUES(#{UserId,jdbcType=INTEGER},1,#{ProvinceId,jdbcType=INTEGER},#{CityId,jdbcType=INTEGER},
+		#{RegionId,jdbcType=INTEGER},#{DetailAddress,jdbcType=VARCHAR},#{Name,jdbcType=VARCHAR},#{Phone,jdbcType=VARCHAR},#{IsDefault,jdbcType=INTEGER},#{CreateTime},0)
 	</insert>
 
 	<delete id="deleteAddressById">
@@ -36,7 +36,7 @@
 	<update id="setZero">
 		update tb_address set
 		IsDefault= 0
-		where IsDefault = 1f
+		where IsDefault = 1
 		and UserId=#{UserId,jdbcType=INTEGER}
 	</update>
 </mapper>

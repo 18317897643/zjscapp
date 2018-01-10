@@ -156,7 +156,6 @@ var calUtil = {
             htmls.push("<ul>");
             for (d = 0; d < 7; d++) {
                 var ifHasSigned = calUtil.ifHasSigned(signList,myMonth[w][d]);
-                console.log(ifHasSigned);
                 if(ifHasSigned){
                     htmls.push("<li class='on'>" + (!isNaN(myMonth[w][d]) ? myMonth[w][d] : " ") + "</li>");
                 } else {
@@ -171,16 +170,32 @@ var calUtil = {
     }
 };
 $(function(){
+    //获取url中的参数
+    var token;
+    var url = location.search;
+    var theRequest = new Object();
+    if (url.indexOf("?") != -1) {
+        var str = url.substr(1);
+        strs = str.split("&");
+        for (var i = 0; i < strs.length; i++) {
+            theRequest[strs[i].split("=")[0]] = (strs[i].split("=")[1]);
+        }
+    }
+    if(theRequest.token != ""){
+        token = theRequest.token;
+    }
+    //console.log(token);
+    //token = "6ffdc8f9-3d9c-4c10-85f7-9e6199d39f16";
     //签到
     $(".signButton").on('click',function () {
-       $.post("http://192.168.1.236:8081/zjapp/v1/SignIn/Signing/6ffdc8f9-3d9c-4c10-85f7-9e6199d39f16",function (res) {
+       $.post("/zjapp/v1/SignIn/Signing/" + token,function (res) {
             if(res.error_code==0) {
                 $(".bg-model").css("display", "block");
             }else if(res.error_code==1){
                 $('.signButton').css("background","url(../image/alSignButton.png)");
                 $('.signButton').css("background-size","1.92rem 0.54rem");
                 $('.signButton').css("cursor","default");
-                $('.signButton')2
+                $('.signButton').css("pointer-events","none");
             }else {
                 alert("签到失败,请重新签到！");
             }
@@ -197,7 +212,7 @@ $(function(){
     //ajax获取日历json数据
     $.ajax({
         type: 'get',
-        url: 'http://192.168.1.236:8081/zjapp/v1/SignIn/init/6ffdc8f9-3d9c-4c10-85f7-9e6199d39f16',
+        url: '/zjapp/v1/SignIn/init/' + token,
         data: {},
         dataType: 'json',
         success: doSign
@@ -215,6 +230,7 @@ $(function(){
                 $('.signButton').css("background","url(../image/alSignButton.png)");
                 $('.signButton').css("background-size","1.92rem 0.54rem");
                 $('.signButton').css("cursor","default");
+                $('.signButton').css("pointer-events","none");
             }
             a.signDay = res.data.signData[i].substring( res.data.signData[i].length - 2 );
             signList.push(a);
@@ -224,55 +240,52 @@ $(function(){
             $(".sevendaysAward").css("background","url(../image/getButton.png)");
             $('.sevendaysAward').css("cursor","pointer");
             $('.sevendaysAward').css("background-size","1.44rem 0.5rem");
+            $('.sevendaysAward').css("pointer-events","auto");
         }
         if(res.data.signinAward.fourteendaysaward == 1){
             $(".fourteendaysAward").css("background","url(../image/getButton.png)");
             $('.fourteendaysAward').css("cursor","pointer");
             $('.fourteendaysAward').css("background-size","1.44rem 0.5rem");
+            $('.fourteendaysAward').css("pointer-events","auto");
         }
         if(res.data.signinAward.thirtydaysaward == 1){
             $(".thirtydaysAward").css("background","url(../image/getButton.png)");
             $('.thirtydaysAward').css("cursor","pointer");
             $('.thirtydaysAward').css("background-size","1.44rem 0.5rem");
+            $('.thirtydaysAward').css("pointer-events","auto");
         }
     };
     //获取奖励
     $('.thirtydaysAward').on('click',function () {
-        $.post('http://192.168.1.236:8081/zjapp/v1/SignIn/drawAward/6ffdc8f9-3d9c-4c10-85f7-9e6199d39f16?awardType=thirty',function (res) {
+        $.post('/zjapp/v1/SignIn/drawAward/' + token + '?awardType=thirty',function (res) {
             if( res.error_code == 1 ){
-                console.log('不符合领取条件！');
             }else if( res.error_code == 0 ){
                 var reward = $('.thirtydaysAward').prev().text().substring(2, 4);
                 $(".bg-model-1").css("display", "block");
                 $(".bg-model-1 .bg-model-content span").html('+'+reward+'元');
-            }else if ( res.error_code == -1 ){
-                console.log('本次奖励已经领取！')
+            }else{
             }
         })
     });
     $('.sevendaysAward').on('click',function () {
-        $.post('http://192.168.1.236:8081/zjapp/v1/SignIn/drawAward/6ffdc8f9-3d9c-4c10-85f7-9e6199d39f16?awardType=seven',function (res) {
+        $.post('/zjapp/v1/SignIn/drawAward/' + token + '?awardType=seven',function (res) {
             if( res.error_code == 1 ){
-                console.log('不符合领取条件！');
             }else if( res.error_code == 0 ){
                 var reward = $('.sevendaysAward').prev().text().substring(2, 4);
                 $(".bg-model-1").css("display", "block");
                 $(".bg-model-1 .bg-model-content span").html('+'+reward+'元');
-            }else if ( res.error_code == -1 ){
-                console.log('本次奖励已经领取！')
+            }else {
             }
         })
     });
     $('.fourteendaysAward').on('click',function () {
-        $.post('http://192.168.1.236:8081/zjapp/v1/SignIn/drawAward/6ffdc8f9-3d9c-4c10-85f7-9e6199d39f16?awardType=fourteen',function (res) {
+        $.post('/zjapp/v1/SignIn/drawAward/' + token + '?awardType=fourteen',function (res) {
             if( res.error_code == 1 ){
-                console.log('不符合领取条件！');
             }else if( res.error_code == 0 ){
                 var reward = $('.fourteendaysAward').prev().text().substring(2, 4);
                 $(".bg-model-1").css("display", "block");
                 $(".bg-model-1 .bg-model-content span").html('+'+reward+'元');
-            }else if ( res.error_code == -1 ){
-                console.log('本次奖励已经领取！')
+            }else{
             }
         })
     });

@@ -1,5 +1,7 @@
 package com.zhongjian.webserver.pojo;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -12,7 +14,10 @@ public class City {
     private Integer provinceid;
 
     private Integer curstatus;
+    
+    private List<Region> regions;
 
+    
     public Integer getId() {
         return id;
     }
@@ -44,4 +49,13 @@ public class City {
     public void setCurstatus(Integer curstatus) {
         this.curstatus = curstatus;
     }
+
+	public List<Region> getRegions() {
+		return regions;
+	}
+
+	public void setRegions(List<Region> regions) {
+		this.regions = regions;
+	}
+    
 }

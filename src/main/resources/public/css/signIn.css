@@ -1,8 +1,8 @@
 @charset "utf-8";
 /*通用*/
 body {
-    margin:0;
-    padding:0;
+    margin:0px;
+    padding:0px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -250,4 +250,5 @@ table {border-collapse:collapse;border-spacing:0;}
     height: 0.5rem;
     background: url("../image/ungetButton.png");
     background-size: 1.44rem 0.5rem;
+    pointer-events: none;
 }

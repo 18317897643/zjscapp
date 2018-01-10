@@ -59,7 +59,6 @@ public class CoreServiceImpl implements CoreService {
 			}
 			Integer curUserId = map.get("Id");
 			Integer curUserlev = map.get("Lev");
-			Integer curUserIsSubProxy = map.get("IsSubProxy");
 			// 蓝粉和黄粉的分润
 			if (i == 2) {
 				resultMap.put("10%", curUserId);
@@ -75,7 +74,7 @@ public class CoreServiceImpl implements CoreService {
 					resultMap.put("10%", curUserId);
 					flag = 1;
 				}
-			} else if (curUserlev == 2 && curUserIsSubProxy == 1) {
+			} else if (curUserlev == 2) {
 				if (flag == 0) {
 					resultMap.put("6%", curUserId);
 					flag = 2;
@@ -101,7 +100,6 @@ public class CoreServiceImpl implements CoreService {
 			}
 			Integer curUserId = map.get("Id");
 			Integer curUserlev = map.get("Lev");
-			Integer curUserIsSubProxy = map.get("IsSubProxy");
 			// 蓝粉和黄粉的分润
 			if (i == 2) {
 				resultMap.put("10%", curUserId);
@@ -109,7 +107,7 @@ public class CoreServiceImpl implements CoreService {
 				resultMap.put("20%", curUserId);
 			}
 			// 给代理和准代理的分润
-			if (curUserlev == 3 || (curUserlev == 2 && curUserIsSubProxy == 1)) {
+			if (curUserlev == 3 || curUserlev == 2 ) {
 				if (flag == 0) {
 					resultMap.put("6%", curUserId);
 					flag = 1;

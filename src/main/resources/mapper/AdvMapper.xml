@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zhongjian.webserver.mapper.AdvMapper">
+	<resultMap id="ArticleMap" type="Article">
+   		<result column="CreateTime" property="createtime" jdbcType="DATE"/>
+		<result column="Title" property="title"/>
+		<result column="Memo" property="memo"/>
+	</resultMap>
 	<select id="getHomePagePic" resultType="java.util.HashMap">
-		SELECT Pic,AdvType,Url,ProductId from tb_adv where ShowType = 1 AND
-		CurStatus = 0
+		SELECT
+		Pic,AdvType,Url,ProductId from tb_adv where ShowType = 1 AND
+		CurStatus
+		= 0
 	</select>
 	<select id="getHomePageTitle" resultType="java.util.HashMap">
 		SELECT
 		Title,AdvType,Url,ProductId from tb_adv where ShowType = 2 AND
 		CurStatus = 0 Limit 1
+	</select>
+	<select id="getArticle" resultMap="ArticleMap" parameterType="java.lang.Integer">
+		SELECT CreateTime,Title ,Memo FROM tb_article where Id = #{id}
 	</select>
 </mapper>

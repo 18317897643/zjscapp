@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +32,7 @@ import com.zhongjian.webserver.service.OrderHandleService;
 import com.zhongjian.webserver.service.PersonalCenterService;
 import com.zhongjian.webserver.service.ProductManagerService;
 
+import io.netty.handler.codec.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -451,8 +454,13 @@ public class PersonalCenterController {
 
 	@ApiOperation(httpMethod = "GET", notes = "查看该用户是否领取新人红包", value = "查看该用户是否领取新人红包")
 	@RequestMapping(value = "/PersonalCenter/checkNewExclusive/{token}", method = RequestMethod.GET)
-	Result<Object> checkNewExclusive(@PathVariable("token") String toKen) throws BusinessException {
+	Result<Object> checkNewExclusive(@PathVariable("token") String toKen,HttpServletResponse response) throws BusinessException {
 		try {
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			response.addHeader("Access-Control-Allow-Methods", "*");
+			response.addHeader("Access-Control-Max-Age", "100");
+			response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+			response.addHeader("Access-Control-Allow-Credentials", "false");
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
@@ -473,8 +481,13 @@ public class PersonalCenterController {
 
 	@ApiOperation(httpMethod = "POST", notes = "领取新人红包", value = "领取新人红包")
 	@RequestMapping(value = "/PersonalCenter/drawNewExclusive/{token}", method = RequestMethod.POST)
-	Result<Object> drawNewExclusive(@PathVariable("token") String toKen) throws BusinessException {
+	Result<Object> drawNewExclusive(@PathVariable("token") String toKen,HttpServletResponse response) throws BusinessException {
 		try {
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			response.addHeader("Access-Control-Allow-Methods", "*");
+			response.addHeader("Access-Control-Max-Age", "100");
+			response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+			response.addHeader("Access-Control-Allow-Credentials", "false");
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {

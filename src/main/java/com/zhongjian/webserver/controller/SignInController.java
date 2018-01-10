@@ -47,11 +47,6 @@ public class SignInController {
 	@RequestMapping(value = "/init/{token}", method = RequestMethod.GET)
 	public Result<Object> init(@PathVariable("token") String toKen, HttpServletResponse response)
 			throws BusinessException {
-		response.addHeader("Access-Control-Allow-Origin", "*");
-		response.addHeader("Access-Control-Allow-Methods", "*");
-		response.addHeader("Access-Control-Max-Age", "100");
-		response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-		response.addHeader("Access-Control-Allow-Credentials", "false");
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
@@ -66,7 +61,6 @@ public class SignInController {
 		}
 
 	}
-
 	/**
 	 * 签到
 	 * 
@@ -78,11 +72,6 @@ public class SignInController {
 	@ApiOperation(httpMethod = "POST", notes = "签到", value = "签到")
 	@RequestMapping(value = "/Signing/{token}", method = RequestMethod.POST)
 	public Result<Object> Signing(@PathVariable("token") String toKen, HttpServletResponse response) throws BusinessException {
-		response.addHeader("Access-Control-Allow-Origin", "*");
-		response.addHeader("Access-Control-Allow-Methods", "*");
-		response.addHeader("Access-Control-Max-Age", "100");
-		response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-		response.addHeader("Access-Control-Allow-Credentials", "false");
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
@@ -116,11 +105,6 @@ public class SignInController {
 	@RequestMapping(value = "/drawAward/{token}", method = RequestMethod.POST)
 	public Result<Object> drawAward(@PathVariable("token") String toKen, @RequestParam String awardType, HttpServletResponse response)
 			throws BusinessException {
-		response.addHeader("Access-Control-Allow-Origin", "*");
-		response.addHeader("Access-Control-Allow-Methods", "*");
-		response.addHeader("Access-Control-Max-Age", "100");
-		response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-		response.addHeader("Access-Control-Allow-Credentials", "false");
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
