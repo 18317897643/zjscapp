@@ -29,6 +29,9 @@ public class AddressManagerServiceImpl implements AddressManagerService {
 	@Override
 	@Transactional
 	public void addAddress(Map<String, Object> paramMap) {
+			if ((Integer)paramMap.get("IsDefault") == 1) {
+				addressMapper.setZero((Integer)paramMap.get("UserId"));
+			}
 			addressMapper.addAddress(paramMap);
 	}
 
@@ -38,8 +41,11 @@ public class AddressManagerServiceImpl implements AddressManagerService {
 	}
 
 	@Override
-	public Integer updateAddressById(Map<String, Object> paramMap) {
-		return addressMapper.updateAddressById(paramMap);
+	public void updateAddressById(Map<String, Object> paramMap) {
+		if ((Integer)paramMap.get("IsDefault") == 1) {
+			addressMapper.setZero((Integer)paramMap.get("UserId"));
+		}
+		 addressMapper.updateAddressById(paramMap);
 	}
 
 	@Override

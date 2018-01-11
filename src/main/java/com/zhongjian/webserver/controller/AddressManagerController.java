@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,13 +36,13 @@ public class AddressManagerController {
 
 	@Autowired
 	private AddressManagerService addressManagerService;
-	
+
 	@Autowired
 	private UtilMapper utilMapper;
 
-	@ApiOperation(httpMethod = "POST", notes = "获取该用户所有收货地址", value = "获取该用户所有收货地址")
-	@RequestMapping(value = "/AddressManager/getAllAddressOfUser", method = RequestMethod.POST)
-	Result<Object> getAllAddressOfUser(@RequestParam String token) throws BusinessException {
+	@ApiOperation(httpMethod = "GET", notes = "获取该用户所有收货地址", value = "获取该用户所有收货地址")
+	@RequestMapping(value = "/AddressManager/getAllAddressOfUser/{token}", method = RequestMethod.GET)
+	Result<Object> getAllAddressOfUser(@PathVariable String token) throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
@@ -56,9 +57,9 @@ public class AddressManagerController {
 		}
 	}
 
-	@ApiOperation(httpMethod = "POST", notes = "根据ID获取收货地址详情", value = "根据ID获取收货地址详情")
-	@RequestMapping(value = "/AddressManager/getAddressOfUserById", method = RequestMethod.POST)
-	Result<Object> getAddressOfUserById(@RequestParam String token, Integer id) throws BusinessException {
+	@ApiOperation(httpMethod = "GET", notes = "根据ID获取收货地址详情", value = "根据ID获取收货地址详情")
+	@RequestMapping(value = "/AddressManager/getAddressOfUserById/{token}/{id}", method = RequestMethod.GET)
+	Result<Object> getAddressOfUserById(@PathVariable("token") String token, @PathVariable("id") Integer id) throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
@@ -106,8 +107,8 @@ public class AddressManagerController {
 			addressManagerService.addAddress(addressMap);
 			return ResultUtil.success();
 		} catch (Exception e) {
-			LoggingUtil.e("获取收货地址详情发生异常:" + e);
-			throw new BusinessException(Status.SeriousError.getStatenum(), "获取收货地址详情发生异常");
+			LoggingUtil.e("添加收货地址异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "添加收货地址发生异常");
 		}
 	}
 
@@ -148,20 +149,18 @@ public class AddressManagerController {
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// 更新收货地址
 			addressMap.put("UserId", userId);
-			if (addressManagerService.updateAddressById(addressMap) == 1) {
-				return ResultUtil.success();
-			} else {
-				return ResultUtil.error(Status.GeneralError.getStatenum(), "数据库更新收货地址记录失败,传入的Id有误");
-			}
+			addressManagerService.updateAddressById(addressMap);
+			return ResultUtil.success();
 		} catch (Exception e) {
 			LoggingUtil.e("更新收货地址发生异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "更新收货地址发生异常");
 		}
 	}
+
 	@ApiOperation(httpMethod = "GET", notes = "获取plist文件", value = "获取plist文件")
 	@RequestMapping(value = "/AddressManager/getPlist", method = RequestMethod.GET)
-	Result<Object> getPlist()  {
+	Result<Object> getPlist() {
 		return ResultUtil.success(utilMapper.getPlist());
-		
+
 	}
 }

@@ -51,6 +51,11 @@
 		OrderNoCName =
 		#{orderNoCName};
 	</select>
+	<select id="getPlatformMoneyOfOrderhead" resultType="java.lang.Integer">
+		SELECT
+		UseElecNum+UseCoupon+UsePointNum+UseVIPRemainNum from tb_orderhead
+		WHERE OrderNo = #{OrderNo}
+	</select>
 	<select id="getNeedSubDetailsOfOrderHead" resultType="java.util.Map">
 		SELECT
 		UserId,UseElecNum,UseCoupon,UsePointNum,UseVIPRemainNum from
@@ -105,6 +110,10 @@
 		SELECT UserId from
 		tb_orderheadcolleciton WHERE OrderNoCName = #{OrderNoCName}
 	</select>
+	<select id="getUserIdByOrder" resultType="java.lang.Integer">
+		SELECT UserId from
+		tb_orderhead WHERE OrderNo = #{OrderNo}
+	</select>
 	<select id="getOrderDetailsById" resultMap="orderDetailsMap">
 		SELECT
 		Id,OrderNo,CreateTime,SendDate,ReceivedTime,CurStatus,ReceiverName,ReceiverPhone,ProvinceId,CityId,RegionId,TotalAmount,UseElecNum,UseCoupon,UsePointNum,UseVIPRemainNum,ExpressName,ExpressNo
@@ -112,7 +121,9 @@
 		tb_orderhead WHERE Id = #{orderId}
 	</select>
 	<select id="selectOrderLineByOrderId" resultType="OrderLine">
-		SELECT ProductName,SpecName,ProductNum,Price from
-		tb_orderline WHERE OrderId = #{orderId}
+		SELECT
+		ProductName,SpecName,ProductNum,Price from
+		tb_orderline WHERE OrderId =
+		#{orderId}
 	</select>
 </mapper>

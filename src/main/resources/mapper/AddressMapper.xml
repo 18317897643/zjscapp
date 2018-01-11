@@ -13,7 +13,7 @@
 		a.Id,a.`Name`,a.`Phone`,a.`DetailAddress`,a.`IsDefault`,p.ProvinceName,c.CityName,r.RegionName
 		from tb_address a JOIN tb_province p on p.Id = a.ProvinceId JOIN
 		tb_city c on c.Id = a.CityId JOIN tb_region r on r.Id = a.RegionId
-		where a.UserId = #{param} And Curstatus = 0
+		where a.UserId = #{param} And a.CurStatus = 0
 	</select>
 	<insert id="addAddress">
 		INSERT INTO
@@ -34,9 +34,7 @@
 		where Id =#{Id,jdbcType=INTEGER} and UserId=#{UserId,jdbcType=INTEGER}
 	</update>
 	<update id="setZero">
-		update tb_address set
-		IsDefault= 0
-		where IsDefault = 1
-		and UserId=#{UserId,jdbcType=INTEGER}
+		update tb_address set IsDefault = 0 where UserId =
+		#{UserId} and IsDefault = 1
 	</update>
 </mapper>

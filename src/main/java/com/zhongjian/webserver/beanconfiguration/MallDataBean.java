@@ -15,8 +15,10 @@ public class MallDataBean {
 	@Value("${malldata.subProxyNeedPay}")
 	private Integer subProxyNeedPay;
 
+	@Value("${malldata.gcNeedPay}")
+	private Integer gcNeedPay;
 	@Bean
 	public MallData createMallData() {
-		return new MallData(productTag, vipNeedPay, subProxyNeedPay);
+		return new MallData(productTag, vipNeedPay, subProxyNeedPay,gcNeedPay);
 	}
 }

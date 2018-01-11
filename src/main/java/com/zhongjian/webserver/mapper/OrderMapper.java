@@ -23,6 +23,8 @@ public interface OrderMapper {
 
 	Map<String, Object> getDetailsFormorderheadC(String orderNoCName);
 
+	Integer getPlatformMoneyOfOrderhead(String OderNo);
+	
 	Integer updateOrderHeadCoCur();
 
 	void updateUserQuota(BigDecimal RemainStream);
@@ -44,6 +46,8 @@ public interface OrderMapper {
 			@Param("PreUseVipremain") BigDecimal preUseVipremain, @Param("ExpireTime") Date expireTime);
 
 	Integer getUserIdByOrderC(String orderNoC);
+	
+	Integer getUserIdByOrder(String orderNo);
 	
 	Orderhead getOrderDetailsById(Integer id);
 }

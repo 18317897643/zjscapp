@@ -41,4 +41,6 @@ public interface PersonalCenterService {
 
 	// 判断实名认证
 	boolean isAlreadyAuth(Integer UserId);
+	
+	boolean isGCMember(Integer UserId);
 }

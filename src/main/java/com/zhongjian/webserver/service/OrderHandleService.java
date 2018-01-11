@@ -18,6 +18,6 @@ public interface OrderHandleService {
 	
 	Integer getUserIdByOrderC(String orderNoC);
 	
-	
+	Integer getUserIdByOrder(String orderNo);
 
 }

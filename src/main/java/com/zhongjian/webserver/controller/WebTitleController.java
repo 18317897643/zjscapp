@@ -1,5 +1,7 @@
 package com.zhongjian.webserver.controller;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,8 +28,13 @@ public class WebTitleController {
 	
 	@ApiOperation(httpMethod = "GET", notes = "获取各种协议", value = "获取各种协议")
 	@RequestMapping(value = "/getProtocol", method = RequestMethod.GET)
-	Result<Object> getProtocol(@RequestParam Integer id) throws BusinessException {
+	Result<Object> getProtocol(@RequestParam Integer id,HttpServletResponse response) throws BusinessException {
 		try {
+			response.addHeader("Access-Control-Allow-Origin", "*");
+			response.addHeader("Access-Control-Allow-Methods", "*");
+			response.addHeader("Access-Control-Max-Age", "100");
+			response.addHeader("Access-Control-Allow-Headers", "Content-Type");
+			response.addHeader("Access-Control-Allow-Credentials", "false");
 			return ResultUtil.success(webTitleService.getProtocol(id));
 		} catch (Exception e) {
 			LoggingUtil.e("获取各种协议异常:" + e);

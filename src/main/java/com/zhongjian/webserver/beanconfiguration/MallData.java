@@ -3,6 +3,8 @@ public class MallData {
 	private Integer productTag;
 
 	private Integer vipNeedPay;
+	
+	private Integer gcNeedPay;
 
 	private Integer subProxyNeedPay;
 
@@ -30,10 +32,19 @@ public class MallData {
 		this.subProxyNeedPay = subProxyNeedPay;
 	}
 
-	public MallData(Integer productTag, Integer vipNeedPay, Integer subProxyNeedPay) {
+	public Integer getGcNeedPay() {
+		return gcNeedPay;
+	}
+
+	public void setGcNeedPay(Integer gcNeedPay) {
+		this.gcNeedPay = gcNeedPay;
+	}
+
+	public MallData(Integer productTag, Integer vipNeedPay, Integer subProxyNeedPay,Integer gcNeedPay) {
 		super();
 		this.productTag = productTag;
 		this.vipNeedPay = vipNeedPay;
 		this.subProxyNeedPay = subProxyNeedPay;
+		this.gcNeedPay = gcNeedPay;
 	}
 }
