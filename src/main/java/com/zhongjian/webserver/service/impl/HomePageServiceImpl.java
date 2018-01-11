@@ -23,7 +23,7 @@ public class HomePageServiceImpl implements HomePageService{
 		HashMap<String, Object> result = new HashMap<>();
 		result.put("picList", advMapper.getHomePagePic());
 		result.put("tile", advMapper.getHomePageTitle());
-		result.put("productOfTag",productMapper.getAllTagProduct());
+		result.put("products",productMapper.getAllTagProduct());
 		return result;
 	}
 

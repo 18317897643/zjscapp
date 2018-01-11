@@ -115,4 +115,13 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 			return false;
 		}
 	}
+	@Override
+	public boolean isGCMember(Integer UserId) {
+		Date expireTime = userMapper.getExpireTimeFromGcOfUser(UserId);
+		//如果当前时间大于大于过期时间则过期
+		if (expireTime == null || new Date().getTime() > expireTime.getTime()) {
+			return false;
+		}
+		return true;
+	}
 }

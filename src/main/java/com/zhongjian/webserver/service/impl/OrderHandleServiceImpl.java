@@ -173,12 +173,17 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 						// 更改订单状态
 						orderMapper.updateOrderHeadStatus(0, orderNoC[i]);
 					}
+					return true;
 				} else {
 					return false;
 				}
 			}
 
 		} else if (orderNo.startsWith("B")) {
+			if (orderMapper.getPlatformMoneyOfOrderhead(orderNo) != platformMoneyAmount) {
+				//金额不对
+				return false;
+			}
 			if (orderMapper.updateOrderHeadStatusToWP(orderNo) == 1) {
 				// 查看订单积分，现金币，购物币，红包使用情况去扣
 				// 需要扣除的
@@ -213,15 +218,13 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 				if (remainVIPAmount.compareTo(BigDecimal.ZERO) == 1) {
 					logMapper.insertVipRemainRecord(userId, curDate, useVIPRemainNum, "-", "购买商品，订单号：" + orderNo);
 				}
+				return true;
 			} else {
 				return false;
 			}
-
 		} else if (orderNo.startsWith("VO")) {
-
+			
 		} else if (orderNo.startsWith("CZ")) {
-
-		} else if (orderNo.startsWith("GS")) {
 
 		} else {
 			return false;
@@ -387,5 +390,10 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 	@Override
 	public Integer getUserIdByOrderC(String orderNoC) {
 		return orderMapper.getUserIdByOrderC(orderNoC);
+	}
+
+	@Override
+	public Integer getUserIdByOrder(String orderNo) {
+		return orderMapper.getUserIdByOrder(orderNo);
 	}
 }

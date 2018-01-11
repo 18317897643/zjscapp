@@ -15,5 +15,5 @@ public interface AddressManagerService {
 	
 	Integer deleteAddressById(Integer id,Integer UserId);
 	
-	Integer updateAddressById(Map<String, Object> paramMap);
+	void updateAddressById(Map<String, Object> paramMap);
 }

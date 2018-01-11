@@ -456,10 +456,19 @@
 		update tb_user
 		set NewExclusive = 1 where UserName = #{UserName} and NewExclusive = 0
 	</update>
-	<select id="checkUserIdExits" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+	<select id="checkUserIdExits" parameterType="java.lang.Integer"
+		resultType="java.lang.Integer">
 		select count(1) from tb_user where Id = #{id}
 	</select>
-		<select id="queryUserAuth" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+	<select id="queryUserAuth" resultType="java.lang.Integer"
+		parameterType="java.lang.Integer">
 		SELECT CurStatus from tb_user WHERE Id = #{id}
 	</select>
+	<select id="getExpireTimeFromGcOfUser" resultType="java.util.Date"
+		parameterType="java.lang.Integer">
+		SELECT ExpireTime from tb_greenchannel where
+		UserId = #{id}
+	</select>
+
+
 </mapper>

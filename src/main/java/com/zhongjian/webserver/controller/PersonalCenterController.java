@@ -106,8 +106,13 @@ public class PersonalCenterController {
 			if (phoneNum == null) {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
 			Map<String, Object> map = personalCenterService.getInformOfConsumption(phoneNum);
-			return ResultUtil.success(map);
+			boolean isGCmemeber = personalCenterService.isGCMember(UserId);
+			resultMap.put("personDataMap", map);
+			resultMap.put("isGCmemeber", isGCmemeber);
+			return ResultUtil.success(resultMap);
 		} catch (Exception e) {
 			LoggingUtil.e("个人中心数据初始化异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "个人中心数据初始化异常");
@@ -178,7 +183,7 @@ public class PersonalCenterController {
 	@RequestMapping(value = "/PersonalCenter/updateShoppingCartInfo/{productId}/{SpecId}", method = RequestMethod.POST)
 	Result<Object> addForShoppingCart(@PathVariable("productId") Integer productId,
 			@PathVariable("SpecId") Integer specId, @RequestParam String token, @RequestParam Integer productNum)
-					throws BusinessException {
+			throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
@@ -397,32 +402,7 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "生成订单异常");
 		}
 	}
-
-	@ApiOperation(httpMethod = "POST", notes = "生成VIP订单", value = "生成VIP订单")
-	@RequestMapping(value = "/PersonalCenter/createVOrder/{token}", method = RequestMethod.POST)
-	Result<Object> createVOrder(@PathVariable("token") String toKen, @RequestBody List<OrderHeadDto> orderHeads)
-			throws BusinessException {
-		try {
-			// 检查token通过
-			String phoneNum = tokenManager.checkTokenGetUser(toKen);
-			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
-			}
-			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			// result中有总金额和单号，再去拼接签名返回给客户端
-			HashMap<String, Object> result = orderHandleService.createOrder(orderHeads, UserId);
-			return ResultUtil
-					.success(orderHandleService.createAliSignature((String) result.get("orderNoCollectionName"),
-							((BigDecimal) result.get("totalAmountCo")).toString()));
-		} catch (RuntimeException e) {
-			throw new BusinessException(Status.GeneralError.getStatenum(), e.getMessage());
-		} catch (Exception e) {
-			LoggingUtil.e("生成订单异常:" + e);
-			throw new BusinessException(Status.SeriousError.getStatenum(), "生成订单异常");
-		}
-	}
-
-	@ApiOperation(httpMethod = "POST", notes = "同步处理支付订单", value = "同步处理支付订单")
+	@ApiOperation(httpMethod = "POST", notes = "同步处理支付父订单", value = "同步处理支付父订单")
 	@RequestMapping(value = "/PersonalCenter/syncHandleOrderC/{token}", method = RequestMethod.POST)
 	Result<Object> syncHandleOrderC(@PathVariable("token") String toKen, @RequestParam String orderNoC,
 			@RequestParam Integer platformMoneyAmount) throws BusinessException {
@@ -452,9 +432,40 @@ public class PersonalCenterController {
 		}
 	}
 
+	@ApiOperation(httpMethod = "POST", notes = "同步处理支付子订单", value = "同步处理支付子订单")
+	@RequestMapping(value = "/PersonalCenter/syncHandleOrder/{token}", method = RequestMethod.POST)
+	Result<Object> syncHandleOrder(@PathVariable("token") String toKen, @RequestParam String orderNo,
+			@RequestParam Integer platformMoneyAmount) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			// 通过订单查询
+			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
+				// 继续处理订单
+				// 直接订单同步处理
+				if (orderHandleService.syncHandleOrder(orderNo, platformMoneyAmount)) {
+					return ResultUtil.success();
+				} else {
+					return ResultUtil.error(Status.GeneralError.getStatenum(), "金额有误或是订单已支付过了");
+				}
+			} else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "您确定是该用户生成的订单吗");
+			}
+
+		} catch (Exception e) {
+			LoggingUtil.e("支付订单异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "支付订单异常");
+		}
+	}
+
 	@ApiOperation(httpMethod = "GET", notes = "查看该用户是否领取新人红包", value = "查看该用户是否领取新人红包")
 	@RequestMapping(value = "/PersonalCenter/checkNewExclusive/{token}", method = RequestMethod.GET)
-	Result<Object> checkNewExclusive(@PathVariable("token") String toKen,HttpServletResponse response) throws BusinessException {
+	Result<Object> checkNewExclusive(@PathVariable("token") String toKen, HttpServletResponse response)
+			throws BusinessException {
 		try {
 			response.addHeader("Access-Control-Allow-Origin", "*");
 			response.addHeader("Access-Control-Allow-Methods", "*");
@@ -481,7 +492,8 @@ public class PersonalCenterController {
 
 	@ApiOperation(httpMethod = "POST", notes = "领取新人红包", value = "领取新人红包")
 	@RequestMapping(value = "/PersonalCenter/drawNewExclusive/{token}", method = RequestMethod.POST)
-	Result<Object> drawNewExclusive(@PathVariable("token") String toKen,HttpServletResponse response) throws BusinessException {
+	Result<Object> drawNewExclusive(@PathVariable("token") String toKen, HttpServletResponse response)
+			throws BusinessException {
 		try {
 			response.addHeader("Access-Control-Allow-Origin", "*");
 			response.addHeader("Access-Control-Allow-Methods", "*");

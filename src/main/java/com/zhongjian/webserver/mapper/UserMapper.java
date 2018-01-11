@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.mapper;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
@@ -41,5 +42,9 @@ public interface UserMapper {
     Integer checkUserIdExits(Integer id);
     
     Integer queryUserAuth(Integer id);
+    
+    Date getExpireTimeFromGcOfUser(Integer id);
+    
+    
     
 }
