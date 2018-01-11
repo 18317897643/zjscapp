@@ -32,8 +32,10 @@ public class CoreServiceImpl implements CoreService {
 		} else if (type == 2) {
 			resultMap = new HashMap<>();
 			Map<String, Integer> map = coreMapper.selectHigherLev(masterUserId);
-			if (map.get("Lev") == 3) {
-				resultMap.put("10%", map.get("Id"));
+			if(map != null){
+				if (map.get("Lev") == 3) {
+					resultMap.put("10%", map.get("Id"));
+				}
 			}
 		} else {
 			// 此时masterUserId是被分流者，slaveUserId是分流者
@@ -119,5 +121,13 @@ public class CoreServiceImpl implements CoreService {
 			queryUserId = curUserId;
 		}
 		return resultMap;
+	}
+
+	@Override
+	public void test(Integer type, Integer masterUserId) {
+		if (type == 2) {
+			Map<String, Integer> map = coreMapper.selectHigherLev(masterUserId);
+		}
+		
 	}
 }

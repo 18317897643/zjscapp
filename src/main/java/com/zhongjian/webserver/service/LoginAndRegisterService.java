@@ -30,4 +30,6 @@ public interface LoginAndRegisterService {
 	boolean userNewExclusiveIsDraw (String userName);
 	
 	Integer drawNewExclusive(String userName);
+	
+	boolean checkUserIdExits(Integer id);
 }

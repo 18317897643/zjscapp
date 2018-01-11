@@ -38,4 +38,8 @@ public interface UserMapper {
     
     Integer updateNewExclusiveDraw(String uerName);
     
+    Integer checkUserIdExits(Integer id);
+    
+    Integer queryUserAuth(Integer id);
+    
 }

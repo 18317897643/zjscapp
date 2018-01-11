@@ -106,4 +106,13 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	public Orderhead getOrderDetailsById(Integer id) {
 		return orderMapper.getOrderDetailsById(id);
 	}
+	@Override
+	public boolean isAlreadyAuth(Integer UserId) {
+		Integer curStatus = userMapper.queryUserAuth(UserId);
+		if (curStatus == 2) {
+			return true;
+		}else {
+			return false;
+		}
+	}
 }

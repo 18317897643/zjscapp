@@ -154,4 +154,12 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 		} 
 		return 0;
 	}
+	@Override
+	public boolean checkUserIdExits(Integer id) {
+		if(userMapper.checkUserIdExits(id) == 1){
+			return true;
+		}else {
+			return false;
+		}
+	}
 }

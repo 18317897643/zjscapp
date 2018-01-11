@@ -154,12 +154,31 @@ public class MemberShipController {
 
 	@ApiOperation(httpMethod = "POST", notes = "分润接口", value = "分润接口")
 	@RequestMapping(value = "/shareBenit", method = RequestMethod.POST)
-	Result<Object> shareBenit(@RequestParam Integer type, @RequestParam Integer masterUserId,
-			@RequestParam Integer slaveUserId, @RequestParam String memo, @RequestParam BigDecimal ElecNum) {
-		if (type != 1 && type != 2 && type!= 3) {
-			return ResultUtil.error(Status.GeneralError.getStatenum(), "参数异常");
+	Result<Object> shareBenit(@RequestParam Integer type, @RequestParam Integer masterUserId, @RequestParam String memo, @RequestParam BigDecimal ElecNum) throws BusinessException {
+		try {
+			if (type != 1 && type != 2) {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "参数异常");
+			}
+			if (!loginAndRegisterService.checkUserIdExits(masterUserId)) {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "用户不存在，请好好传");
+			}
+			coreService.shareBenit(type, masterUserId, 0, memo, ElecNum);
+			return ResultUtil.success();	
+		} catch (Exception e) {
+			throw new  BusinessException(Status.SeriousError.getStatenum(), "分润接口异常");
 		}
-		coreService.shareBenit(type, masterUserId, slaveUserId, memo, ElecNum);
-		return ResultUtil.success();
+	}
+	@ApiOperation(httpMethod = "POST", notes = "升级到vip或准代或代理时产生赠送名额", value = "升级到vip或准代或代理时产生赠送名额")
+	@RequestMapping(value = "/present", method = RequestMethod.POST)
+	Result<Object> present(@RequestParam Integer type, @RequestParam Integer masterUserId) throws BusinessException {
+		//1为vip 2准代和代理
+		try {
+			if (type != 1 && type != 2) {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "参数异常");
+			}
+			return null;
+		} catch (Exception e) {
+			throw new  BusinessException(Status.SeriousError.getStatenum(), "分润接口异常");
+		}
 	}
 }

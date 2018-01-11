@@ -429,7 +429,7 @@
 	</update>
 	<select id="selectPersonalInform" resultType="java.util.Map">
 		select
-		UserName,SysID,Lev,IsSubProxy,NickName,HeadPhoto,RemainElecNum,RemainPoints,RemainVIPAmount,Coupon,Phone,TrueName,IDCardNo,InviteCode,PayPassword
+		UserName,SysID,Lev,IsSubProxy,NickName,HeadPhoto,RemainElecNum,RemainPoints,RemainVIPAmount,Coupon,RemainStream,Phone,TrueName,IDCardNo,InviteCode,PayPassword
 		from tb_user where UserName = #{userName}
 	</select>
 	<select id="getUserIdByUserName" resultType="java.lang.Integer">
@@ -456,4 +456,10 @@
 		update tb_user
 		set NewExclusive = 1 where UserName = #{UserName} and NewExclusive = 0
 	</update>
+	<select id="checkUserIdExits" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		select count(1) from tb_user where Id = #{id}
+	</select>
+		<select id="queryUserAuth" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT CurStatus from tb_user WHERE Id = #{id}
+	</select>
 </mapper>
