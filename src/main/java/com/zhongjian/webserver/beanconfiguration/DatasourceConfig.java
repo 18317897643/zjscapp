@@ -118,7 +118,7 @@ public class DatasourceConfig {
 	    ServletRegistrationBean reg = new ServletRegistrationBean();
 	    reg.setServlet(new StatViewServlet());
 	    reg.addUrlMappings("/druid/*");  //url 匹配
-	    reg.addInitParameter("allow", "192.168.1.29,127.0.0.1"); // IP白名单 (没有配置或者为空，则允许所有访问)
+	    reg.addInitParameter("allow", "192.168.1.236,127.0.0.1"); // IP白名单 (没有配置或者为空，则允许所有访问)
 //	    reg.addInitParameter("deny", "192.168."); //IP黑名单 (存在共同时，deny优先于allow)
 	    reg.addInitParameter("loginUsername", this.druidLoginName);//登录名
 	    reg.addInitParameter("loginPassword", this.druidPassword);//登录密码

@@ -19,7 +19,7 @@
 		INSERT INTO
 		tb_address(UserId,CountryId,ProvinceId,CityId,RegionId,DetailAddress,Name,Phone,IsDefault,CurStatus,CreateTime)
 		VALUES(#{UserId,jdbcType=INTEGER},1,#{ProvinceId,jdbcType=INTEGER},#{CityId,jdbcType=INTEGER},
-		#{RegionId,jdbcType=INTEGER},#{DetailAddress,jdbcType=VARCHAR},#{Name,jdbcType=VARCHAR},#{Phone,jdbcType=VARCHAR},#{IsDefault,jdbcType=INTEGER},#{CreateTime},0)
+		#{RegionId,jdbcType=INTEGER},#{DetailAddress,jdbcType=VARCHAR},#{Name,jdbcType=VARCHAR},#{Phone,jdbcType=VARCHAR},#{IsDefault,jdbcType=INTEGER},0,#{CreateTime})
 	</insert>
 
 	<delete id="deleteAddressById">

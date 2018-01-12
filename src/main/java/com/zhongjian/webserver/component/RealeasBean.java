@@ -1,4 +1,4 @@
-package com.zhongjian.webserver.beanconfiguration;
+package com.zhongjian.webserver.component;
 
 
 import java.util.Map;

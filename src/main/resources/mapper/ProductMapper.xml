@@ -74,7 +74,8 @@
 		SubCategoryName,s.Icon,s.Ord
 		SubOrd from tb_productcategory c JOIN
 		tb_productsubcategory s on c.Id
-		= s.ParentId order by c.Ord,s.Ord
+		= s.ParentId and c.CurStatus = 0 and
+		s.CurStatus= 0 order by c.Ord,s.Ord
 	</select>
 	<select id="findById" resultMap="ProductDetails" parameterType="integer">
 		select
@@ -126,9 +127,10 @@
 		tb_product where SubCategoryId = #{SubCategoryId}
 	</select>
 	<select id="getProductsOfSubCategory" resultMap="SubCategoryProductMap">
-		select tp.Id,ProductName,Price,ElecNum,Photo from tb_product
+		select
+		tp.Id,ProductName,Price,ElecNum,Photo from tb_product
 		tp,tb_productphoto th where tp.Id = th.ProductId and SubCategoryId =
-		#{SubCategoryId}
+		#{SubCategoryId} and tp.CurStatus = 0 and th.CurStatus = 0
 	</select>
 	<select id="getAllTagProduct" resultMap="TagMap">
 		SELECT

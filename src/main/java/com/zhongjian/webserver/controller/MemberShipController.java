@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zhongjian.webserver.ExceptionHandle.BusinessException;
-import com.zhongjian.webserver.beanconfiguration.AsyncTasks;
-import com.zhongjian.webserver.beanconfiguration.MallData;
 import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.Result;
 import com.zhongjian.webserver.common.ResultUtil;
 import com.zhongjian.webserver.common.Status;
 import com.zhongjian.webserver.common.TokenManager;
+import com.zhongjian.webserver.component.AsyncTasks;
+import com.zhongjian.webserver.component.MallData;
 import com.zhongjian.webserver.service.CoreService;
 import com.zhongjian.webserver.service.LoginAndRegisterService;
 import com.zhongjian.webserver.service.MemberShipService;
@@ -77,31 +77,11 @@ public class MemberShipController {
 			// 获取用户等级信息
 			Map<String, Object> map = personalCenterService.getInformOfConsumption(phoneNum);
 			Integer lev = (Integer) map.get("Lev");
-			// Integer IsSubProxy = (Integer)map.get("IsSubProxy");
 			HashMap<String, HashMap<String, Integer>> result = new HashMap<>();
 			HashMap<String, Integer> vipResult = new HashMap<>();
 			HashMap<String, Integer> greenChanelResult = new HashMap<>();
-			// HashMap<String, Integer> subProxyResult = new HashMap<>();
 			Integer vipNeedPay = mallData.getVipNeedPay();
 			Integer gcNeedPay = mallData.getGcNeedPay();
-			// Integer subProxyNeedPay = mallData.getSubProxyNeedPay();
-			// if (lev == 0) {
-			// vipResult.put("isExit", 1);
-			// vipResult.put("needPay", vipNeedPay);
-			// subProxyResult.put("isExit", 1);
-			// subProxyResult.put("needPay", subProxyNeedPay);
-			// }else if(lev == 1){
-			// vipResult.put("isExit", 0);
-			// subProxyResult.put("isExit", 1);
-			// subProxyResult.put("needPay", subProxyNeedPay - vipNeedPay);
-			// }else if(lev == 2 && IsSubProxy == 0){
-			// vipResult.put("isExit", 0);
-			// subProxyResult.put("isExit", 1);
-			// subProxyResult.put("needPay", subProxyNeedPay - 9000);
-			// }else {
-			// vipResult.put("isExit", 0);
-			// subProxyResult.put("isExit", 0);
-			// }
 			if (lev == 0) {
 				vipResult.put("isExit", 1);
 				vipResult.put("id", 1);
@@ -120,7 +100,6 @@ public class MemberShipController {
 			}
 			result.put("GC", greenChanelResult);
 			result.put("VIP", vipResult);
-			// result.put("SubProxy", subProxyResult);
 			return ResultUtil.success(result);
 		} catch (Exception e) {
 			LoggingUtil.e("会员升级界面初始数据异常:" + e);
@@ -155,14 +134,14 @@ public class MemberShipController {
 				if (needPay.compareTo(reaminElec) == 1) {
 					return ResultUtil.error(Status.GeneralError.getStatenum(), "余额不足");
 				}
-				Map<String, Object> map = memberShipService.createVOrder(lev, UserId, type);
+				Map<String, Object> map = memberShipService.createVOrder(lev,needPay, UserId, type);
 				String orderNo = (String) map.get("OrderNo");
 				memberShipService.syncHandleVipOrder(UserId, orderNo);
 				// vip订单购买成功
 				return ResultUtil.success();
 			} else  {
 				//支付宝支付
-				Map<String, Object> map = memberShipService.createVOrder(lev, UserId, type);
+				Map<String, Object> map = memberShipService.createVOrder(lev,needPay, UserId, type);
 				return ResultUtil.success(orderHandleService.createAliSignature((String) map.get("OrderNo"), ((BigDecimal)map.get("TolAmout")).toString()));
 			}
 		} catch (Exception e) {
