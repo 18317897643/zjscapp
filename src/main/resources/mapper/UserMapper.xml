@@ -442,7 +442,7 @@
 	</select>
 	<select id="selectUserQuotaForUpdate" resultType="java.util.Map">
 		SELECT
-		Coupon,RemainPoints,RemainElecNum,RemainVIPAmount,RemainStream,TotalCost
+		Id UserId,Coupon,RemainPoints,RemainElecNum,RemainVIPAmount,RemainStream,TotalCost
 		FROM tb_user WHERE Id = #{Id} FOR UPDATE;
 	</select>
 	<update id="updateUserQuota" parameterType="java.util.Map">

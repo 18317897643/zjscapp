@@ -2,7 +2,6 @@ package com.zhongjian.webserver.controller;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +13,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zhongjian.webserver.ExceptionHandle.BusinessException;
+import com.zhongjian.webserver.beanconfiguration.AsyncTasks;
 import com.zhongjian.webserver.beanconfiguration.MallData;
 import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.Result;
 import com.zhongjian.webserver.common.ResultUtil;
 import com.zhongjian.webserver.common.Status;
 import com.zhongjian.webserver.common.TokenManager;
-import com.zhongjian.webserver.dto.OrderHeadDto;
 import com.zhongjian.webserver.service.CoreService;
 import com.zhongjian.webserver.service.LoginAndRegisterService;
+import com.zhongjian.webserver.service.MemberShipService;
+import com.zhongjian.webserver.service.OrderHandleService;
 import com.zhongjian.webserver.service.PersonalCenterService;
 
 import io.swagger.annotations.Api;
@@ -42,10 +43,19 @@ public class MemberShipController {
 	PersonalCenterService personalCenterService;
 
 	@Autowired
+	MemberShipService memberShipService;
+
+	@Autowired 
+	OrderHandleService orderHandleService;
+	
+	@Autowired
 	MallData mallData;
 
 	@Autowired
 	CoreService coreService;
+	
+	@Autowired
+	AsyncTasks tasks;
 
 	/**
 	 * 会员入口
@@ -134,14 +144,30 @@ public class MemberShipController {
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// type=0现金支付 type =1 支付宝支付
 			// lev=0绿色通道 lev=1 vip通道
-			if ((Integer) dataMap.get("type") == 0) {
-				
+			BigDecimal needPay = null;
+			if (lev == 0) {
+				needPay = new BigDecimal(mallData.getGcNeedPay());
+			} else {
+				needPay = new BigDecimal(mallData.getVipNeedPay());
 			}
-
-			return null;
+			if (type == 0) {
+				BigDecimal reaminElec = (BigDecimal) personalCenterService.getInformOfConsumption(phoneNum);
+				if (needPay.compareTo(reaminElec) == 1) {
+					return ResultUtil.error(Status.GeneralError.getStatenum(), "余额不足");
+				}
+				Map<String, Object> map = memberShipService.createVOrder(lev, UserId, type);
+				String orderNo = (String) map.get("OrderNo");
+				memberShipService.syncHandleVipOrder(UserId, orderNo);
+				// vip订单购买成功
+				return ResultUtil.success();
+			} else  {
+				//支付宝支付
+				Map<String, Object> map = memberShipService.createVOrder(lev, UserId, type);
+				return ResultUtil.success(orderHandleService.createAliSignature((String) map.get("OrderNo"), ((BigDecimal)map.get("TolAmout")).toString()));
+			}
 		} catch (Exception e) {
-			LoggingUtil.e("生成订单异常:" + e);
-			throw new BusinessException(Status.SeriousError.getStatenum(), "生成订单异常");
+			LoggingUtil.e("生成VIP订单并支付异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "生成VIP订单并支付异常");
 		}
 	}
 
@@ -208,7 +234,7 @@ public class MemberShipController {
 			if (!loginAndRegisterService.checkUserIdExits(masterUserId)) {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "用户不存在，请好好传");
 			}
-			coreService.shareBenit(type, masterUserId, 0, memo, ElecNum);
+			tasks.shareBenitTask(type, masterUserId, 0, memo, ElecNum);
 			return ResultUtil.success();
 		} catch (Exception e) {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "分润接口异常");

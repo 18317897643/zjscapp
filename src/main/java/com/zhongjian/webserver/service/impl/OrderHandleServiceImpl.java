@@ -337,8 +337,6 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 
 		} else if (orderNo.startsWith("CZ")) {
 
-		} else if (orderNo.startsWith("GS")) {
-
 		} else {
 			return false;
 		}

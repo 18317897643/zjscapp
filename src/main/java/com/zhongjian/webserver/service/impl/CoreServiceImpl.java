@@ -8,14 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zhongjian.webserver.beanconfiguration.AsyncTasks;
 import com.zhongjian.webserver.mapper.CoreMapper;
+import com.zhongjian.webserver.mapper.UserMapper;
 import com.zhongjian.webserver.service.CoreService;
 
 @Service
 public class CoreServiceImpl implements CoreService {
 
 	@Autowired
+	UserMapper userMapper;
+	
+	@Autowired
 	CoreMapper coreMapper;
+	
+	@Autowired
+	AsyncTasks tasks;
 
 	@Override
 	public void preRecordShareBenti(Integer type, Integer masterUserId, Integer slaveUserId, String memo,
@@ -123,11 +131,4 @@ public class CoreServiceImpl implements CoreService {
 		return resultMap;
 	}
 
-	@Override
-	public void test(Integer type, Integer masterUserId) {
-		if (type == 2) {
-			Map<String, Integer> map = coreMapper.selectHigherLev(masterUserId);
-		}
-		
-	}
 }

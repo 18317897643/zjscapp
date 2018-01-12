@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhongjian.webserver.mapper.MemberShipMapper">
+	<insert id="insertVipOrder" parameterType="java.util.Map">
+		INSERT INTO
+		tb_viporder
+		(OrderNo,UserId,CreateTime,ElecNum,TolAmout,Lev,RealPay,CurStatus)
+		VALUES
+		(#{OrderNo},#{UserId},#{CreateTime},#{ElecNum},#{TolAmout},#{Lev},#{RealPay},0)
+	</insert>
+	<select id="selectViporderByOrderNo" resultType="java.math.BigDecimal">
+		SELECT TolAmout from tb_viporder where OrderNo = #{OrderNo} and UserId = #{UserId}
+	</select>
+</mapper>

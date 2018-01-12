@@ -27,8 +27,6 @@ public interface OrderMapper {
 	
 	Integer updateOrderHeadCoCur();
 
-	void updateUserQuota(BigDecimal RemainStream);
-
 	void updateOrderHeadScore(@Param("Score") Integer score, @Param("Id") Integer id);
 
 	void insertOrderHeadCo(@Param("orderNoCName") String orderNoCName, @Param("orderNoC") String orderNoC,
