@@ -67,19 +67,24 @@ public class MemberShipServiceImpl implements MemberShipService {
 	public void syncHandleVipOrder(Integer UserId, String orderNo) {
 		Map<String, Object> data = memberShipMapper.selectViporderByOrderNo(orderNo, UserId);
 		BigDecimal useElecNum = (BigDecimal) data.get("TolAmout");
-		Integer lev = (Integer) data.get("Lev");
 		Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(UserId);
 		BigDecimal remainElec = ((BigDecimal) curQuota.get("RemainElecNum")).subtract(useElecNum);
+		BigDecimal remainVIPAmount = ((BigDecimal) curQuota.get("RemainVIPAmount")).add(useElecNum);
+		BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(useElecNum);
+		BigDecimal remianTotalCost = ((BigDecimal) curQuota.get("TotalCost")).add(useElecNum);
 		curQuota.put("RemainElecNum", remainElec);
+		curQuota.put("RemainVIPAmount", remainVIPAmount);
+		curQuota.put("Coupon", remainCoupon);
+		curQuota.put("TotalCost", remianTotalCost);
 		userMapper.updateUserQuota(curQuota);
+		Integer lev = (Integer) data.get("Lev");
 		String memo = "";
-		BigDecimal amount = null;
 		// 更新等级
 		if (lev == 1) {
 			//升级vip
 			userMapper.setLev(1, 0, UserId);
 			memo = "购买VIP，订单号：" + orderNo;
-			amount = new BigDecimal(mallData.getVipNeedPay());
+			//升级提交生成二送一和一送一任务
 		}else{
 			Calendar c = Calendar.getInstance();
 			c.add(Calendar.DATE, 30);//计算30天后的时间
@@ -89,10 +94,11 @@ public class MemberShipServiceImpl implements MemberShipService {
 				userMapper.insertExpireTimeOfGcOfUser(expireTime, UserId);
 			}
 			memo = "购买绿色通道，订单号：" + orderNo;
-			amount = new BigDecimal(mallData.getGcNeedPay());
 		}
 	    //记录现金购买vip
-		logMapper.insertElecRecord(UserId, new Date(), amount, "-", memo);
+		logMapper.insertElecRecord(UserId, new Date(), useElecNum, "-", memo);
+		logMapper.insertCouponRecord(UserId, new Date(), useElecNum, "+", memo);
+		logMapper.insertVipRemainRecord(UserId, new Date(), useElecNum, "+", memo);
 		// 分润
 		tasks.shareBenitTask(1, UserId, 0, "购买会员", useElecNum);
 	}

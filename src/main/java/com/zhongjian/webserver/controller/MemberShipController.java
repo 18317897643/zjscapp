@@ -107,7 +107,7 @@ public class MemberShipController {
 		}
 	}
 
-	@ApiOperation(httpMethod = "POST", notes = "生成VIP订单并支付", value = "生成VIP订单")
+	@ApiOperation(httpMethod = "POST", notes = "生成VIP订单", value = "生成VIP订单")
 	@RequestMapping(value = "/createVOrder/{token}", method = RequestMethod.POST)
 	Result<Object> createVOrder(@PathVariable("token") String toKen, @RequestBody Map<String, Integer> dataMap)
 			throws BusinessException {
@@ -149,7 +149,7 @@ public class MemberShipController {
 		}
 	}
 	
-	@ApiOperation(httpMethod = "POST", notes = "同步处理vip", value = "同步处理vip")
+	@ApiOperation(httpMethod = "POST", notes = "现金支付处理vip", value = "现金支付处理vip")
 	@RequestMapping(value = "/syncHandleVipOrder/{token}", method = RequestMethod.POST)
 	Result<Object> syncHandleVipOrder(@PathVariable("token") String toKen, @RequestParam String orderNo)
 			throws BusinessException {

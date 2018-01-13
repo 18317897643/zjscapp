@@ -23,7 +23,11 @@ public interface UserMapper {
     
     Map<String, Object> selectPersonalInform(String userName);
     
+    Map<String, Object> selectPersonalInformById(Integer userId);
+    
     Integer getUserIdByUserName(String userName);
+    
+    String getUserNameByUserId(Integer userId);
     
     Integer updateByUserNameSelective(User user);
     

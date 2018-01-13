@@ -429,12 +429,22 @@
 	</update>
 	<select id="selectPersonalInform" resultType="java.util.Map">
 		select
-		UserName,SysID,Lev,IsSubProxy,NickName,HeadPhoto,RemainElecNum,RemainPoints,RemainVIPAmount,Coupon,RemainStream,Phone,TrueName,IDCardNo,InviteCode,PayPassword
+		UserName,SysID,Lev,IsSubProxy,NickName,HeadPhoto,RemainElecNum,RemainPoints,RemainVIPAmount,Coupon,TotalCost,RemainStream,Phone,TrueName,IDCardNo,InviteCode,PayPassword
 		from tb_user where UserName = #{userName}
+	</select>
+	<select id="selectPersonalInformById" resultType="java.util.Map">
+		select
+		UserName,SysID,Lev,IsSubProxy,NickName,HeadPhoto,RemainElecNum,RemainPoints,RemainVIPAmount,Coupon,TotalCost,RemainStream,Phone,TrueName,IDCardNo,InviteCode,PayPassword
+		from tb_user where Id = #{id}
 	</select>
 	<select id="getUserIdByUserName" resultType="java.lang.Integer">
 		select Id from
 		tb_user where UserName = #{userName}
+	</select>
+	
+	<select id="getUserNameByUserId" resultType="java.lang.String">
+		select UserName from
+		tb_user where Id = #{UserId}
 	</select>
 	<select id="InviteCodeIsExists" resultType="java.lang.Integer">
 		SELECT COUNT(1) FROM
@@ -482,7 +492,7 @@
 	</insert>
 	<update id="setLev">
 		update tb_user set Lev = #{Lev} , IsSubProxy =
-		#{IsSubProxy} where UserId =
+		#{IsSubProxy} where Id =
 		#{UserId}
 	</update>
 </mapper>
