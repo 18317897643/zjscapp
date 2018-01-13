@@ -45,6 +45,10 @@ public interface UserMapper {
     
     Date getExpireTimeFromGcOfUser(Integer id);
     
+    void setLev(@Param("Lev") Integer lev ,@Param("IsSubProxy") Integer subProxy,@Param("UserId") Integer userId);
     
+    Integer updateExpireTimeOfGcOfUser(@Param("ExpireTime") Date expireTime,@Param("UserId") Integer userId);
+    
+    void insertExpireTimeOfGcOfUser(@Param("ExpireTime") Date expireTime,@Param("UserId") Integer userId);
     
 }

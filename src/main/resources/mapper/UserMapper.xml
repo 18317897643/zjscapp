@@ -442,7 +442,8 @@
 	</select>
 	<select id="selectUserQuotaForUpdate" resultType="java.util.Map">
 		SELECT
-		Id UserId,Coupon,RemainPoints,RemainElecNum,RemainVIPAmount,RemainStream,TotalCost
+		Id
+		UserId,Coupon,RemainPoints,RemainElecNum,RemainVIPAmount,RemainStream,TotalCost
 		FROM tb_user WHERE Id = #{Id} FOR UPDATE;
 	</select>
 	<update id="updateUserQuota" parameterType="java.util.Map">
@@ -467,8 +468,21 @@
 	<select id="getExpireTimeFromGcOfUser" resultType="java.util.Date"
 		parameterType="java.lang.Integer">
 		SELECT ExpireTime from tb_greenchannel where
-		UserId = #{id}
+		UserId =
+		#{id}
 	</select>
-
-
+	<update id="updateExpireTimeOfGcOfUser">
+		update tb_greenchannel set ExpireTime =
+		#{ExpireTime,jdbcType=TIMESTAMP}
+		where UserId = #{UserId}
+	</update>
+	<insert id="insertExpireTimeOfGcOfUser">
+		insert into tb_greenchannel (UserId,ExpireTime)
+		VALUES (#{UserId},#{ExpireTime,jdbcType=TIMESTAMP})
+	</insert>
+	<update id="setLev">
+		update tb_user set Lev = #{Lev} , IsSubProxy =
+		#{IsSubProxy} where UserId =
+		#{UserId}
+	</update>
 </mapper>

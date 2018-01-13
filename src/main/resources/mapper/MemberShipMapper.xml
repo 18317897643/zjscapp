@@ -8,7 +8,7 @@
 		VALUES
 		(#{OrderNo},#{UserId},#{CreateTime},#{ElecNum},#{TolAmout},#{Lev},#{RealPay},0)
 	</insert>
-	<select id="selectViporderByOrderNo" resultType="java.math.BigDecimal">
-		SELECT TolAmout from tb_viporder where OrderNo = #{OrderNo} and UserId = #{UserId}
+	<select id="selectViporderByOrderNo" resultType="java.util.Map">
+		SELECT TolAmout,Lev from tb_viporder where OrderNo = #{OrderNo} and UserId = #{UserId}
 	</select>
 </mapper>

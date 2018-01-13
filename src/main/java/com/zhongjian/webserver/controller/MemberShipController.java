@@ -136,14 +136,33 @@ public class MemberShipController {
 				}
 				Map<String, Object> map = memberShipService.createVOrder(lev,needPay, UserId, type);
 				String orderNo = (String) map.get("OrderNo");
-				memberShipService.syncHandleVipOrder(UserId, orderNo);
 				// vip订单购买成功
-				return ResultUtil.success();
+				return ResultUtil.success(orderNo);
 			} else  {
 				//支付宝支付
 				Map<String, Object> map = memberShipService.createVOrder(lev,needPay, UserId, type);
 				return ResultUtil.success(orderHandleService.createAliSignature((String) map.get("OrderNo"), ((BigDecimal)map.get("TolAmout")).toString()));
 			}
+		} catch (Exception e) {
+			LoggingUtil.e("生成VIP订单并支付异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "生成VIP订单并支付异常");
+		}
+	}
+	
+	@ApiOperation(httpMethod = "POST", notes = "同步处理vip", value = "同步处理vip")
+	@RequestMapping(value = "/syncHandleVipOrder/{token}", method = RequestMethod.POST)
+	Result<Object> syncHandleVipOrder(@PathVariable("token") String toKen, @RequestParam String orderNo)
+			throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			// recive args
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			memberShipService.syncHandleVipOrder(UserId, orderNo);
+			return null;
 		} catch (Exception e) {
 			LoggingUtil.e("生成VIP订单并支付异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "生成VIP订单并支付异常");

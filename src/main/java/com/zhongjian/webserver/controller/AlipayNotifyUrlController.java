@@ -1,5 +1,7 @@
 package com.zhongjian.webserver.controller;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -93,6 +95,10 @@ public class AlipayNotifyUrlController {
 	Result<Object> test(HttpServletRequest request)  {
 //		Map<String, Object> map = orderMapper.getDetailsFormorderheadC("CB123456789");
 //		orderMapper.updateUserQuota(new BigDecimal("-3.00"));
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.DATE, 30);//计算30天后的时间
+		Date expireTime = c.getTime();
+		userMapper.insertExpireTimeOfGcOfUser(expireTime, 6303);
 		return null;
 
 //		Map<String, Object>map = orderMapper.getNeedSubDetailsOfOrderHead("B20170528220557868263633");
