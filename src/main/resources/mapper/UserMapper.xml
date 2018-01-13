@@ -491,7 +491,7 @@
 		VALUES (#{UserId},#{ExpireTime,jdbcType=TIMESTAMP})
 	</insert>
 	<update id="setLev">
-		update tb_user set Lev = #{Lev} , IsSubProxy =
+		update tb_user set Lev = #{Lev},IsSubProxy =
 		#{IsSubProxy} where Id =
 		#{UserId}
 	</update>
