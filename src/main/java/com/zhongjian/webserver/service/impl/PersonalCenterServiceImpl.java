@@ -12,6 +12,7 @@ import com.zhongjian.webserver.mapper.OrderMapper;
 import com.zhongjian.webserver.mapper.ProxyApplyMapper;
 import com.zhongjian.webserver.mapper.ShoppingCartMapper;
 import com.zhongjian.webserver.mapper.UserMapper;
+import com.zhongjian.webserver.pojo.BillReacord;
 import com.zhongjian.webserver.pojo.Orderhead;
 import com.zhongjian.webserver.pojo.Product;
 import com.zhongjian.webserver.pojo.ProxyApply;
@@ -123,5 +124,19 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 			return false;
 		}
 		return true;
+	}
+	@Override
+	public List<BillReacord> accountBill(Integer userId, String type, Integer page, Integer pageNum) {
+		if ("coupon".equals(type)) {
+			return userMapper.getCouponBill(userId, page, pageNum);
+		}else if("points".equals(type)){
+			return userMapper.getPointBill(userId, page, pageNum);
+		} else if("vip".equals(type)){
+			return userMapper.getVipBill(userId, page, pageNum);
+		}else if("elec".equals(type)){
+			return userMapper.getElecBill(userId, page, pageNum);
+		}else {
+			return null;
+		}
 	}
 }

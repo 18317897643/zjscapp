@@ -19,5 +19,11 @@ public class AsyncTasks {
 	public void shareBenitTask(Integer type, Integer masterUserId, Integer slaveUserId, String memo, BigDecimal ElecNum)  {
 		coreService.shareBenit(type, masterUserId, slaveUserId, memo, ElecNum);
     }
+	
+	@Async
+	//赠送名额任务
+	public void presentTask(Integer type, Integer userId)  {
+		coreService.present(type, userId);
+    }
 
 }

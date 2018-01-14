@@ -8,5 +8,16 @@ public interface MemberShipMapper {
 	
 	void insertVipOrder(Map<String, Object> map);
 	
-	Map<String, Object> selectViporderByOrderNo(@Param("OrderNo") String orderNo,@Param("UserId") Integer userId);
+	void insertCOrder(Map<String, Object> map);
+	
+	Map<String, Object> selectViporderByOrderAndUser(@Param("OrderNo") String orderNo,@Param("UserId") Integer userId);
+	
+	Map<String, Object> selectViporderByOrder(String orderNo);
+	
+	Map<String, Object> selectCOrderByOrderNo(String orderNo);
+	
+	Integer changeVipOrderToPaid(String orderNo);
+	
+	Integer changeCOrderToPaid(String orderNo);
+	
 }

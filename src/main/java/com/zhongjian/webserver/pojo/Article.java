@@ -5,13 +5,14 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class Article {
-    @JsonFormat(pattern="yyyy-MM-dd")
+    
     private Date createtime;
     
     private String title;
     
     private String memo;
 
+    @JsonFormat(pattern="yyyy-MM-dd")
 	public Date getCreatetime() {
 		return createtime;
 	}

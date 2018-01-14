@@ -69,7 +69,7 @@ public class ProductManagerController {
 	
 	@ApiOperation(httpMethod = "GET", notes = "获取商品评价详情", value = "获取商品评价详情")
 	@RequestMapping(value = "/ProductManager/getProductCommentById", method = RequestMethod.GET)
-	Result<Object> getProductCommentById(@RequestParam Integer productId,Integer page,Integer pageNum) throws BusinessException {
+	Result<Object> getProductCommentById(@RequestParam Integer productId,@RequestParam Integer page,@RequestParam Integer pageNum) throws BusinessException {
 		try {
 			List<ProductComment> productComments = productManagerService.getProductComment(productId, page, pageNum);
 			return ResultUtil.success(productComments);

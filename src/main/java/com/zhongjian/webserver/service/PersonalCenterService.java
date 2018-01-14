@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.zhongjian.webserver.pojo.BillReacord;
 import com.zhongjian.webserver.pojo.Orderhead;
 import com.zhongjian.webserver.pojo.ProxyApply;
 
@@ -43,4 +44,6 @@ public interface PersonalCenterService {
 	boolean isAlreadyAuth(Integer UserId);
 	
 	boolean isGCMember(Integer UserId);
+	
+	List<BillReacord> accountBill(Integer userId,String type,Integer page,Integer pageNum);
 }

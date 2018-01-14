@@ -38,7 +38,6 @@ public class MemberShipServiceImpl implements MemberShipService {
 
 	@Override
 	public HashMap<String, Object> createVOrder(Integer lev, BigDecimal needPay, Integer UserId, Integer type) {
-		// 查询用户账上余额，不够就不生成订单
 		HashMap<String, Object> data = new HashMap<>();
 		if (type == 0) {
 			data.put("ElecNum", needPay);
@@ -65,7 +64,8 @@ public class MemberShipServiceImpl implements MemberShipService {
 	@Override
 	@Transactional
 	public void syncHandleVipOrder(Integer UserId, String orderNo) {
-		Map<String, Object> data = memberShipMapper.selectViporderByOrderNo(orderNo, UserId);
+		if (memberShipMapper.changeVipOrderToPaid(orderNo) == 1) {
+		Map<String, Object> data = memberShipMapper.selectViporderByOrderAndUser(orderNo, UserId);
 		BigDecimal useElecNum = (BigDecimal) data.get("TolAmout");
 		Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(UserId);
 		BigDecimal remainElec = ((BigDecimal) curQuota.get("RemainElecNum")).subtract(useElecNum);
@@ -85,6 +85,7 @@ public class MemberShipServiceImpl implements MemberShipService {
 			userMapper.setLev(1, 0, UserId);
 			memo = "购买VIP，订单号：" + orderNo;
 			//升级提交生成二送一和一送一任务
+			tasks.presentTask(1, UserId);
 		}else{
 			Calendar c = Calendar.getInstance();
 			c.add(Calendar.DATE, 30);//计算30天后的时间
@@ -101,5 +102,18 @@ public class MemberShipServiceImpl implements MemberShipService {
 		logMapper.insertVipRemainRecord(UserId, new Date(), useElecNum, "+", memo);
 		// 分润
 		tasks.shareBenitTask(1, UserId, 0, "购买会员", useElecNum);
+	}
+	}
+
+	@Override
+	public String createCOrder(Integer userId, BigDecimal money) {
+		String orderNo = "CZ" + RandomUtil.getFlowNumber();
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("OrderNo", orderNo);
+		data.put("UserId", userId);
+		data.put("CreateTime", new Date());
+		data.put("Amount", money);
+		memberShipMapper.insertCOrder(data);
+		return orderNo;
 	}
 }

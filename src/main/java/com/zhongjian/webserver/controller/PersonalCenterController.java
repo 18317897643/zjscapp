@@ -463,14 +463,9 @@ public class PersonalCenterController {
 
 	@ApiOperation(httpMethod = "GET", notes = "查看该用户是否领取新人红包", value = "查看该用户是否领取新人红包")
 	@RequestMapping(value = "/PersonalCenter/checkNewExclusive/{token}", method = RequestMethod.GET)
-	Result<Object> checkNewExclusive(@PathVariable("token") String toKen, HttpServletResponse response)
+	Result<Object> checkNewExclusive(@PathVariable("token") String toKen)
 			throws BusinessException {
 		try {
-			response.addHeader("Access-Control-Allow-Origin", "*");
-			response.addHeader("Access-Control-Allow-Methods", "*");
-			response.addHeader("Access-Control-Max-Age", "100");
-			response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-			response.addHeader("Access-Control-Allow-Credentials", "false");
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
@@ -491,14 +486,9 @@ public class PersonalCenterController {
 
 	@ApiOperation(httpMethod = "POST", notes = "领取新人红包", value = "领取新人红包")
 	@RequestMapping(value = "/PersonalCenter/drawNewExclusive/{token}", method = RequestMethod.POST)
-	Result<Object> drawNewExclusive(@PathVariable("token") String toKen, HttpServletResponse response)
+	Result<Object> drawNewExclusive(@PathVariable("token") String toKen)
 			throws BusinessException {
 		try {
-			response.addHeader("Access-Control-Allow-Origin", "*");
-			response.addHeader("Access-Control-Allow-Methods", "*");
-			response.addHeader("Access-Control-Max-Age", "100");
-			response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-			response.addHeader("Access-Control-Allow-Credentials", "false");
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
@@ -512,6 +502,24 @@ public class PersonalCenterController {
 		} catch (Exception e) {
 			LoggingUtil.e("领取新人红包异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "领取新人红包异常");
+		}
+	}
+	@ApiOperation(httpMethod = "GET", notes = "金额明细", value = "金额明细")
+	@RequestMapping(value = "/PersonalCenter/accountBill/{token}", method = RequestMethod.GET)
+	Result<Object> accountBill(@PathVariable("token") String toKen, @RequestParam String type,@RequestParam Integer page,@RequestParam Integer pageNum)
+			throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			//业务层返回各类型消费明细
+			return ResultUtil.success(personalCenterService.accountBill(UserId, type, page, pageNum));
+		} catch (Exception e) {
+			LoggingUtil.e("金额明细异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "金额明细异常");
 		}
 	}
 }

@@ -109,7 +109,7 @@ public class MemberShipController {
 
 	@ApiOperation(httpMethod = "POST", notes = "生成VIP订单", value = "生成VIP订单")
 	@RequestMapping(value = "/createVOrder/{token}", method = RequestMethod.POST)
-	Result<Object> createVOrder(@PathVariable("token") String toKen, @RequestBody Map<String, Integer> dataMap)
+	Result<Object> createVOrder(@PathVariable("token") String toKen, @RequestParam Integer type,Integer lev)
 			throws BusinessException {
 		try {
 			// 检查token通过
@@ -118,8 +118,6 @@ public class MemberShipController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			// recive args
-			Integer type = dataMap.get("type");
-			Integer lev = dataMap.get("lev");
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// type=0现金支付 type =1 支付宝支付
 			// lev=0绿色通道 lev=1 vip通道
@@ -169,6 +167,29 @@ public class MemberShipController {
 		}
 	}
 
+	@ApiOperation(httpMethod = "POST", notes = "生成充值现金币订单", value = "生成充值现金币订单")
+	@RequestMapping(value = "/createCOrder/{token}", method = RequestMethod.POST)
+	Result<Object> createCOrder(@PathVariable("token") String toKen, @RequestParam BigDecimal money)
+			throws BusinessException {
+		try {
+			if (money.compareTo(BigDecimal.ZERO) == -1) {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "金额不能小于零");
+			}
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+		    //生成订单
+			String orderNo = memberShipService.createCOrder(UserId, money);
+			return ResultUtil.success(orderHandleService.createAliSignature(orderNo, money.toString()));
+		} catch (Exception e) {
+			LoggingUtil.e("生成充值现金币订单异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "生成充值现金币订单异常");
+		}
+	}
+	
 	@ApiOperation(httpMethod = "GET", notes = "升级申请资料判断", value = "升级申请资料判断")
 	@RequestMapping(value = "/isAlreadyApply/{token}", method = RequestMethod.GET)
 	Result<Object> isAlreadyApply(@PathVariable("token") String toKen) throws BusinessException {
@@ -241,15 +262,26 @@ public class MemberShipController {
 
 	@ApiOperation(httpMethod = "POST", notes = "升级到vip或准代或代理时产生赠送名额", value = "升级到vip或准代或代理时产生赠送名额")
 	@RequestMapping(value = "/present", method = RequestMethod.POST)
-	Result<Object> present(@RequestParam Integer type, @RequestParam Integer masterUserId) throws BusinessException {
+	Result<Object> present(@RequestParam Integer type, @RequestParam Integer userId) throws BusinessException {
 		// 1为vip 2准代和代理
 		try {
 			if (type != 1 && type != 2) {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "参数异常");
 			}
+			tasks.presentTask(type, userId);
+			return ResultUtil.success();
+		} catch (Exception e) {
+			throw new BusinessException(Status.SeriousError.getStatenum(), "升级到vip或准代或代理时产生赠送名额异常");
+		}
+	}
+	@ApiOperation(httpMethod = "GET", notes = "根据众健号搜索会员", value = "根据众健号搜索会员")
+	@RequestMapping(value = "/getMemberBySysId", method = RequestMethod.GET)
+	Result<Object> getMemberBySysId(@RequestParam Integer type, @RequestParam Integer userId) throws BusinessException {
+		try {
 			return null;
 		} catch (Exception e) {
-			throw new BusinessException(Status.SeriousError.getStatenum(), "分润接口异常");
+			throw new BusinessException(Status.SeriousError.getStatenum(), "根据众健号搜索会员异常");
 		}
+		
 	}
 }

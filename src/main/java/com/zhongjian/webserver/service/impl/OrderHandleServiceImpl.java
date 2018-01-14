@@ -3,6 +3,7 @@ package com.zhongjian.webserver.service.impl;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -21,9 +22,11 @@ import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.zhongjian.webserver.alipay.AlipayConfig;
 import com.zhongjian.webserver.common.RandomUtil;
+import com.zhongjian.webserver.component.AsyncTasks;
 import com.zhongjian.webserver.dto.OrderHeadDto;
 import com.zhongjian.webserver.dto.OrderLineDto;
 import com.zhongjian.webserver.mapper.LogMapper;
+import com.zhongjian.webserver.mapper.MemberShipMapper;
 import com.zhongjian.webserver.mapper.OrderMapper;
 import com.zhongjian.webserver.mapper.UserMapper;
 import com.zhongjian.webserver.service.OrderHandleService;
@@ -39,6 +42,12 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 
 	@Autowired
 	LogMapper logMapper;
+
+	@Autowired
+	MemberShipMapper memberShipMapper;
+
+	@Autowired
+	AsyncTasks tasks;
 
 	@Override
 	@Transactional
@@ -106,18 +115,21 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 			theCurrentOrderNoCollectionsStr = theCurrentOrderNoCollectionsStr + theCurrentOrderNoCollections.get(i)
 					+ "|";
 		}
-		BigDecimal totalNotRealPayCo = TotalEveryAmountCoList.get(1).add(TotalEveryAmountCoList.get(2)).add(TotalEveryAmountCoList.get(3)).add(TotalEveryAmountCoList.get(4));
+		BigDecimal totalNotRealPayCo = TotalEveryAmountCoList.get(1).add(TotalEveryAmountCoList.get(2))
+				.add(TotalEveryAmountCoList.get(3)).add(TotalEveryAmountCoList.get(4));
 		orderMapper.insertOrderHeadCo(theCurrentOrderNoCollectionName, theCurrentOrderNoCollectionsStr,
-				TotalEveryAmountCoList.get(0),totalNotRealPayCo,new Date(),UserId);
-//		// 预扣
-//		if (TotalEveryAmountCoList.get(0).compareTo(BigDecimal.ZERO) != 0) {
-//			orderMapper.insertPreSubQuata(UserId, TotalEveryAmountCoList.get(1), TotalEveryAmountCoList.get(2),
-//					TotalEveryAmountCoList.get(3), TotalEveryAmountCoList.get(4), new Date());
-//		}
+				TotalEveryAmountCoList.get(0), totalNotRealPayCo, new Date(), UserId);
+		// // 预扣
+		// if (TotalEveryAmountCoList.get(0).compareTo(BigDecimal.ZERO) != 0) {
+		// orderMapper.insertPreSubQuata(UserId, TotalEveryAmountCoList.get(1),
+		// TotalEveryAmountCoList.get(2),
+		// TotalEveryAmountCoList.get(3), TotalEveryAmountCoList.get(4), new
+		// Date());
+		// }
 		HashMap<String, Object> result = new HashMap<>();
 		result.put("orderNoCollectionName", theCurrentOrderNoCollectionsStr);
 		result.put("totalRealPayCo", TotalEveryAmountCoList.get(0));
-		result.put("totalNotRealPayCo",totalNotRealPayCo);
+		result.put("totalNotRealPayCo", totalNotRealPayCo);
 		return result;
 	}
 
@@ -127,7 +139,7 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 		if (orderNo.startsWith("CB")) {
 			Map<String, Object> map = orderMapper.getDetailsFormorderheadC(orderNo);
 			if (!map.get("PlatformMoney").toString().equals(platformMoneyAmount)) {
-				//金额不对
+				// 金额不对
 				return false;
 			} else {
 				if (orderMapper.updateOrderHeadCoCur() == 1) {
@@ -181,7 +193,7 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 
 		} else if (orderNo.startsWith("B")) {
 			if (orderMapper.getPlatformMoneyOfOrderhead(orderNo) != platformMoneyAmount) {
-				//金额不对
+				// 金额不对
 				return false;
 			}
 			if (orderMapper.updateOrderHeadStatusToWP(orderNo) == 1) {
@@ -223,7 +235,7 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 				return false;
 			}
 		} else if (orderNo.startsWith("VO")) {
-			
+
 		} else if (orderNo.startsWith("CZ")) {
 
 		} else {
@@ -287,10 +299,8 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 						// 更改订单状态
 						orderMapper.updateOrderHeadStatus(0, orderNoC[i]);
 					}
-				} else {
-					// 让支付宝不要再回调
-					return true;
 				}
+				return true;
 			}
 
 		} else if (orderNo.startsWith("B")) {
@@ -328,14 +338,62 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 				if (remainVIPAmount.compareTo(BigDecimal.ZERO) == 1) {
 					logMapper.insertVipRemainRecord(userId, curDate, useVIPRemainNum, "-", "购买商品，订单号：" + orderNo);
 				}
-			} else {
-				// 让支付宝不要再回调
-				return true;
 			}
-
+			return true;
 		} else if (orderNo.startsWith("VO")) {
-
+			if (memberShipMapper.changeVipOrderToPaid(orderNo) == 1) {
+				Map<String, Object> data = memberShipMapper.selectViporderByOrder(orderNo);
+				Integer lev = (Integer) data.get("Lev");
+				BigDecimal useMoney = (BigDecimal) data.get("TolAmout");
+				Integer UserId = (Integer) data.get("UserId");
+				// 积分红包个人分值的变化
+				Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(UserId);
+				BigDecimal remainVIPAmount = ((BigDecimal) curQuota.get("RemainVIPAmount")).add(useMoney);
+				BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(useMoney);
+				BigDecimal remianTotalCost = ((BigDecimal) curQuota.get("TotalCost")).add(useMoney);
+				curQuota.put("RemainVIPAmount", remainVIPAmount);
+				curQuota.put("Coupon", remainCoupon);
+				curQuota.put("TotalCost", remianTotalCost);
+				userMapper.updateUserQuota(curQuota);
+				// 升级vip gc
+				String memo = "";
+				// 更新等级
+				if (lev == 1) {
+					// 升级vip
+					userMapper.setLev(1, 0, UserId);
+					memo = "购买VIP，订单号：" + orderNo;
+					// 升级提交生成二送一和一送一任务
+					tasks.presentTask(1, UserId);
+				} else {
+					Calendar c = Calendar.getInstance();
+					c.add(Calendar.DATE, 30);// 计算30天后的时间
+					Date expireTime = c.getTime();
+					// 升级绿色通道
+					if (userMapper.updateExpireTimeOfGcOfUser(expireTime, UserId) != 1) {
+						userMapper.insertExpireTimeOfGcOfUser(expireTime, UserId);
+					}
+					memo = "购买绿色通道，订单号：" + orderNo;
+				}
+				// 记录现金购买vip
+				logMapper.insertCouponRecord(UserId, new Date(), useMoney, "+", memo);
+				logMapper.insertVipRemainRecord(UserId, new Date(), useMoney, "+", memo);
+				// 分润
+				tasks.shareBenitTask(1, UserId, 0, "购买会员", useMoney);
+			}
+			return true;
 		} else if (orderNo.startsWith("CZ")) {
+			// 现金币到账
+			if (memberShipMapper.changeCOrderToPaid(orderNo) == 1) {
+				Map<String, Object> data = memberShipMapper.selectCOrderByOrderNo(orderNo);
+				BigDecimal amount = (BigDecimal) data.get("Amount");
+				Integer UserId = (Integer) data.get("UserId");
+				Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(UserId);
+				BigDecimal remainElecNum = ((BigDecimal) curQuota.get("RemainElecNum")).add(amount);
+				curQuota.put("RemainElecNum", remainElecNum);
+				userMapper.updateUserQuota(curQuota);
+				//充值记录
+				logMapper.insertCouponRecord(UserId, new Date(), amount, "+", "现金币充值");
+			}
 
 		} else {
 			return false;

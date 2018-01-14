@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alipay.api.domain.Data;
 import com.zhongjian.webserver.common.TokenManager;
 import com.zhongjian.webserver.common.jpushUtil;
 import com.zhongjian.webserver.mapper.CoreMapper;
@@ -27,13 +26,13 @@ public class CoreServiceImpl implements CoreService {
 
 	@Autowired
 	CoreMapper coreMapper;
-	
+
 	@Autowired
 	LogMapper logMapper;
 
 	@Autowired
 	PersonalCenterService personalCenterService;
-	
+
 	@Autowired
 	TokenManager tokenManager;
 
@@ -61,7 +60,7 @@ public class CoreServiceImpl implements CoreService {
 		} else {
 			// 此时masterUserId是被分流者，slaveUserId是分流者
 			Map<String, Integer> slaveUpMap = coreMapper.selectHigherLev(slaveUserId);
-			if (slaveUpMap.get("Lev") != 3) {
+			if (slaveUpMap == null || slaveUpMap.get("Lev") != 3) {
 				resultMap = normalBenifit(masterUserId);
 			} else {
 				resultMap = abNormalBenifit(masterUserId);
@@ -69,6 +68,8 @@ public class CoreServiceImpl implements CoreService {
 		}
 		// 实际分润并产生记录
 		if (resultMap.size() != 0) {
+			BigDecimal percent10 = new BigDecimal("0.10");
+			BigDecimal percent90 = new BigDecimal("0.90");
 			for (Entry<BigDecimal, Integer> entry : resultMap.entrySet()) {
 				// 查出自己的等级再决定分润到购物币或者现金币
 				BigDecimal percent = entry.getKey();
@@ -83,42 +84,55 @@ public class CoreServiceImpl implements CoreService {
 					BigDecimal remainPoints = ((BigDecimal) curQuota.get("RemainPoints")).add(shareMoney);
 					curQuota.put("RemainPoints", remainPoints);
 					userMapper.updateUserQuota(curQuota);
-					//产生分润记录
+					// 产生分润记录
 					HashMap<String, Object> distributionRecord = new HashMap<>();
 					distributionRecord.put("CreateTime", date);
 					distributionRecord.put("FromUser_Id", masterUserId);
 					distributionRecord.put("User_Id", userId);
-					distributionRecord.put("User_ElecNum",shareMoney);
-					distributionRecord.put("AmountType",2);
+					distributionRecord.put("User_ElecNum", shareMoney);
+					distributionRecord.put("AmountType", 2);
 					distributionRecord.put("Memo", memo);
 					coreMapper.addDistributionRecord(distributionRecord);
-					//推送token
+					// 推送token
 					String userName = userMapper.getUserNameByUserId(userId);
 					String token = tokenManager.getTokenByUserName(userName);
-					jpushUtil.sendAlias("恭喜您得到" + shareMoney + "购物币分润金额", token, "extKey", "extValue");
-					//个人账单明细记录
+					jpushUtil.sendAlias("恭喜您得到" + shareMoney + "分润金额", token, "extKey", "extValue");
+					// 个人账单明细记录
 					logMapper.insertPointRecord(userId, date, shareMoney, "+", "分润");
-				}else {
+				} else {
 					// 分润现金币
 					BigDecimal shareMoney = percent.multiply(ElecNum).setScale(2, BigDecimal.ROUND_HALF_UP);
+					BigDecimal shareMoneyToPoint = shareMoney.multiply(percent10).setScale(2, BigDecimal.ROUND_HALF_UP);
+					BigDecimal shareMoneyToElec = shareMoney.multiply(percent90).setScale(2, BigDecimal.ROUND_HALF_UP);
 					Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(userId);
-					BigDecimal remainElecNum = ((BigDecimal) curQuota.get("RemainElecNum")).add(shareMoney);
+					BigDecimal remainElecNum = ((BigDecimal) curQuota.get("RemainElecNum")).add(shareMoneyToElec);
+					BigDecimal remainPoint = ((BigDecimal) curQuota.get("RemainPoints")).add(shareMoneyToPoint);
 					curQuota.put("RemainElecNum", remainElecNum);
+					curQuota.put("RemainPoints", remainPoint);
 					userMapper.updateUserQuota(curQuota);
-					//产生分润记录
-					HashMap<String, Object> distributionRecord = new HashMap<>();
-					distributionRecord.put("CreateTime", date);
-					distributionRecord.put("FromUser_Id", masterUserId);
-					distributionRecord.put("User_Id", userId);
-					distributionRecord.put("User_ElecNum",shareMoney);
-					distributionRecord.put("AmountType",1);
-					distributionRecord.put("Memo", memo);
-					coreMapper.addDistributionRecord(distributionRecord);
-					//推送token
+					// 产生现金币分润记录
+					HashMap<String, Object> distributionElecRecord = new HashMap<>();
+					distributionElecRecord.put("CreateTime", date);
+					distributionElecRecord.put("FromUser_Id", masterUserId);
+					distributionElecRecord.put("User_Id", userId);
+					distributionElecRecord.put("User_ElecNum", shareMoneyToElec);
+					distributionElecRecord.put("AmountType", 1);
+					distributionElecRecord.put("Memo", memo);
+					coreMapper.addDistributionRecord(distributionElecRecord);
+					// 产生购物币分润记录
+					HashMap<String, Object> distributionPointRecord = new HashMap<>();
+					distributionPointRecord.put("CreateTime", date);
+					distributionPointRecord.put("FromUser_Id", masterUserId);
+					distributionPointRecord.put("User_Id", userId);
+					distributionPointRecord.put("User_ElecNum", shareMoneyToPoint);
+					distributionPointRecord.put("AmountType", 2);
+					distributionPointRecord.put("Memo", memo);
+					coreMapper.addDistributionRecord(distributionPointRecord);
+					// 推送token
 					String userName = userMapper.getUserNameByUserId(userId);
 					String token = tokenManager.getTokenByUserName(userName);
-					jpushUtil.sendAlias("恭喜您得到" + shareMoney + "现金币分润金额", token, "extKey", "extValue");
-					//个人账单明细记录
+					jpushUtil.sendAlias("恭喜您得到" + shareMoney + "分润金额", token, "extKey", "extValue");
+					// 个人账单明细记录
 					logMapper.insertElecRecord(userId, date, shareMoney, "+", "分润");
 				}
 			}
@@ -202,4 +216,35 @@ public class CoreServiceImpl implements CoreService {
 		return resultMap;
 	}
 
+	@Override
+	@Transactional
+	public void present(Integer type,Integer userId) {
+		Map<String, Integer> map = coreMapper.selectHigherLev(userId);
+		Date curDate = new Date();
+		if (map == null) {
+			return;
+		}
+		if (type == 1) {
+			Integer curUserId = map.get("Id");
+			//查询推荐vip次数
+			Integer num = coreMapper.selectCommendNumOfUser(curUserId);
+			if(num == null){
+				coreMapper.insertCommendNumOfUser(curUserId);
+			}else {
+				if (num == 1) {
+					//送vip名额(二送一)
+					coreMapper.insertSendHead(curDate, curUserId, 1, 1);
+					//请零
+					coreMapper.setNumCommendOfUser(curUserId, 0);
+				}else if(num == 0) {
+					//设为1
+					coreMapper.setNumCommendOfUser(curUserId, 1);
+				}
+			}
+		}else {
+			Integer curUserId = map.get("Id");
+			//送vip名额(推荐代理送vip)
+			coreMapper.insertSendHead(curDate, curUserId, 1, 2);
+		}
+	}
 }

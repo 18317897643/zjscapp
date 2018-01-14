@@ -45,7 +45,7 @@ public class SignInController {
 	 */
 	@ApiOperation(httpMethod = "GET", notes = "获取签到数据", value = "获取签到数据")
 	@RequestMapping(value = "/init/{token}", method = RequestMethod.GET)
-	public Result<Object> init(@PathVariable("token") String toKen, HttpServletResponse response)
+	public Result<Object> init(@PathVariable("token") String toKen)
 			throws BusinessException {
 		try {
 			// 检查token通过
@@ -71,7 +71,7 @@ public class SignInController {
 	 */
 	@ApiOperation(httpMethod = "POST", notes = "签到", value = "签到")
 	@RequestMapping(value = "/Signing/{token}", method = RequestMethod.POST)
-	public Result<Object> Signing(@PathVariable("token") String toKen, HttpServletResponse response) throws BusinessException {
+	public Result<Object> Signing(@PathVariable("token") String toKen) throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
@@ -103,7 +103,7 @@ public class SignInController {
 	 */
 	@ApiOperation(httpMethod = "POST", notes = "领取奖励", value = "领取奖励")
 	@RequestMapping(value = "/drawAward/{token}", method = RequestMethod.POST)
-	public Result<Object> drawAward(@PathVariable("token") String toKen, @RequestParam String awardType, HttpServletResponse response)
+	public Result<Object> drawAward(@PathVariable("token") String toKen, @RequestParam String awardType)
 			throws BusinessException {
 		try {
 			// 检查token通过

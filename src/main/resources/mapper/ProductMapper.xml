@@ -106,11 +106,11 @@
 		#{id} and CurStatus = 0
 	</select>
 	<select id="selectProductcommentById" resultMap="ProductCommentMap">
-		SELECT
-		Id,CreateTime,Memo,Star,UserId from tb_productcomment
-		WHERE ProductId =
-		#{productId}
-		and CurStatus = 1 limit ${page},${pageNum}
+	SELECT
+	Id,CreateTime,Memo,Star,UserId from tb_productcomment
+	WHERE ProductId =
+	#{productId}
+	and CurStatus = 1 ORDER BY CreateTime DESC limit ${page},${pageNum}
 	</select>
 	<select id="getUserInfo" resultType="User" parameterType="integer">
 		SELECT

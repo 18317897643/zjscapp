@@ -12,7 +12,6 @@ public class Address {
 
     private Integer userid;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createtime;
 
     private Integer countryid;

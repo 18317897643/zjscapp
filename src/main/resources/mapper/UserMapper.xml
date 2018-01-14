@@ -441,7 +441,7 @@
 		select Id from
 		tb_user where UserName = #{userName}
 	</select>
-	
+
 	<select id="getUserNameByUserId" resultType="java.lang.String">
 		select UserName from
 		tb_user where Id = #{UserId}
@@ -495,4 +495,27 @@
 		#{IsSubProxy} where Id =
 		#{UserId}
 	</update>
+	<resultMap id="BillMap" type="BillReacord">
+		<result column="CreateTime" property="CreateTime" jdbcType="TIMESTAMP" />
+		<result column="Amount" property="Amount" jdbcType="DECIMAL" />
+		<result column="AddSub" property="AddSub" jdbcType="VARCHAR" />
+		<result column="Memo" property="Memo" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="getCouponBill" resultMap="BillMap">
+		SELECT
+		CreateTime,Amount,AddSub,Memo from tb_couponrecord where UserId =
+		#{UserId} ORDER BY CreateTime DESC limit ${page},${pageNum}
+	</select>
+	<select id="getElecBill" resultMap="BillMap">
+		SELECT CreateTime,Amount,AddSub,Memo from tb_elecrecord where UserId =
+		#{UserId} ORDER BY CreateTime DESC limit ${page},${pageNum}
+	</select>
+	<select id="getPointBill" resultMap="BillMap">
+		SELECT CreateTime,Amount,AddSub,Memo from tb_pointrecord where UserId =
+		#{UserId} ORDER BY CreateTime DESC limit ${page},${pageNum}
+	</select>
+	<select id="getVipBill" resultMap="BillMap">
+		SELECT CreateTime,Amount,AddSub,Memo from tb_vipremainrecord where UserId =
+		#{UserId} ORDER BY CreateTime DESC limit ${page},${pageNum}
+	</select>
 </mapper>

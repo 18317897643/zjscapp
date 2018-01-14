@@ -8,7 +8,31 @@
 		VALUES
 		(#{OrderNo},#{UserId},#{CreateTime},#{ElecNum},#{TolAmout},#{Lev},#{RealPay},0)
 	</insert>
-	<select id="selectViporderByOrderNo" resultType="java.util.Map">
-		SELECT TolAmout,Lev from tb_viporder where OrderNo = #{OrderNo} and UserId = #{UserId}
+	<insert id="insertCOrder" parameterType="java.util.Map">
+		INSERT INTO tb_recharge
+		(OrderNo,UserId,CreateTime,Amount,Currency,CurStatus)
+		VALUES
+		(#{OrderNo},#{UserId},#{CreateTime},#{Amount},"RMB",0)
+	</insert>
+
+	<select id="selectViporderByOrderAndUser" resultType="java.util.Map">
+		SELECT
+		TolAmout,Lev from tb_viporder where OrderNo = #{OrderNo} and UserId =
+		#{UserId}
 	</select>
+	<select id="selectViporderByOrderNo" resultType="java.util.Map">
+		SELECT
+		TolAmout,Lev,UserId from tb_viporder where OrderNo = #{OrderNo}
+	</select>
+	<select id="selectCOrderByOrderNo" resultType="java.util.Map">
+		SELECT Amount,UserId from tb_recharge where OrderNo = #{OrderNo}
+	</select>
+	<update id="changeVipOrderToPaid">
+		UPDATE tb_viporder set CurStatus = 1 WHERE CurStatus
+		= 0 AND OrderNo = #{OrderNo}
+	</update>
+	<update id="changeCOrderToPaid">
+		UPDATE tb_recharge set CurStatus = 1 WHERE CurStatus
+		= 0 AND OrderNo = #{OrderNo}
+	</update>
 </mapper>

@@ -19,6 +19,7 @@ import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.Result;
 import com.zhongjian.webserver.common.Status;
 import com.zhongjian.webserver.component.AsyncTasks;
+import com.zhongjian.webserver.mapper.CoreMapper;
 import com.zhongjian.webserver.mapper.ProductMapper;
 import com.zhongjian.webserver.mapper.UserMapper;
 import com.zhongjian.webserver.service.CoreService;
@@ -42,6 +43,9 @@ public class AlipayNotifyUrlController {
 	
 	@Autowired
 	CoreService coreService;
+	
+	@Autowired
+	CoreMapper coreMapper;
 
 	/**
 	 * 支付宝异步通知
@@ -82,7 +86,7 @@ public class AlipayNotifyUrlController {
 			}
 		} catch (Exception e) {
 			LoggingUtil.e("支付宝异步通知发生异常，请注意处理");
-			throw new BusinessException(Status.SeriousError.getStatenum(),"异步通知异常");
+			return "failure";
 		}
 	}
 	/**
@@ -93,12 +97,12 @@ public class AlipayNotifyUrlController {
 	@ApiOperation(httpMethod = "GET", notes = "测试接口", value = "测试接口")
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	Result<Object> test(HttpServletRequest request)  {
-//		Map<String, Object> map = orderMapper.getDetailsFormorderheadC("CB123456789");
-//		orderMapper.updateUserQuota(new BigDecimal("-3.00"));
-		Calendar c = Calendar.getInstance();
-		c.add(Calendar.DATE, 30);//计算30天后的时间
-		Date expireTime = c.getTime();
-		userMapper.insertExpireTimeOfGcOfUser(expireTime, 6303);
+		Integer i = coreMapper.selectCommendNumOfUser(6303);
+		if (i == null) {
+			System.out.println(1);
+		}else {
+			System.out.println(i);
+		}
 		return null;
 
 //		Map<String, Object>map = orderMapper.getNeedSubDetailsOfOrderHead("B20170528220557868263633");

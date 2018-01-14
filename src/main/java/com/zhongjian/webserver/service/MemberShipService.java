@@ -10,4 +10,8 @@ public interface MemberShipService {
 
 	// 同步支付viporder
 	void syncHandleVipOrder(Integer UserId, String orderNo);
+	
+	// 生成viporder
+	String createCOrder(Integer userId,BigDecimal money);
+	
 }
