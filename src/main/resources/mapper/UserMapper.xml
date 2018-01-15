@@ -404,10 +404,10 @@
 		select CurStatus,FundStatus from tb_user where UserName =
 		#{username}
 	</select>
-	<select id="checkUserNewExclusive" parameterType="java.lang.String"
+	<select id="checkUserNewExclusive" parameterType="java.lang.Integer"
 		resultType="java.lang.Integer">
-		select NewExclusive from tb_user where UserName =
-		#{username}
+		select NewExclusive from tb_user where Id =
+		#{UserId}
 	</select>
 	<select id="selectUserMaxSysID" resultType="java.lang.Integer">
 		select MAX(SysID)
@@ -463,9 +463,9 @@
 		#{RemainVIPAmount},RemainStream =
 		#{RemainStream},TotalCost = #{TotalCost} where Id = #{UserId}
 	</update>
-	<update id="updateNewExclusiveDraw" parameterType="java.lang.String">
+	<update id="updateNewExclusiveDraw" parameterType="java.lang.Integer">
 		update tb_user
-		set NewExclusive = 1 where UserName = #{UserName} and NewExclusive = 0
+		set NewExclusive = 1 where Id = #{UserId} and NewExclusive = 0
 	</update>
 	<select id="checkUserIdExits" parameterType="java.lang.Integer"
 		resultType="java.lang.Integer">

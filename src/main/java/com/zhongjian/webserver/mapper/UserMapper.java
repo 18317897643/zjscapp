@@ -39,11 +39,11 @@ public interface UserMapper {
 
 	Map<String, Integer> checkUserFundOrCurSta(String userName);
 
-	Integer checkUserNewExclusive(String uerName);
+	Integer checkUserNewExclusive(Integer userId);
 
 	void updateUserQuota(Map<String, Object> quotaMap);
 
-	Integer updateNewExclusiveDraw(String uerName);
+	Integer updateNewExclusiveDraw(Integer userId);
 
 	Integer checkUserIdExits(Integer id);
 

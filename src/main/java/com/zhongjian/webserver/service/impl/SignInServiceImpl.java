@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.service.impl;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.YearMonth;
@@ -7,12 +8,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zhongjian.webserver.mapper.SignInMapper;
+import com.zhongjian.webserver.mapper.UserMapper;
 import com.zhongjian.webserver.pojo.SigninAward;
 import com.zhongjian.webserver.service.SignInService;
 
@@ -21,6 +24,9 @@ public class SignInServiceImpl implements SignInService {
 
 	@Autowired
 	SignInMapper signInMapper;
+	
+	@Autowired
+	UserMapper userMapper;
 
 	@Override
 	@Transactional
@@ -32,6 +38,11 @@ public class SignInServiceImpl implements SignInService {
 			signInMapper.addSigninTermediateByUserId(UserId, new Date(), 1);
 			signInMapper.addSignRecord(UserId, new Date());
 			//领取奖励
+			BigDecimal addCoupon = new BigDecimal("10.00");
+			Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(UserId);
+			BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(addCoupon);
+			curQuota.put("Coupon", remainCoupon);
+			userMapper.updateUserQuota(curQuota);
 		} else {
 			Calendar dateCalendar = Calendar.getInstance();
 			dateCalendar.setTime(lastSignTime);
@@ -58,6 +69,12 @@ public class SignInServiceImpl implements SignInService {
 			}
 			// 往tb_sign表中加入具体签到数据
 			signInMapper.addSignRecord(UserId, new Date());
+			//领取奖励
+			BigDecimal addCoupon = new BigDecimal("10.00");
+			Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(UserId);
+			BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(addCoupon);
+			curQuota.put("Coupon", remainCoupon);
+			userMapper.updateUserQuota(curQuota);
 			if (monthDifference == 0 && dayDifference == 1) {
 				String currentYearMonth = null;
 				if (curretMonth < 10) {
@@ -70,7 +87,6 @@ public class SignInServiceImpl implements SignInService {
 				if (signinAward == null) {
 					// 插入一条数据
 					signInMapper.addSigninAward(UserId, currentDate);
-					//领取奖励
 				}
 				// 更新tb_tb_signintermediate
 				signInMapper.updateSigninTermediateByUserId(UserId, currentDate);
@@ -115,18 +131,33 @@ public class SignInServiceImpl implements SignInService {
 		if (("seven").equals(awardType)) {
 			if (signInMapper.updateSigninAwardSeven(UserId, currentYearMonth, -1,1) == 1) {
 				//领取7天奖励
+				BigDecimal addCoupon = new BigDecimal("15.00");
+				Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(UserId);
+				BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(addCoupon);
+				curQuota.put("Coupon", remainCoupon);
+				userMapper.updateUserQuota(curQuota);
 			}else {
 				return false;
 			}
 		} else if (("fourteen").equals(awardType)) {
 			if (signInMapper.updateSigninAwardFourteen(UserId, currentYearMonth, -1,1) == 1) {
 				//领取14天奖励
+				BigDecimal addCoupon = new BigDecimal("20.00");
+				Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(UserId);
+				BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(addCoupon);
+				curQuota.put("Coupon", remainCoupon);
+				userMapper.updateUserQuota(curQuota);
 			}else{
 				return false;
 			}
 		} else if (("thirty").equals(awardType)) {
 			if (signInMapper.updateSigninAwardThirty(UserId, currentYearMonth, -1,1) == 1) {
 				//领取月奖励
+				BigDecimal addCoupon = new BigDecimal("50.00");
+				Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(UserId);
+				BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(addCoupon);
+				curQuota.put("Coupon", remainCoupon);
+				userMapper.updateUserQuota(curQuota);
 			}else{
 				return false;
 			}

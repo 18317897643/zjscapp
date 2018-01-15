@@ -30,7 +30,7 @@ $(function() {
     if (theRequest.token != "") {
         token = theRequest.token;
         $('.newpeople-btn').on('click',function () {
-            $.post('http://192.168.1.236:8081/zjapp/v1/PersonalCenter/drawNewExclusive/' + token , function (res) {
+            $.post('/zjapp/v1/PersonalCenter/drawNewExclusive/' + token , function (res) {
                 if ( res.error_code == 0 ){
                     $('.tip').css('display','block');
                     $('.tip').html('领取成功！');

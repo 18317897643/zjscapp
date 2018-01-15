@@ -27,9 +27,9 @@ public interface LoginAndRegisterService {
 	
 	boolean userFundsIsFreeze(String userName);
 	
-	boolean userNewExclusiveIsDraw (String userName);
+	boolean userNewExclusiveIsDraw (Integer userId);
 	
-	Integer drawNewExclusive(String userName);
+	Integer drawNewExclusive(Integer userId);
 	
 	boolean checkUserIdExits(Integer id);
 }

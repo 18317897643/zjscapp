@@ -11,9 +11,9 @@ spring:
   datasource:  
     name: db
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://192.168.1.20:3306/zjapp?useUnicode=true&characterEncoding=utf-8
-    username: coder
-    password: 123456
+    url: jdbc:mysql://localhost:3308/zjsc?useSSL=false&useUnicode=true&characterEncoding=utf-8
+    username: dog
+    password: zjsc&!
     driver-class-name: com.mysql.jdbc.Driver
     minIdle: 5
     maxActive: 100
@@ -29,7 +29,7 @@ spring:
     maxPoolPreparedStatementPerConnectionSize: -1
     removeAbandoned: true
     filters: stat
-    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=1
+    connectionProperties: druid.stat.mergeSql=false;druid.stat.slowSqlMillis=1
     useGlobalDataSourceStat: true
     druidLoginName: zhongjian
     druidPassword: 123456
@@ -39,7 +39,7 @@ mybatis:
   configLocation: classpath:/mybatis-config.xml
 token:
   largeLenth: 5000
-  jsonFile: /home/chendi/zhongjianmall/json/token.json
+  jsonFile: /home/www/zhongjianmall/json/token.json
 upload:
   catalogue: /home/public/upload/pics/
   httpCatalogue: /upload/pics/

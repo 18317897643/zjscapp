@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -471,7 +470,8 @@ public class PersonalCenterController {
 			if (phoneNum == null) {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
-			if (loginAndRegisterService.userNewExclusiveIsDraw(phoneNum)) {
+			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			if (loginAndRegisterService.userNewExclusiveIsDraw(userId)) {
 				// 领过了
 				return ResultUtil.success(1);
 			} else {
@@ -494,7 +494,8 @@ public class PersonalCenterController {
 			if (phoneNum == null) {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
-			if (loginAndRegisterService.drawNewExclusive(phoneNum) == 1) {
+			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			if (loginAndRegisterService.drawNewExclusive(userId) == 1) {
 				return ResultUtil.success();
 			} else {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "已经领取过");

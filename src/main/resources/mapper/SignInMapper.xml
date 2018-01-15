@@ -37,7 +37,7 @@
 	</insert>
 	<update id="updateSigninTermediateByUserId">
 		UPDATE tb_signintermediate SET LastSignTime =
-		#{LastSignTime,jdbcType=DATE},ContinueDay = ContinueDay + 1 where
+		#{LastSignTime,jdbcType=DATE},ContinueDay = ContinueDay + 1 where UserId =
 		#{UserId,jdbcType=INTEGER}
 	</update>
 	<update id="reSetContinueDayByUserId">

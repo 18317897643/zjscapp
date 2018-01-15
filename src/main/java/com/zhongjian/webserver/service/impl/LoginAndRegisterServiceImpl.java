@@ -1,6 +1,8 @@
 package com.zhongjian.webserver.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,17 +141,21 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 	}
 
 	@Override
-	public boolean userNewExclusiveIsDraw(String userName) {
-		if (userMapper.checkUserNewExclusive(userName) == 1) {
+	public boolean userNewExclusiveIsDraw(Integer userId) {
+		if (userMapper.checkUserNewExclusive(userId) == 1) {
 			return true;
 		}
 		return false;
 	}
 	@Override
-	public Integer drawNewExclusive(String userName) {
-		if (userMapper.updateNewExclusiveDraw(userName) == 1) {
+	public Integer drawNewExclusive(Integer userId) {
+		if (userMapper.updateNewExclusiveDraw(userId) == 1) {
 			//领取
-			
+			BigDecimal addCoupon = new BigDecimal("500.00");
+			Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(userId);
+			BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(addCoupon);
+			curQuota.put("Coupon", remainCoupon);
+			userMapper.updateUserQuota(curQuota);
 			return 1;
 		} 
 		return 0;
