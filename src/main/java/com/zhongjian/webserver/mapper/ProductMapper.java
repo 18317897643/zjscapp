@@ -25,6 +25,8 @@ public interface ProductMapper {
     
     List<Tag> getAllTagProduct();
     
-    List<Product> getProductsOfSubCategory(Integer subCategoryId);
+    List<Product> getProductsOfSubCategory(@Param("SubCategoryId") Integer subCategoryId,@Param("Condition") String condition,@Param("page") Integer page,@Param("pageNum") Integer pageNum);
+    
+	Integer getMemberTag();
     	
 }

@@ -64,6 +64,7 @@
 		<result column="ProductName" property="productname" />
 		<result column="Price" property="price" />
 		<result column="ElecNum" property="elecnum" />
+		<result column="Tag" property="tag" />
 		<collection property="productphotos" ofType="Productphoto">
 			<result column="Photo" property="photo" />
 		</collection>
@@ -106,11 +107,11 @@
 		#{id} and CurStatus = 0
 	</select>
 	<select id="selectProductcommentById" resultMap="ProductCommentMap">
-	SELECT
-	Id,CreateTime,Memo,Star,UserId from tb_productcomment
-	WHERE ProductId =
-	#{productId}
-	and CurStatus = 1 ORDER BY CreateTime DESC limit ${page},${pageNum}
+		SELECT
+		Id,CreateTime,Memo,Star,UserId from tb_productcomment
+		WHERE ProductId =
+		#{productId}
+		and CurStatus = 1 ORDER BY CreateTime DESC limit ${page},${pageNum}
 	</select>
 	<select id="getUserInfo" resultType="User" parameterType="integer">
 		SELECT
@@ -128,9 +129,10 @@
 	</select>
 	<select id="getProductsOfSubCategory" resultMap="SubCategoryProductMap">
 		select
-		tp.Id,ProductName,Price,ElecNum,Photo from tb_product
+		tp.Id,ProductName,Price,ElecNum,Tag,Photo from tb_product
 		tp,tb_productphoto th where tp.Id = th.ProductId and SubCategoryId =
-		#{SubCategoryId} and tp.CurStatus = 0 and th.CurStatus = 0
+		#{SubCategoryId} and tp.CurStatus = 0 and th.CurStatus = 0 Order by
+		#{Condition} LIMIT #{page},#{pageNum}
 	</select>
 	<select id="getAllTagProduct" resultMap="TagMap">
 		SELECT
@@ -138,5 +140,8 @@
 		from tb_tag tg,tb_product tp,tb_productphoto th where tg.tagId =
 		tp.Tag and tp.Id = th.ProductId and tp.CurStatus = 0 and th.CurStatus
 		= 0 order by tg.ord
+	</select>
+	<select id="getMemberTag" resultType="java.lang.Integer">
+		SELECT tagId from tb_tag where tagName = '会员专区' 
 	</select>
 </mapper>

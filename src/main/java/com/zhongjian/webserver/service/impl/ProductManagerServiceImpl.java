@@ -77,7 +77,19 @@ public class ProductManagerServiceImpl implements ProductManagerService {
 		return pANResponseMaps;
 	}
 	@Override
-	public List<Product> getSubProductOfCategory(Integer subCategoryId) {
-		return productMapper.getProductsOfSubCategory(subCategoryId);
+	public List<HashMap<String, Object>> getSubProductOfCategory(Integer subCategoryId,String condition,Integer page,Integer pageNum) {
+		List<Product> subProducts = productMapper.getProductsOfSubCategory(subCategoryId,condition,page,pageNum);
+		List<HashMap<String, Object>> datas = new ArrayList<>();
+		for (int i = 0; i < subProducts.size(); i++) {
+			HashMap<String, Object> data = new HashMap<>();
+			data.put("product", subProducts.get(i));
+			if (subProducts.get(i).getTag() == mallData.getProductTag()) {
+				data.put("beLongToVIP", true);
+			}else{
+				data.put("beLongToVIP", false);
+			}
+           	datas.add(data);		
+		}
+		return datas;
 	}
 }

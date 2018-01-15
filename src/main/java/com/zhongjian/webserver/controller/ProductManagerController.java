@@ -46,12 +46,26 @@ public class ProductManagerController {
 	
 	@ApiOperation(httpMethod = "GET", notes = "获取二级分类商品", value = "获取二级分类商品")
 	@RequestMapping(value = "/ProductManager/getProductOfCategory/{SubCategoryId}", method = RequestMethod.GET)
-	Result<Object> getProductsOfSubCategory(@PathVariable("SubCategoryId") Integer subCategoryId) throws BusinessException {
+	Result<Object> getProductsOfSubCategory(@PathVariable("SubCategoryId") Integer subCategoryId,@RequestParam Integer type,@RequestParam Integer page,@RequestParam Integer pageNum) throws BusinessException {
 		try {
-			return ResultUtil.success(productManagerService.getSubProductOfCategory(subCategoryId));
+			String condition = "";
+			if (type == 1) {
+				condition = "SaleNum DESC";
+			}else if (type == 2) {
+				condition = "Price ASC";
+			}else if (type == 3) {
+				condition = "Price DESC";
+			}else if (type == 4) {
+				condition = "CommentNum DESC";
+			}else if (type == 5) {
+				condition = "ElecNum ASC";
+			}else if (type == 6) {
+				condition = "ElecNum DESC";
+			}
+			return ResultUtil.success(productManagerService.getSubProductOfCategory(subCategoryId,condition,page,pageNum));
 		} catch (Exception e) {
-			LoggingUtil.e("获取所有商品并分类处异常:" + e);
-			throw new BusinessException(Status.SeriousError.getStatenum(), "获取所有商品并分类处异常");
+			LoggingUtil.e("获取二级分类商品异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "获取二级分类商品异常");
 		}
 	}
 	@ApiOperation(httpMethod = "GET", notes = "获取商品详情", value = "获取商品详情")

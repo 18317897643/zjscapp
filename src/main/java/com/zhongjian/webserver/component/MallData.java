@@ -1,16 +1,24 @@
 package com.zhongjian.webserver.component;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.zhongjian.webserver.mapper.ProductMapper;
+
 @Component
 public class MallData {
-	@Value("${malldata.productTag}")
+	
+	@Autowired
+	private ProductMapper productMapper;
+	
 	private Integer productTag;
 
 	@Value("${malldata.vipNeedPay}")
 	private Integer vipNeedPay;
-	
+
 	@Value("${malldata.gcNeedPay}")
 	private Integer gcNeedPay;
 
@@ -49,7 +57,11 @@ public class MallData {
 		this.gcNeedPay = gcNeedPay;
 	}
 
-	public MallData(){
-		
+	public MallData() {
+	}
+
+	@PostConstruct
+	public void init() {
+		setProductTag(productMapper.getMemberTag());
 	}
 }
