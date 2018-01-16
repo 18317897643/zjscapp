@@ -274,6 +274,39 @@ public class MemberShipController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "升级到vip或准代或代理时产生赠送名额异常");
 		}
 	}
+	@ApiOperation(httpMethod = "GET", notes = "查看粉丝数量", value = "查看粉丝数量")
+	@RequestMapping(value = "/GetFans/{token}", method = RequestMethod.GET)
+	Result<Object> getFans(@PathVariable("token") String token) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(token);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			return ResultUtil.success(memberShipService.getRYBFans(UserId));
+		} catch (Exception e) {
+			throw new BusinessException(Status.SeriousError.getStatenum(), "查看粉丝数量异常");
+		}
+	}
+	@ApiOperation(httpMethod = "GET", notes = "查看粉丝具体信息", value = "查看粉丝具体信息")
+	@RequestMapping(value = "/GetFansDetails/{token}", method = RequestMethod.GET)
+	Result<Object> getFansDetails(@PathVariable("token") String token,@RequestParam String type) throws BusinessException {
+		try {
+			if (!"Red".equals(type) && !"Blue".equals(type) && !"Yellow".equals(type)) {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "参数不对");
+			}
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(token);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			return ResultUtil.success(memberShipService.getRYBFansDetails(UserId, type));
+		} catch (Exception e) {
+			throw new BusinessException(Status.SeriousError.getStatenum(), "查看粉丝具体信息异常");
+		}
+	}
 	@ApiOperation(httpMethod = "GET", notes = "根据众健号搜索会员", value = "根据众健号搜索会员")
 	@RequestMapping(value = "/getMemberBySysId", method = RequestMethod.GET)
 	Result<Object> getMemberBySysId(@RequestParam Integer type, @RequestParam Integer userId) throws BusinessException {

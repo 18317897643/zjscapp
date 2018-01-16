@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class MemberShipServiceImpl implements MemberShipService {
 
 	@Autowired
 	LogMapper logMapper;
-	
+
 	@Autowired
 	AsyncTasks tasks;
 
@@ -65,44 +66,44 @@ public class MemberShipServiceImpl implements MemberShipService {
 	@Transactional
 	public void syncHandleVipOrder(Integer UserId, String orderNo) {
 		if (memberShipMapper.changeVipOrderToPaid(orderNo) == 1) {
-		Map<String, Object> data = memberShipMapper.selectViporderByOrderAndUser(orderNo, UserId);
-		BigDecimal useElecNum = (BigDecimal) data.get("TolAmout");
-		Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(UserId);
-		BigDecimal remainElec = ((BigDecimal) curQuota.get("RemainElecNum")).subtract(useElecNum);
-		BigDecimal remainVIPAmount = ((BigDecimal) curQuota.get("RemainVIPAmount")).add(useElecNum);
-		BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(useElecNum);
-		BigDecimal remianTotalCost = ((BigDecimal) curQuota.get("TotalCost")).add(useElecNum);
-		curQuota.put("RemainElecNum", remainElec);
-		curQuota.put("RemainVIPAmount", remainVIPAmount);
-		curQuota.put("Coupon", remainCoupon);
-		curQuota.put("TotalCost", remianTotalCost);
-		userMapper.updateUserQuota(curQuota);
-		Integer lev = (Integer) data.get("Lev");
-		String memo = "";
-		// 更新等级
-		if (lev == 1) {
-			//升级vip
-			userMapper.setLev(1, 0, UserId);
-			memo = "购买VIP，订单号：" + orderNo;
-			//升级提交生成二送一和一送一任务
-			tasks.presentTask(1, UserId);
-		}else{
-			Calendar c = Calendar.getInstance();
-			c.add(Calendar.DATE, 30);//计算30天后的时间
-			Date expireTime = c.getTime();
-			//升级绿色通道
-			if (userMapper.updateExpireTimeOfGcOfUser(expireTime,UserId) != 1) {
-				userMapper.insertExpireTimeOfGcOfUser(expireTime, UserId);
+			Map<String, Object> data = memberShipMapper.selectViporderByOrderAndUser(orderNo, UserId);
+			BigDecimal useElecNum = (BigDecimal) data.get("TolAmout");
+			Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(UserId);
+			BigDecimal remainElec = ((BigDecimal) curQuota.get("RemainElecNum")).subtract(useElecNum);
+			BigDecimal remainVIPAmount = ((BigDecimal) curQuota.get("RemainVIPAmount")).add(useElecNum);
+			BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(useElecNum);
+			BigDecimal remianTotalCost = ((BigDecimal) curQuota.get("TotalCost")).add(useElecNum);
+			curQuota.put("RemainElecNum", remainElec);
+			curQuota.put("RemainVIPAmount", remainVIPAmount);
+			curQuota.put("Coupon", remainCoupon);
+			curQuota.put("TotalCost", remianTotalCost);
+			userMapper.updateUserQuota(curQuota);
+			Integer lev = (Integer) data.get("Lev");
+			String memo = "";
+			// 更新等级
+			if (lev == 1) {
+				// 升级vip
+				userMapper.setLev(1, 0, UserId);
+				memo = "购买VIP，订单号：" + orderNo;
+				// 升级提交生成二送一和一送一任务
+				tasks.presentTask(1, UserId);
+			} else {
+				Calendar c = Calendar.getInstance();
+				c.add(Calendar.DATE, 30);// 计算30天后的时间
+				Date expireTime = c.getTime();
+				// 升级绿色通道
+				if (userMapper.updateExpireTimeOfGcOfUser(expireTime, UserId) != 1) {
+					userMapper.insertExpireTimeOfGcOfUser(expireTime, UserId);
+				}
+				memo = "购买绿色通道，订单号：" + orderNo;
 			}
-			memo = "购买绿色通道，订单号：" + orderNo;
+			// 记录现金购买vip
+			logMapper.insertElecRecord(UserId, new Date(), useElecNum, "-", memo);
+			logMapper.insertCouponRecord(UserId, new Date(), useElecNum, "+", memo);
+			logMapper.insertVipRemainRecord(UserId, new Date(), useElecNum, "+", memo);
+			// 分润
+			tasks.shareBenitTask(1, UserId, 0, "购买会员", useElecNum);
 		}
-	    //记录现金购买vip
-		logMapper.insertElecRecord(UserId, new Date(), useElecNum, "-", memo);
-		logMapper.insertCouponRecord(UserId, new Date(), useElecNum, "+", memo);
-		logMapper.insertVipRemainRecord(UserId, new Date(), useElecNum, "+", memo);
-		// 分润
-		tasks.shareBenitTask(1, UserId, 0, "购买会员", useElecNum);
-	}
 	}
 
 	@Override
@@ -115,5 +116,56 @@ public class MemberShipServiceImpl implements MemberShipService {
 		data.put("Amount", money);
 		memberShipMapper.insertCOrder(data);
 		return orderNo;
+	}
+
+	@Override
+	public Map<String, Integer> getRYBFans(Integer userId) {
+		Integer inviteCode = (Integer) (userMapper.selectPersonalInformById(userId).get("InviteCode"));
+		HashMap<String, Integer> datas = new HashMap<>();
+		datas.put("Red", memberShipMapper.getRedFans(inviteCode));
+		datas.put("Yellow", memberShipMapper.getRedFans(inviteCode));
+		datas.put("Blue", memberShipMapper.getRedFans(inviteCode));
+		return datas;
+	}
+
+	@Override
+	public List<Map<String, Object>> getRYBFansDetails(Integer userId, String type) {
+		Integer inviteCode = (Integer) (userMapper.selectPersonalInformById(userId).get("InviteCode"));
+		List<Map<String, Object>> datas = null;
+		if ("Red".equals(type)) {
+			datas = memberShipMapper.getRedFansDetails(inviteCode);
+			for (int i = 0; i < datas.size(); i++) {
+				Map<String, Object> data = datas.get(i);
+				Integer fromUserId = (Integer) data.get("Id");
+				BigDecimal amount = memberShipMapper.getContributeAmount(fromUserId, userId);
+				if (amount == null) {
+					amount = BigDecimal.ZERO;
+				}
+				data.put("amount", amount);
+			}
+		} else if ("Blue".equals(type)) {
+			datas = memberShipMapper.getBlueFansDetails(inviteCode);
+			for (int i = 0; i < datas.size(); i++) {
+				Map<String, Object> data = datas.get(i);
+				Integer fromUserId = (Integer) data.get("Id");
+				BigDecimal amount = memberShipMapper.getContributeAmount(fromUserId, userId);
+				if (amount == null) {
+					amount = BigDecimal.ZERO;
+				}
+				data.put("amount", amount);
+			}
+		} else {
+			datas = memberShipMapper.getYellowFansDetails(inviteCode);
+			for (int i = 0; i < datas.size(); i++) {
+				Map<String, Object> data = datas.get(i);
+				Integer fromUserId = (Integer) data.get("Id");
+				BigDecimal amount = memberShipMapper.getContributeAmount(fromUserId, userId);
+				if (amount == null) {
+					amount = BigDecimal.ZERO;
+				}
+				data.put("amount", amount);
+			}
+		}
+		return datas;
 	}
 }

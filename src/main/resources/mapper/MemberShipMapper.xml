@@ -25,7 +25,8 @@
 		TolAmout,Lev,UserId from tb_viporder where OrderNo = #{OrderNo}
 	</select>
 	<select id="selectCOrderByOrderNo" resultType="java.util.Map">
-		SELECT Amount,UserId from tb_recharge where OrderNo = #{OrderNo}
+		SELECT
+		Amount,UserId from tb_recharge where OrderNo = #{OrderNo}
 	</select>
 	<update id="changeVipOrderToPaid">
 		UPDATE tb_viporder set CurStatus = 1 WHERE CurStatus
@@ -35,4 +36,50 @@
 		UPDATE tb_recharge set CurStatus = 1 WHERE CurStatus
 		= 0 AND OrderNo = #{OrderNo}
 	</update>
+	<select id="getRedFans" resultType="java.lang.Integer">
+		SELECT count(1) from tb_user
+		where BeInviteCode = #{inviteCode}
+	</select>
+	<select id="getBlueFans" resultType="java.lang.Integer">
+		SELECT COUNT(1) from tb_user
+		where BeInviteCode in (SELECT InviteCode from tb_user where
+		BeInviteCode = #{inviteCode})
+	</select>
+	<select id="getYellowFans" resultType="java.lang.Integer">
+		SELECT COUNT(1) from
+		tb_user where BeInviteCode in (SELECT InviteCode from
+		tb_user where
+		BeInviteCode in (SELECT InviteCode from tb_user where
+		BeInviteCode =
+		#{inviteCode}))
+	</select>
+	<select id="getRedFansDetails" resultType="java.util.Map">
+		SELECT
+		Id,SysID,UserName from tb_user
+		where BeInviteCode = #{inviteCode}
+	</select>
+	<select id="getBlueFansDetails" resultType="java.util.Map">
+		SELECT
+		Id,SysID,UserName from tb_user
+		where BeInviteCode in (SELECT InviteCode
+		from tb_user where
+		BeInviteCode = #{inviteCode})
+	</select>
+	<select id="getYellowFansDetails" resultType="java.util.Map">
+		SELECT
+		Id,SysID,UserName from
+		tb_user where BeInviteCode in (SELECT InviteCode
+		from
+		tb_user where
+		BeInviteCode in (SELECT InviteCode from tb_user where
+		BeInviteCode =
+		#{inviteCode}))
+	</select>
+	<select id="getContributeAmount" resultType="java.math.BigDecimal">
+		SELECT
+		SUM(User_ElecNum) from tb_distributionrecord WHERE FromUser_Id
+		=
+		#{FromUserId} AND User_Id = #{UserId}
+	</select>
+
 </mapper>
