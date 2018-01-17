@@ -36,6 +36,7 @@ public class HomePageServiceImpl implements HomePageService{
 		 HashMap<String, Object> titleData = advMapper.getHomePageTitle();
 		if (titleData == null) {
 			titleData = new HashMap<>();
+			titleData.put("title", "");
 		}
 		result.put("tile", titleData);
 		//除去会员专区
