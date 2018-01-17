@@ -33,7 +33,11 @@ public class HomePageServiceImpl implements HomePageService{
 		Integer needSize = productNum;
 		HashMap<String, Object> result = new HashMap<>();
 		result.put("picList", advMapper.getHomePagePic());
-		result.put("tile", advMapper.getHomePageTitle());
+		 HashMap<String, Object> titleData = advMapper.getHomePageTitle();
+		if (titleData == null) {
+			titleData = new HashMap<>();
+		}
+		result.put("tile", titleData);
 		//除去会员专区
 		List<Tag> tags = productMapper.getAllTagProduct(mallData.getProductTag());
 		Integer tagSize = tags.size();

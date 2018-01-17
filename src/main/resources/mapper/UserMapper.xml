@@ -504,18 +504,18 @@
 	<select id="getCouponBill" resultMap="BillMap">
 		SELECT
 		CreateTime,Amount,AddSub,Memo from tb_couponrecord where UserId =
-		#{UserId} ORDER BY CreateTime DESC limit ${page},${pageNum}
+		#{UserId} ORDER BY CreateTime DESC limit #{page},#{pageNum}
 	</select>
 	<select id="getElecBill" resultMap="BillMap">
 		SELECT CreateTime,Amount,AddSub,Memo from tb_elecrecord where UserId =
-		#{UserId} ORDER BY CreateTime DESC limit ${page},${pageNum}
+		#{UserId} ORDER BY CreateTime DESC limit #{page},#{pageNum}
 	</select>
 	<select id="getPointBill" resultMap="BillMap">
 		SELECT CreateTime,Amount,AddSub,Memo from tb_pointrecord where UserId =
-		#{UserId} ORDER BY CreateTime DESC limit ${page},${pageNum}
+		#{UserId} ORDER BY CreateTime DESC limit #{page},#{pageNum}
 	</select>
 	<select id="getVipBill" resultMap="BillMap">
 		SELECT CreateTime,Amount,AddSub,Memo from tb_vipremainrecord where UserId =
-		#{UserId} ORDER BY CreateTime DESC limit ${page},${pageNum}
+		#{UserId} ORDER BY CreateTime DESC limit #{page},#{pageNum}
 	</select>
 </mapper>

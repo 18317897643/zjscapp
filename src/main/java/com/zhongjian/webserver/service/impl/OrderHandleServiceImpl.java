@@ -21,6 +21,7 @@ import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.zhongjian.webserver.alipay.AlipayConfig;
+import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.RandomUtil;
 import com.zhongjian.webserver.component.AsyncTasks;
 import com.zhongjian.webserver.dto.OrderHeadDto;
@@ -49,6 +50,9 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 	@Autowired
 	AsyncTasks tasks;
 
+	@Autowired
+	AlipayConfig alipayConfig;
+	
 	@Override
 	@Transactional
 	public HashMap<String, Object> createOrder(List<OrderHeadDto> orderHeads, Integer UserId) {
@@ -96,9 +100,16 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 				score.add(0);
 				orderLines.forEach(f -> {
 					Integer productNum = f.getProductNum();
-					Integer specElecNum = orderMapper.getSpecElecNumById(f.getSpecId());
+					//查询该规格的分值和价格
+					Map<String,Object> specElecNumAndPrice = orderMapper.getSpecElecNumAndPriceById(f.getSpecId());
+					//分值计算最终录入订单
+					Integer specElecNum = (Integer) specElecNumAndPrice.get("ElecNum");
 					Integer thisTimeScore = productNum * specElecNum;
 					score.set(0, score.get(0) + thisTimeScore);
+					BigDecimal price = (BigDecimal) specElecNumAndPrice.get("Price");
+					BigDecimal amount = price.multiply(new BigDecimal(productNum));
+					f.setPrice(price);
+					f.setAmount(amount);
 					f.setOrderId(orderId);
 					orderMapper.insertOrderLine(f);
 				});
@@ -119,13 +130,6 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 				.add(TotalEveryAmountCoList.get(3)).add(TotalEveryAmountCoList.get(4));
 		orderMapper.insertOrderHeadCo(theCurrentOrderNoCollectionName, theCurrentOrderNoCollectionsStr,
 				TotalEveryAmountCoList.get(0), totalNotRealPayCo, new Date(), UserId);
-		// // 预扣
-		// if (TotalEveryAmountCoList.get(0).compareTo(BigDecimal.ZERO) != 0) {
-		// orderMapper.insertPreSubQuata(UserId, TotalEveryAmountCoList.get(1),
-		// TotalEveryAmountCoList.get(2),
-		// TotalEveryAmountCoList.get(3), TotalEveryAmountCoList.get(4), new
-		// Date());
-		// }
 		HashMap<String, Object> result = new HashMap<>();
 		result.put("orderNoCollectionName", theCurrentOrderNoCollectionsStr);
 		result.put("totalRealPayCo", TotalEveryAmountCoList.get(0));
@@ -135,13 +139,9 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 
 	@Override
 	@Transactional
-	public boolean syncHandleOrder(String orderNo, Integer platformMoneyAmount) {
+	public boolean syncHandleOrder(String orderNo) {
 		if (orderNo.startsWith("CB")) {
 			Map<String, Object> map = orderMapper.getDetailsFormorderheadC(orderNo);
-			if (!map.get("PlatformMoney").toString().equals(platformMoneyAmount)) {
-				// 金额不对
-				return false;
-			} else {
 				if (orderMapper.updateOrderHeadCoCur() == 1) {
 					String orderNoCName = (String) map.get("OrderNoC");
 					String[] orderNoC = orderNoCName.split("|");
@@ -189,13 +189,7 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 				} else {
 					return false;
 				}
-			}
-
 		} else if (orderNo.startsWith("B")) {
-			if (orderMapper.getPlatformMoneyOfOrderhead(orderNo) != platformMoneyAmount) {
-				// 金额不对
-				return false;
-			}
 			if (orderMapper.updateOrderHeadStatusToWP(orderNo) == 1) {
 				// 查看订单积分，现金币，购物币，红包使用情况去扣
 				// 需要扣除的
@@ -234,30 +228,26 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 			} else {
 				return false;
 			}
-		} else if (orderNo.startsWith("VO")) {
-
-		} else if (orderNo.startsWith("CZ")) {
-
 		} else {
 			return false;
 		}
-		return false;
 	}
-
 	@Override
 	@Transactional
 	public boolean asyncHandleOrder(String orderNo, String totalAmount, String seller_id, String app_id) {
 		// 查询对应的子订单信息
-		if (!seller_id.equals(AlipayConfig.BUSINESSID) || !app_id.equals(AlipayConfig.APPID)) {
+		if (!seller_id.equals(alipayConfig.BUSINESSID) || !app_id.equals(alipayConfig.APPID)) {
 			return false;
 		}
 		if (orderNo.startsWith("CB")) {
 			Map<String, Object> map = orderMapper.getDetailsFormorderheadC(orderNo);
 			if (!map.get("TolAmount").toString().equals(totalAmount)) {
+				LoggingUtil.w("订单实付额为" +map.get("TolAmount").toString() + "，支付宝实付" + totalAmount +  "总金额不对！！！！");
 				return false;
 			} else {
 				if (orderMapper.updateOrderHeadCoCur() == 1) {
 					String orderNoCName = (String) map.get("OrderNoC");
+					
 					String[] orderNoC = orderNoCName.split("|");
 					int orderNoClenth = orderNoC.length;
 					for (int i = 0; i < orderNoClenth; i++) {
@@ -419,9 +409,9 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 		// 销售产品码 必填
 		orderMap.put("product_code", "QUICK_WAP_PAY");
 		// 实例化客户端
-		AlipayClient client = new DefaultAlipayClient(AlipayConfig.URL, AlipayConfig.APPID,
-				com.zhongjian.webserver.alipay.AlipayConfig.RSA_PRIVATE_KEY, AlipayConfig.FORMAT, AlipayConfig.CHARSET,
-				AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.SIGNTYPE);
+		AlipayClient client = new DefaultAlipayClient(alipayConfig.URL, alipayConfig.APPID,
+				alipayConfig.RSA_PRIVATE_KEY, alipayConfig.FORMAT, alipayConfig.CHARSET,
+				alipayConfig.ALIPAY_PUBLIC_KEY, alipayConfig.SIGNTYPE);
 		// 实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
 		AlipayTradeAppPayRequest ali_request = new AlipayTradeAppPayRequest();
 		// SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
@@ -434,9 +424,9 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 		model.setTimeoutExpress(orderMap.get("timeout_express")); // 交易超时时间
 		model.setTotalAmount(orderMap.get("total_amount")); // 支付金额
 		model.setProductCode(orderMap.get("product_code")); // 销售产品码
-		model.setSellerId(AlipayConfig.BUSINESSID); // 商家id
+		model.setSellerId(alipayConfig.BUSINESSID); // 商家id
 		ali_request.setBizModel(model);
-		ali_request.setNotifyUrl(AlipayConfig.notify_url); // 回调地址
+		ali_request.setNotifyUrl(alipayConfig.notify_url); // 回调地址
 		AlipayTradeAppPayResponse response = null;
 		response = client.sdkExecute(ali_request);
 		String orderString = response.getBody();
@@ -451,5 +441,23 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 	@Override
 	public Integer getUserIdByOrder(String orderNo) {
 		return orderMapper.getUserIdByOrder(orderNo);
+	}
+
+	@Override
+	public void cancelOrder(String orderNo) {
+		orderMapper.updateOrderHeadStatus(-2, orderNo);
+		
+	}
+
+	@Override
+	public void test(String orderNo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void autoCancelOrder() {
+		// TODO Auto-generated method stub
+		
 	}
 }

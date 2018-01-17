@@ -126,7 +126,7 @@
 		WHERE ProductId =
 		#{productId}
 		and CurStatus = 1 ORDER BY CreateTime DESC limit
-		${page},${pageNum}
+		#{page},#{pageNum}
 	</select>
 	<select id="getUserInfo" resultType="User" parameterType="java.lang.Integer">
 		SELECT
@@ -146,14 +146,14 @@
 		SELECT
 		Id,ProductName,Price,OldPrice,ElecNum,Tag from tb_product where
 		SubCategoryId = #{SubCategoryId} and CurStatus = 0 ORDER BY
-		#{Condition} LIMIT #{page},#{pageNum}
+		${Condition} LIMIT #{page},#{pageNum}
 	</select>
 	<select id="getProductsOfTag" resultMap="TagProductMap">
 		SELECT
 		Id,ProductName,Price,OldPrice,ElecNum,Tag from tb_product where
 		Tag =
 		#{Tag} and CurStatus = 0 ORDER BY
-		#{Condition} LIMIT #{page},#{pageNum}
+		${Condition} LIMIT #{page},#{pageNum}
 	</select>
 	<select id="getAllTagProduct" resultMap="AllTagMap">
 		SELECT

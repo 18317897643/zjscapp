@@ -18,6 +18,8 @@
 		<result column="UseCoupon" property="usecoupon" />
 		<result column="UsePointNum" property="usepointnum" />
 		<result column="UseVIPRemainNum" property="usevipremainnum" />
+		<result column="RealPay" property="realpay" />
+		<result column="Freight" property="freight" />
 		<collection column="Id" property="orderlines" ofType="Orderline"
 			select="selectOrderLineByOrderId" fetchType="eager">
 			<result column="ProductName" property="productname" />
@@ -41,8 +43,9 @@
 		SELECT COUNT(1) FROM tb_orderhead
 		WHERE UserId = #{userId} AND CurStatus = 2
 	</select>
-	<select id="getSpecElecNumById" resultType="java.lang.Integer">
-		SELECT ElecNum from
+	<select id="getSpecElecNumAndPriceById" resultType="java.util.Map">
+		SELECT
+		ElecNum,Price from
 		tb_productspec where Id = #{SpecId}
 	</select>
 	<select id="getDetailsFormorderheadC" resultType="java.util.Map">
@@ -73,9 +76,9 @@
 	<insert id="insertOrderLine" parameterType="com.zhongjian.webserver.dto.OrderLineDto">
 		INSERT INTO
 		tb_orderline
-		(OrderId,ProductName,SpecName,ProductNum,Price,Amount)
+		(OrderId,ProductId,SpecId,ProductName,SpecName,ProductNum,Price,Amount)
 		VALUES
-		(#{orderId},#{productName},#{specName},#{productNum},#{price},#{amount})
+		(#{orderId},#{productId},#{specId},#{productName},#{specName},#{productNum},#{price},#{amount})
 	</insert>
 	<update id="updateOrderHeadScore" parameterType="java.lang.Integer">
 		UPDATE
@@ -116,11 +119,24 @@
 	</select>
 	<select id="getOrderDetailsById" resultMap="orderDetailsMap">
 		SELECT
-		Id,OrderNo,CreateTime,SendDate,ReceivedTime,CurStatus,ReceiverName,ReceiverPhone,ProvinceId,CityId,RegionId,TotalAmount,UseElecNum,UseCoupon,UsePointNum,UseVIPRemainNum,ExpressName,ExpressNo
+		Id,OrderNo,CreateTime,SendDate,ReceivedTime,CurStatus,ReceiverName,ReceiverPhone,ProvinceId,CityId,RegionId,TotalAmount,Freight,RealPay,UseElecNum,UseCoupon,UsePointNum,UseVIPRemainNum,ExpressName,ExpressNo
 		from
 		tb_orderhead WHERE Id = #{orderId}
 	</select>
+	<select id="getOrderDetails" resultMap="orderDetailsMap">
+		SELECT
+		Id,OrderNo,CreateTime,SendDate,ReceivedTime,CurStatus,TotalAmount,RealPay,Freight
+		from
+		tb_orderhead WHERE ${condition}
+	</select>
 	<select id="selectOrderLineByOrderId" resultType="OrderLine">
+		SELECT
+		ProductName,SpecName,ProductNum,Price from
+		tb_orderline WHERE OrderId =
+		#{orderId}
+	</select>
+
+	<select id="selectOrderNoAndCTWForPaid" resultType="java.util.Map">
 		SELECT
 		ProductName,SpecName,ProductNum,Price from
 		tb_orderline WHERE OrderId =
