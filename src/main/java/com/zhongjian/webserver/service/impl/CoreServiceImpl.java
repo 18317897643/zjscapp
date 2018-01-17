@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,7 +97,7 @@ public class CoreServiceImpl implements CoreService {
 					// 推送token
 					String userName = userMapper.getUserNameByUserId(userId);
 					String token = tokenManager.getTokenByUserName(userName);
-					jpushUtil.sendAlias("恭喜您得到" + shareMoney + "分润金额", token, "extKey", "extValue");
+					jpushUtil.sendAlias("恭喜您得到" + shareMoney + "分润金额", DigestUtils.md5Hex(token), "extKey", "extValue");
 					// 个人账单明细记录
 					logMapper.insertPointRecord(userId, date, shareMoney, "+", "分润");
 				} else {
@@ -131,9 +132,10 @@ public class CoreServiceImpl implements CoreService {
 					// 推送token
 					String userName = userMapper.getUserNameByUserId(userId);
 					String token = tokenManager.getTokenByUserName(userName);
-					jpushUtil.sendAlias("恭喜您得到" + shareMoney + "分润金额", token, "extKey", "extValue");
+					jpushUtil.sendAlias("恭喜您得到" + shareMoney + "分润金额", DigestUtils.md5Hex(token), "extKey", "extValue");
 					// 个人账单明细记录
-					logMapper.insertElecRecord(userId, date, shareMoney, "+", "分润");
+					logMapper.insertPointRecord(userId, date, shareMoneyToPoint, "+", "分润");
+					logMapper.insertElecRecord(userId, date, shareMoneyToElec, "+", "分润");
 				}
 			}
 		}
@@ -218,7 +220,7 @@ public class CoreServiceImpl implements CoreService {
 
 	@Override
 	@Transactional
-	public void present(Integer type,Integer userId) {
+	public void present(Integer type, Integer userId) {
 		Map<String, Integer> map = coreMapper.selectHigherLev(userId);
 		Date curDate = new Date();
 		if (map == null) {
@@ -226,24 +228,24 @@ public class CoreServiceImpl implements CoreService {
 		}
 		if (type == 1) {
 			Integer curUserId = map.get("Id");
-			//查询推荐vip次数
+			// 查询推荐vip次数
 			Integer num = coreMapper.selectCommendNumOfUser(curUserId);
-			if(num == null){
+			if (num == null) {
 				coreMapper.insertCommendNumOfUser(curUserId);
-			}else {
+			} else {
 				if (num == 1) {
-					//送vip名额(二送一)
+					// 送vip名额(二送一)
 					coreMapper.insertSendHead(curDate, curUserId, 1, 1);
-					//请零
+					// 请零
 					coreMapper.setNumCommendOfUser(curUserId, 0);
-				}else if(num == 0) {
-					//设为1
+				} else if (num == 0) {
+					// 设为1
 					coreMapper.setNumCommendOfUser(curUserId, 1);
 				}
 			}
-		}else {
+		} else {
 			Integer curUserId = map.get("Id");
-			//送vip名额(推荐代理送vip)
+			// 送vip名额(推荐代理送vip)
 			coreMapper.insertSendHead(curDate, curUserId, 1, 2);
 		}
 	}

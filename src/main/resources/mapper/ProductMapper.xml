@@ -46,7 +46,7 @@
 			<result column="Photo" property="photo" />
 		</collection>
 	</resultMap>
-	<resultMap type="Tag" id="TagMap">
+	<resultMap type="Tag" id="AllTagMap">
 		<id column="tagId" property="tagId" />
 		<id column="tagName" property="tagName" />
 		<collection property="productsOfTag" ofType="Product">
@@ -54,6 +54,7 @@
 			<result column="ProductName" property="productname" />
 			<result column="Price" property="price" />
 			<result column="ElecNum" property="elecnum" />
+			<result column="OldPrice" property="oldprice" />
 			<collection property="productphotos" ofType="Productphoto">
 				<result column="Photo" property="photo" />
 			</collection>
@@ -65,7 +66,20 @@
 		<result column="Price" property="price" />
 		<result column="ElecNum" property="elecnum" />
 		<result column="Tag" property="tag" />
-		<collection property="productphotos" ofType="Productphoto">
+		<collection column="Id" property="productphotos" ofType="Productphoto"
+			select="selectProductPhotosById" fetchType="eager">
+			<result column="Photo" property="photo" />
+		</collection>
+	</resultMap>
+	<resultMap id="TagProductMap" type="Product">
+		<id column="Id" property="id" />
+		<result column="ProductName" property="productname" />
+		<result column="Price" property="price" />
+		<result column="OldPrice" property="oldprice" />
+		<result column="ElecNum" property="elecnum" />
+		<result column="Tag" property="tag" />
+		<collection column="Id" property="productphotos" ofType="Productphoto"
+			select="selectProductPhotosById" fetchType="eager">
 			<result column="Photo" property="photo" />
 		</collection>
 	</resultMap>
@@ -78,7 +92,7 @@
 		= s.ParentId and c.CurStatus = 0 and
 		s.CurStatus= 0 order by c.Ord,s.Ord
 	</select>
-	<select id="findById" resultMap="ProductDetails" parameterType="integer">
+	<select id="findById" resultMap="ProductDetails" parameterType="java.lang.Integer">
 		select
 		p.Tag,p.Id,p.Price,p.Freight,p.ElecNum,p.StockNum,p.PlaceOfDelivery,p.ProducerNo,p.Producertel,p.ProducerName
 		from
@@ -86,22 +100,22 @@
 		p where Id = #{id}
 	</select>
 	<select id="getProductNumById" resultType="Product"
-		parameterType="integer">
+		parameterType="java.lang.Integer">
 		select Id,ProductName,StockNum from
 		tb_product where Id =
 		#{id}
 	</select>
 	<select id="findProductHtmlTextById" resultType="java.lang.String"
-		parameterType="integer">
+		parameterType="java.lang.Integer">
 		select HtmlText from tb_product where Id = #{id}
 	</select>
 	<select id="selectProductPhotosById" resultType="Productphoto"
-		parameterType="integer">
+		parameterType="java.lang.Integer">
 		select Photo from tb_productphoto where ProductId =
 		#{id} and CurStatus = 0
 	</select>
 	<select id="selectProductSpecsById" resultType="ProductSpec"
-		parameterType="integer">
+		parameterType="java.lang.Integer">
 		select Id,SpecName,ElecNum,Price from tb_productspec
 		where ProductId =
 		#{id} and CurStatus = 0
@@ -111,15 +125,16 @@
 		Id,CreateTime,Memo,Star,UserId from tb_productcomment
 		WHERE ProductId =
 		#{productId}
-		and CurStatus = 1 ORDER BY CreateTime DESC limit ${page},${pageNum}
+		and CurStatus = 1 ORDER BY CreateTime DESC limit
+		#{page},#{pageNum}
 	</select>
-	<select id="getUserInfo" resultType="User" parameterType="integer">
+	<select id="getUserInfo" resultType="User" parameterType="java.lang.Integer">
 		SELECT
 		TrueName,HeadPhoto from tb_user
 		WHERE Id = #{UserId}
 	</select>
 	<select id="getCommetPhoto" resultType="ProductCommentPhoto"
-		parameterType="integer">
+		parameterType="java.lang.Integer">
 		SELECT Photo from tb_productcommentphoto where CommentId
 		= #{id}
 	</select>
@@ -128,20 +143,27 @@
 		tb_product where SubCategoryId = #{SubCategoryId}
 	</select>
 	<select id="getProductsOfSubCategory" resultMap="SubCategoryProductMap">
-		select
-		tp.Id,ProductName,Price,ElecNum,Tag,Photo from tb_product
-		tp,tb_productphoto th where tp.Id = th.ProductId and SubCategoryId =
-		#{SubCategoryId} and tp.CurStatus = 0 and th.CurStatus = 0 Order by
-		#{Condition} LIMIT #{page},#{pageNum}
-	</select>
-	<select id="getAllTagProduct" resultMap="TagMap">
 		SELECT
-		tg.tagId,tg.tagName,tp.Id,tp.ProducerName,tp.Price,tp.ElecNum,th.Photo
+		Id,ProductName,Price,OldPrice,ElecNum,Tag from tb_product where
+		SubCategoryId = #{SubCategoryId} and CurStatus = 0 ORDER BY
+		${Condition} LIMIT #{page},#{pageNum}
+	</select>
+	<select id="getProductsOfTag" resultMap="TagProductMap">
+		SELECT
+		Id,ProductName,Price,OldPrice,ElecNum,Tag from tb_product where
+		Tag =
+		#{Tag} and CurStatus = 0 ORDER BY
+		${Condition} LIMIT #{page},#{pageNum}
+	</select>
+	<select id="getAllTagProduct" resultMap="AllTagMap">
+		SELECT
+		tg.tagId,tg.tagName,tp.Id,tp.ProductName,tp.Price,tp.OldPrice,tp.ElecNum,th.Photo
 		from tb_tag tg,tb_product tp,tb_productphoto th where tg.tagId =
 		tp.Tag and tp.Id = th.ProductId and tp.CurStatus = 0 and th.CurStatus
-		= 0 order by tg.ord
+		= 0 and tp.tag != #{tag} order by tg.ord
 	</select>
 	<select id="getMemberTag" resultType="java.lang.Integer">
-		SELECT tagId from tb_tag where tagName = '会员专区' 
+		SELECT tagId from tb_tag
+		where tagName = '会员专区'
 	</select>
 </mapper>

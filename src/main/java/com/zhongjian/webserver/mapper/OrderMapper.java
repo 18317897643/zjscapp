@@ -19,7 +19,7 @@ public interface OrderMapper {
 
 	Integer insertOrderLine(OrderLineDto orderLineDto);
 
-	Integer getSpecElecNumById(Integer specId);
+	Map<String, Object> getSpecElecNumAndPriceById(Integer specId);
 
 	Map<String, Object> getDetailsFormorderheadC(String orderNoCName);
 
