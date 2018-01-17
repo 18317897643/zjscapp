@@ -348,14 +348,23 @@ public class PersonalCenterController {
 			// result中有总金额和单号，再去拼接签名返回给客户端
 			HashMap<String, Object> result = orderHandleService.createOrder(orderHeads, UserId);
 			HashMap<String, Object> exceptResult = new HashMap<>();
-			if (((BigDecimal) result.get("totalRealPayCo")).compareTo(BigDecimal.ZERO) == 0) {
+			BigDecimal totalRealPayCo = (BigDecimal) result.get("totalRealPayCo");
+			BigDecimal totalNotRealPayCo = (BigDecimal) result.get("totalNotRealPayCo");
+			String orderNoCollectionName = (String)result.get("orderNoCollectionName");
+			if (totalRealPayCo.compareTo(BigDecimal.ZERO) == 0) {
 				//不需要通过支付宝付款
 				exceptResult.put("type", "1");
 				exceptResult.put("orderNoC", result.get("orderNoCollectionName"));
 			} else {
-				exceptResult.put("type", "2");
-				exceptResult.put("singData", orderHandleService.createAliSignature((String) result.get("orderNoCollectionName"),
-								((BigDecimal) result.get("totalRealPayCo")).toString()));
+				if (totalNotRealPayCo.compareTo(BigDecimal.ZERO) == 0) {
+					//不需要平台币值
+					exceptResult.put("type", "2");
+					exceptResult.put("singData", orderHandleService.createAliSignature(orderNoCollectionName,totalRealPayCo.toString()));
+				}else {
+					//交杂
+					exceptResult.put("type", "3");
+					exceptResult.put("singData", orderHandleService.createAliSignature(orderNoCollectionName,totalRealPayCo.toString()));
+				}
 			}
 			return ResultUtil
 					.success(exceptResult);
@@ -366,7 +375,7 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "生成订单异常");
 		}
 	}
-
+	
 	@ApiOperation(httpMethod = "POST", notes = "生成VIP订单", value = "生成VIP订单")
 	@RequestMapping(value = "/PersonalCenter/createVOrder/{token}", method = RequestMethod.POST)
 	Result<Object> createVOrder(@PathVariable("token") String toKen, @RequestBody List<OrderHeadDto> orderHeads)
@@ -390,4 +399,30 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "生成订单异常");
 		}
 	}
+	
+//	@ApiOperation(httpMethod = "POST", notes = "直接处理orderC订单", value = "处理orderC订单")
+//	@RequestMapping(value = "/PersonalCenter/handleOrderC/{token}", method = RequestMethod.POST)
+//	Result<Object> handleOrderC(@PathVariable("token") String toKen, @RequestParam String orderNoC)
+//			throws BusinessException {
+//		try {
+//			// 检查token通过
+//			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+//			if (phoneNum == null) {
+//				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+//			}
+//			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+//			//通过订单查询
+//			
+//			// result中有总金额和单号，再去拼接签名返回给客户端
+//			HashMap<String, Object> result = orderHandleService.createOrder(orderHeads, UserId);
+//			return ResultUtil
+//					.success(orderHandleService.createAliSignature((String) result.get("orderNoCollectionName"),
+//							((BigDecimal) result.get("totalAmountCo")).toString()));
+//		} catch (RuntimeException e) {
+//			throw new BusinessException(Status.GeneralError.getStatenum(), e.getMessage());
+//		} catch (Exception e) {
+//			LoggingUtil.e("生成订单异常:" + e);
+//			throw new BusinessException(Status.SeriousError.getStatenum(), "生成订单异常");
+//		}
+//	}
 }

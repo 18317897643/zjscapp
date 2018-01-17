@@ -50,8 +50,8 @@
 	</update>
 	<insert id="insertOrderHeadCo">
 		INSERT INTO tb_orderHeadColleciton
-		(OrderNoCName,OrderNoC,TolAmount,CurStatus) VALUES
-		(#{orderNoCName},#{orderNoC},#{tolAmount,jdbcType=DECIMAL},0)
+		(OrderNoCName,OrderNoC,TolAmount,CurStatus,CreateTime,UserId) VALUES
+		(#{orderNoCName},#{orderNoC},#{tolAmount,jdbcType=DECIMAL},0,#{curTime},#{UserId})
 	</insert>
 	<update id="updateOrderHeadCoCur">
 		UPDATE tb_orderHeadColleciton set CurStatus = 1 WHERE
@@ -72,5 +72,8 @@
 		VALUES
 		(#{UserId},#{PreUseCoupon},#{PreUseElec},#{PreUsePoints},#{PreUseVipremain},#{ExpireTime})
 	</insert>
-
+	<select id="getUserIdByOrderC" resultType="java.lang.String">
+		SELECT UserId from
+		tb_orderheadcolleciton WHERE OrderNoCName = #{OrderNoCName}
+	</select>
 </mapper>

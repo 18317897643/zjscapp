@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.zhongjian.webserver.mapper.OrderMapper;
 import com.zhongjian.webserver.mapper.ProxyApplyMapper;
 import com.zhongjian.webserver.mapper.ShoppingCartMapper;
@@ -67,7 +66,6 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 			result.put("productList", shoppingCartmap.get(key));
 			resultList.add(result);
 		}
-
 		return resultList;
 	}
 	@Override
@@ -77,7 +75,6 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 		} else {
 			return false;
 		}
-
 	}
 	@Override
 	public Integer addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum,Date CreateTime) {

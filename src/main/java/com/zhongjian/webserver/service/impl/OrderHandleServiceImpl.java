@@ -108,8 +108,7 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 					+ "|";
 		}
 		orderMapper.insertOrderHeadCo(theCurrentOrderNoCollectionName, theCurrentOrderNoCollectionsStr,
-				TotalEveryAmountCoList.get(0));
-
+				TotalEveryAmountCoList.get(0),new Date(),UserId);
 		// 预扣
 		if (TotalEveryAmountCoList.get(0).compareTo(BigDecimal.ZERO) != 0) {
 			orderMapper.insertPreSubQuata(UserId, TotalEveryAmountCoList.get(1), TotalEveryAmountCoList.get(2),
@@ -118,6 +117,7 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 		HashMap<String, Object> result = new HashMap<>();
 		result.put("orderNoCollectionName", theCurrentOrderNoCollectionsStr);
 		result.put("totalRealPayCo", TotalEveryAmountCoList.get(0));
+		result.put("totalNotRealPayCo", TotalEveryAmountCoList.get(0));
 		return result;
 	}
 

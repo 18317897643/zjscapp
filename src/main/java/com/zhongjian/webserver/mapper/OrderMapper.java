@@ -29,7 +29,7 @@ public interface OrderMapper {
 	void updateOrderHeadScore(@Param("Score") Integer score, @Param("Id") Integer id);
 
 	void insertOrderHeadCo(@Param("orderNoCName") String orderNoCName, @Param("orderNoC") String orderNoC,
-			@Param("tolAmount") BigDecimal tolAmount);
+			@Param("tolAmount") BigDecimal tolAmount,@Param("curTime")Date curTime ,@Param("UserId") Integer UserId);
 
 	Map<String, Object> getNeedSubDetailsOfOrderHead(String oderNo);
 

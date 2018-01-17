@@ -60,7 +60,6 @@ public class ProductManagerServiceImpl implements ProductManagerService {
 	public String getProductHtmlText(Integer id) {
 		return productMapper.findProductHtmlTextById(id);
 	}
-
 	@Override
 	public List<PANResponseMap> checkProductStoreNum(List<PANRequestMap> pANRequestMaps) {
 		List<PANResponseMap> pANResponseMaps = new ArrayList<PANResponseMap>();
@@ -77,10 +76,8 @@ public class ProductManagerServiceImpl implements ProductManagerService {
 		}
 		return pANResponseMaps;
 	}
-
 	@Override
 	public List<Product> getSubProductOfCategory(Integer subCategoryId) {
 		return productMapper.getProductsOfSubCategory(subCategoryId);
 	}
-
 }

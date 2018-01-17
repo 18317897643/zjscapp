@@ -29,12 +29,7 @@ public class AddressManagerServiceImpl implements AddressManagerService {
 	@Override
 	@Transactional
 	public void addAddress(Map<String, Object> paramMap) {
-		if ((Integer)paramMap.get("IsDefault") == 1) {
-			addressMapper.setZero((Integer)paramMap.get("UserId"));
 			addressMapper.addAddress(paramMap);
-		}else {
-			
-		}
 	}
 
 	@Override

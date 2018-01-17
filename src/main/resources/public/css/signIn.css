@@ -1,0 +1,249 @@
+@charset "utf-8";
+/*通用*/
+body {
+    margin:0px;
+    padding:0px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+@font-face {
+    font-family: "SourceHanSansCN-Regular";
+    src:url(../font/SourceHanSansCN-Regular.otf);
+    font-weight:normal;
+    font-style:normal;
+}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,p,blockquote,th,td{margin:0; padding:0;}
+header,footer,article,aside,section,nav,menu,hgroup,details,dialog,figure,figcaption{display:block}
+ol,li,ul,dl,dt,dd{list-style:none;}
+table {border-collapse:collapse;border-spacing:0;}
+.fl{float:left;}
+.fr{float:right;}
+
+.container{
+    position:relative; margin:0 auto;
+    width:7.5rem;
+    height: 18.7rem;
+    background: url("../image/backdrop.png") no-repeat;
+    background-size: 100% 100%;
+    overflow: hidden;
+}
+.share{
+    position: relative;
+    top: 2.42rem;
+    right: -6.35rem;
+    width: 1rem;
+    height: 0.6rem;
+    font-size: 0.25rem;
+    color: #ffffff;
+    background: url("../image/shareBackground.png");
+    background-size: 1rem 0.6rem;
+    text-align: center;
+    line-height: 0.56rem;
+}
+.calendar{
+    width: 6.7rem;
+    height: 5.92rem;
+    background: url("../image/calendarBackground.png");
+    background-size: 6.7rem 5.92rem;
+    margin: 4.7rem auto 0;
+}
+/*
+.calendar h3{
+    text-align: center;
+    color: #407ee6;
+    font-size: 0.26rem;
+    padding-top: 0.46rem;
+    font-weight: 600;
+}
+.calendar h3 span{
+    color: #f0af16;
+}*/
+.calendarParent{
+    float: left;
+    position: relative;
+    left: 50%;
+    top: 6%;
+}
+.calendar_month_span{
+    font-size: 0.14rem;
+    float: left;
+    position: relative;
+    left: -10%;
+}
+.calendar ul{
+    float: left;
+    position: relative;
+    left: -41%;
+    margin: 0 auto;
+    height: 0.52rem;
+    font-size: 0.28rem;
+}
+.calendar .calendarTitle{
+    margin-top: 0.5rem;
+}
+.calendar ul li{
+    float: left;
+    width: 0.52rem;
+    height: 0.52rem;
+    margin-right: 0.3rem;
+    text-align: center;
+}
+.calendar ul:first-child{
+    margin-bottom: 0.3rem;
+}
+.on{
+    background: url("../image/signOn.png") no-repeat;
+    background-size: 0.56rem 0.46rem;
+}
+.signButton{
+    float: left;
+    position: relative;
+    left: 36%;
+    top: 8%;
+    color: #ffffff;
+    font-size: 0.25rem;
+    line-height: 0.5rem;
+    text-align: center;
+    width: 1.92rem;
+    height: 0.54rem;
+    background: url("../image/signButton1.png") no-repeat;
+    background-size: 1.92rem 0.54rem;
+}
+.signButton:hover{
+    cursor: pointer;
+}
+/*模态框*/
+.bg-model{
+    width:7.5rem;
+    height: 18.72rem;
+    position:absolute;
+    left:50%;
+    top: 80%;
+    transform:translate(-50%,-80%);
+    display: none;
+    background: rgba(0,0,0,0.3);
+}
+.bg-model-1{
+    width:7.5rem;
+    height: 18.72rem;
+    position:absolute;
+    left:50%;
+    top: 80%;
+    display: none;
+    transform:translate(-50%,-80%);
+    background: rgba(0,0,0,0.3);
+}
+.bg-model-content{
+    width:3.9rem;
+    height: 3.5rem;
+    margin: 6rem auto 0;
+    background: url("../image/signSuccess.png") center  no-repeat;
+    background-size: 3.9rem 3.5rem;
+}
+.bg-model-1 .bg-model-content{
+    margin: 13rem auto 0;
+    background: url("../image/getSuccess.png") center  no-repeat;
+    background-size: 3.9rem 3.5rem;
+}
+@keyframes fade-in {
+    0% {opacity: 0;}
+    40% {opacity: 0.5; top: 42%;}
+    100% {opacity: 1; top: 35%;}
+}
+@-webkit-keyframes fade-in {/*针对webkit内核*/
+    0% {opacity: 0;}
+    40% {opacity: 0.5; top: 45%;}
+    100% {opacity: 1; top: 35%;}
+}
+@keyframes fade-in-1 {
+    0% {opacity: 0;}
+    40% {opacity: 0.5; top: 78%;}
+    100% {opacity: 1; top: 71%;}
+}
+@-webkit-keyframes fade-in-1 {/*针对webkit内核*/
+    0% {opacity: 0;}
+    40% {opacity: 0.5; top: 78%;}
+    100% {opacity: 1; top: 71%;}
+}
+.bg-model-content span{
+    position:absolute;
+    left:50%;
+    top:35%;
+    transform:translate(-50%,-50%);
+    color: white;
+    font-size: 0.38rem;
+    animation: fade-in;
+    animation-duration: 0.8s;
+    -webkit-animation-duration: 0.8s;
+}
+.bg-model-1 .bg-model-content span{
+    top: 71%;
+    animation: fade-in-1;
+    animation-duration: 0.8s;
+    -webkit-animation-duration: 0.8s;
+}
+.closeModel{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:5.86rem;
+    height: 5.26rem;
+}
+.bg-model-1 .closeModel{
+    top: 88%;
+}
+.closeModel .closeBtn,.closeModel .closeBtn1{
+    position: absolute;
+    top: -0.8rem;
+    left: 5rem;
+    width: 0.34rem;
+    height: 0.34rem;
+    background-image: url("../image/closeBtn.png");
+    background-size: 0.34rem 0.34rem;
+    cursor: pointer;
+}
+.active-top{
+    height: 1.22rem;
+    background: url("../image/a-top.png") center  no-repeat;
+    background-size: 4rem 0.5rem;
+}
+.active-bottom{
+    height: 4.34rem;
+    background: url("../image/a-bottom.png") center no-repeat;
+    background-size: 6.9rem 4.34rem;
+}
+.active-bottom ul{
+    clear: both;
+    position: relative;
+    left: 16%;
+    top:10%;
+}
+.active-bottom ul li{
+    float: left;
+    position: relative;
+}
+.active-bottom ul li:first-child{
+    font-size: 0.22rem;
+    color: #6ba8ff;
+    width: 1.4rem;
+}
+.active-bottom ul li span{
+    color: #ffde00;
+    font-size: 0.5rem;
+}
+.active-bottom ul li:nth-child(2){
+    width: 2.2rem;
+    height: 1.28rem;
+    font-size: 0.26rem;
+    font-weight: 600;
+    line-height: 0.9rem;
+    color: #5a97fd;
+}
+.active-bottom ul li:last-child{
+    margin-top: 0.2rem;
+    width: 1.44rem;
+    height: 0.5rem;
+    background: url("../image/ungetButton.png");
+    background-size: 1.44rem 0.5rem;
+}
