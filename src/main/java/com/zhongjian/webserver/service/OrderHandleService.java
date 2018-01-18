@@ -10,7 +10,14 @@ public interface OrderHandleService {
 
 	HashMap<String, Object> createOrder(List<OrderHeadDto> orderHeads, Integer UserId);
 
-	boolean handleOrder(String orderNo, String totalAmount,String seller_id ,String app_id);
+	boolean asyncHandleOrder(String orderNo, String totalAmount,String seller_id ,String app_id);
+	
+	boolean syncHandleOrder(String orderNo, Integer platformMoneyAmount);
 	
 	String createAliSignature(String out_trade_no, String totalAmount) throws AlipayApiException;
+	
+	Integer getUserIdByOrderC(String orderNoC);
+	
+	
+
 }

@@ -30,6 +30,12 @@ public interface UserMapper {
     
     Map<String, Object> selectUserQuotaForUpdate(Integer id);
     
+    Map<String, Integer> checkUserFundOrCurSta(String userName);
+    
+    Integer checkUserNewExclusive(String uerName);
+    
     void updateUserQuota(Map<String, Object> quotaMap);
+    
+    Integer updateNewExclusiveDraw(String uerName);
     
 }

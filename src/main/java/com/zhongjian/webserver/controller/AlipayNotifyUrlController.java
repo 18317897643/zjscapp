@@ -10,17 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.alipay.api.internal.util.AlipaySignature;
 import com.zhongjian.webserver.ExceptionHandle.BusinessException;
 import com.zhongjian.webserver.alipay.AlipayConfig;
 import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.Result;
-import com.zhongjian.webserver.common.ResultUtil;
 import com.zhongjian.webserver.common.Status;
 import com.zhongjian.webserver.mapper.ProductMapper;
 import com.zhongjian.webserver.service.OrderHandleService;
-
 import io.swagger.annotations.ApiOperation;
 
 @RestController
@@ -58,7 +55,7 @@ public class AlipayNotifyUrlController {
 					String seller_id = request.getParameter("seller_id"); // 商家app_id
 					String app_id = request.getParameter("app_id"); // 商家seller_id
 					// 校验四项
-					if (orderHandleService.handleOrder(out_trade_no, total_amount, seller_id, app_id)) {
+					if (orderHandleService.asyncHandleOrder(out_trade_no, total_amount, seller_id, app_id)) {
 						return "success";
 					} else {
 						return "failure";
@@ -79,9 +76,10 @@ public class AlipayNotifyUrlController {
 	 * @throws BusinessException 
 	 * 
 	 */
-	@ApiOperation(httpMethod = "POST", notes = "支付宝异步通知接口", value = "支付宝异步通知接口")
-	@RequestMapping(value = "/test", method = RequestMethod.POST)
+	@ApiOperation(httpMethod = "GET", notes = "测试接口", value = "测试接口")
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	Result<Object> test(HttpServletRequest request)  {
+		return null;
 //		Map<String, Object> map = orderMapper.getDetailsFormorderheadC("CB123456789");
 //		orderMapper.updateUserQuota(new BigDecimal("-3.00"));
 
@@ -89,6 +87,5 @@ public class AlipayNotifyUrlController {
 //		
 //		System.out.println(map.get("UserId").getClass());
 //		logMapper.insertCouponRecord(1, new Date(), new BigDecimal("2.00"), "-", "购买商品，订单号：" + "B214324342432432");
-		return ResultUtil.success(productMapper.getAllTagProduct());
 	}
 }

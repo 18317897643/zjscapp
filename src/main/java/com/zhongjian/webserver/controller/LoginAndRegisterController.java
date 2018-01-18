@@ -99,6 +99,9 @@ public class LoginAndRegisterController {
 			if (loginAndRegisterService.checkUserExists(phoneNum)) {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "该用户不存在");
 			}
+			if (loginAndRegisterService.userIsFreeze(phoneNum)) {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "该用户已经被冻结");
+			}
 			if (!loginAndRegisterService.checkUserNameAndPassword(phoneNum, password)) {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "密码输入有误");
 			}

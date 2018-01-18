@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.zhongjian.webserver.mapper.OrderMapper">
+	<resultMap id="orderDetailsMap" type="Orderhead">
+		<id column="Id" property="id" />
+		<result column="OrderNo" property="orderno" />
+		<result column="CreateTime" property="createtime" />
+		<result column="SendDate" property="senddate" />
+		<result column="ReceivedTime" property="receivedtime" />
+		<result column="CurStatus" property="curstatus" />
+		<result column="ReceiverName" property="receivername" />
+		<result column="ReceiverPhone" property="receiverphone" />
+		<result column="ProvinceId" property="provinceid" />
+		<result column="CityId" property="cityid" />
+		<result column="RegionId" property="regionid" />
+		<result column="TotalAmount" property="totalamount" />
+		<result column="UseElecNum" property="useelecnum" />
+		<result column="UseCoupon" property="usecoupon" />
+		<result column="UsePointNum" property="usepointnum" />
+		<result column="UseVIPRemainNum" property="usevipremainnum" />
+		<collection column="Id" property="orderlines" ofType="Orderline"
+			select="selectOrderLineByOrderId" fetchType="eager">
+			<result column="ProductName" property="productname" />
+			<result column="SpecName" property="specname" />
+			<result column="ProductNum" property="productnum" />
+			<result column="Price" property="price" />
+			<result column="ExpressName" property="expressname" />
+			<result column="ExpressNo" property="expressno" />
+		</collection>
+	</resultMap>
 	<select id="getUserOrderStatus" resultType="java.lang.Integer">
 		SELECT COUNT(1) FROM
 		tb_orderhead WHERE UserId = #{userId} AND CurStatus = -1
@@ -20,7 +47,8 @@
 	</select>
 	<select id="getDetailsFormorderheadC" resultType="java.util.Map">
 		SELECT
-		TolAmount,OrderNoC from tb_orderheadcolleciton where OrderNoCName =
+		TolAmount,OrderNoC,PlatformMoney from tb_orderheadcolleciton where
+		OrderNoCName =
 		#{orderNoCName};
 	</select>
 	<select id="getNeedSubDetailsOfOrderHead" resultType="java.util.Map">
@@ -50,8 +78,9 @@
 	</update>
 	<insert id="insertOrderHeadCo">
 		INSERT INTO tb_orderHeadColleciton
-		(OrderNoCName,OrderNoC,TolAmount,CurStatus,CreateTime,UserId) VALUES
-		(#{orderNoCName},#{orderNoC},#{tolAmount,jdbcType=DECIMAL},0,#{curTime},#{UserId})
+		(OrderNoCName,OrderNoC,TolAmount,PlatformMoney,CurStatus,CreateTime,UserId)
+		VALUES
+		(#{orderNoCName},#{orderNoC},#{tolAmount,jdbcType=DECIMAL},#{platformMoney,jdbcType=DECIMAL},0,#{curTime},#{UserId})
 	</insert>
 	<update id="updateOrderHeadCoCur">
 		UPDATE tb_orderHeadColleciton set CurStatus = 1 WHERE
@@ -72,8 +101,18 @@
 		VALUES
 		(#{UserId},#{PreUseCoupon},#{PreUseElec},#{PreUsePoints},#{PreUseVipremain},#{ExpireTime})
 	</insert>
-	<select id="getUserIdByOrderC" resultType="java.lang.String">
+	<select id="getUserIdByOrderC" resultType="java.lang.Integer">
 		SELECT UserId from
 		tb_orderheadcolleciton WHERE OrderNoCName = #{OrderNoCName}
+	</select>
+	<select id="getOrderDetailsById" resultMap="orderDetailsMap">
+		SELECT
+		Id,OrderNo,CreateTime,SendDate,ReceivedTime,CurStatus,ReceiverName,ReceiverPhone,ProvinceId,CityId,RegionId,TotalAmount,UseElecNum,UseCoupon,UsePointNum,UseVIPRemainNum,ExpressName,ExpressNo
+		from
+		tb_orderhead WHERE Id = #{orderId}
+	</select>
+	<select id="selectOrderLineByOrderId" resultType="OrderLine">
+		SELECT ProductName,SpecName,ProductNum,Price from
+		tb_orderline WHERE OrderId = #{orderId}
 	</select>
 </mapper>
