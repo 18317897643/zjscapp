@@ -1,8 +1,8 @@
 @charset "utf-8";
 /*通用*/
 body {
-    margin:0px;
-    padding:0px;
+    margin:0;
+    padding:0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -30,7 +30,7 @@ table {border-collapse:collapse;border-spacing:0;}
 .share{
     position: relative;
     top: 2.42rem;
-    right: -6.35rem;
+    right: -6.5rem;
     width: 1rem;
     height: 0.6rem;
     font-size: 0.25rem;
@@ -38,7 +38,7 @@ table {border-collapse:collapse;border-spacing:0;}
     background: url("../image/shareBackground.png");
     background-size: 1rem 0.6rem;
     text-align: center;
-    line-height: 0.56rem;
+    line-height: 0.5rem;
 }
 .calendar{
     width: 6.7rem;
@@ -65,7 +65,7 @@ table {border-collapse:collapse;border-spacing:0;}
     top: 6%;
 }
 .calendar_month_span{
-    font-size: 0.14rem;
+    font-size: 0.24rem;
     float: left;
     position: relative;
     left: -10%;
@@ -78,8 +78,12 @@ table {border-collapse:collapse;border-spacing:0;}
     height: 0.52rem;
     font-size: 0.28rem;
 }
+/*
 .calendar .calendarTitle{
     margin-top: 0.5rem;
+}*/
+.sign_succ_calendar_title{
+    height: 0.89rem;
 }
 .calendar ul li{
     float: left;
@@ -89,7 +93,7 @@ table {border-collapse:collapse;border-spacing:0;}
     text-align: center;
 }
 .calendar ul:first-child{
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.2rem;
 }
 .on{
     background: url("../image/signOn.png") no-repeat;
@@ -115,7 +119,7 @@ table {border-collapse:collapse;border-spacing:0;}
 /*模态框*/
 .bg-model{
     width:7.5rem;
-    height: 18.72rem;
+    height: 18.7rem;
     position:absolute;
     left:50%;
     top: 80%;
@@ -125,7 +129,7 @@ table {border-collapse:collapse;border-spacing:0;}
 }
 .bg-model-1{
     width:7.5rem;
-    height: 18.72rem;
+    height: 18.7rem;
     position:absolute;
     left:50%;
     top: 80%;

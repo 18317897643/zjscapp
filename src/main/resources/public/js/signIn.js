@@ -4,13 +4,12 @@
         recalc = function () {
             var clientWidth = docEl.clientWidth;
             if (!clientWidth) return;
-            if(clientWidth>=750){
+            if(clientWidth >= 750){
                 docEl.style.fontSize = '100px';
             }else{
                 docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
             }
         };
-
     if (!doc.addEventListener) return;
     win.addEventListener(resizeEvt, recalc, false);
     doc.addEventListener('DOMContentLoaded', recalc, false);
@@ -28,7 +27,7 @@ var calUtil = {
     init:function(signList){
         calUtil.setMonthAndDay();
         calUtil.draw(signList);
-        calUtil.bindEnvent();
+        //calUtil.bindEnvent();
     },
     draw:function(signList){
         //绑定日历
@@ -39,7 +38,7 @@ var calUtil = {
         $(".calendar_month_span").html(calendarName);
     },
     //绑定事件
-    bindEnvent:function(){
+    /*bindEnvent:function(){
         //绑定上个月事件
         $(".calendar_month_prev").click(function(){
             //ajax获取日历json数据
@@ -54,7 +53,7 @@ var calUtil = {
             calUtil.eventName="next";
             calUtil.init(signList);
         });
-    },
+    },*/
     //获取当前选择的年月
     setMonthAndDay:function(){
         switch(calUtil.eventName)
@@ -131,7 +130,7 @@ var calUtil = {
                 return false;
             }
         });
-        return signed ;
+        return signed;
     },
     drawCal : function(iYear, iMonth ,signList) {
         var myMonth = calUtil.bulidCal(iYear, iMonth);
@@ -181,6 +180,7 @@ $(function(){
                 $('.signButton').css("background","url(../image/alSignButton.png)");
                 $('.signButton').css("background-size","1.92rem 0.54rem");
                 $('.signButton').css("cursor","default");
+                $('.signButton')2
             }else {
                 alert("签到失败,请重新签到！");
             }
