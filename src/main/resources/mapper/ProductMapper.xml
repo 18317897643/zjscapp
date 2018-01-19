@@ -17,6 +17,8 @@
 		<result column="CreateTime" property="createtime" />
 		<result column="ElecNum" property="elecnum" />
 		<result column="StockNum" property="stocknum" />
+		<result column="ProductName" property="productname" />
+		<result column="Freight" property="freight" />
 		<result column="PlaceOfDelivery" property="placeofdelivery" />
 		<result column="ProducerNo" property="producerno" />
 		<result column="Producertel" property="producertel" />
@@ -94,7 +96,7 @@
 	</select>
 	<select id="findById" resultMap="ProductDetails" parameterType="java.lang.Integer">
 		select
-		p.Tag,p.Id,p.Price,p.Freight,p.ElecNum,p.StockNum,p.PlaceOfDelivery,p.ProducerNo,p.Producertel,p.ProducerName
+		p.Tag,p.Id,p.Price,p.ProductName,p.Freight,p.ElecNum,p.StockNum,p.PlaceOfDelivery,p.ProducerNo,p.Producertel,p.ProducerName
 		from
 		tb_product
 		p where Id = #{id}

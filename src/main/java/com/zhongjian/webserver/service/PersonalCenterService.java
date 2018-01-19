@@ -37,8 +37,14 @@ public interface PersonalCenterService {
 	boolean isAlreadyApply(Integer UserId);
 
 	ProxyApply getProxyApply(Integer UserId);
+	
+	void addProxyApply(ProxyApply proxyApply,Integer userId);
 
+	void updateProxyApply(ProxyApply proxyApply,Integer userId);
+	
 	Orderhead getOrderDetailsById(Integer id);
+	
+	List<Orderhead> getOrderDetailsByCurStatus(Integer userId,String condition);
 
 	// 判断实名认证
 	boolean isAlreadyAuth(Integer UserId);

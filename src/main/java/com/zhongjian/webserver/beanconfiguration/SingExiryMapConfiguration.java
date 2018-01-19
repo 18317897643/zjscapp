@@ -24,4 +24,9 @@ public class SingExiryMapConfiguration {
 	public ExpiryMap<String, String> createPayPasswordModifyMap() {
 		return new ExpiryMap<String,String>();
 	}
+	
+	@Bean(name="mayNotUpdateMap")
+	public ExpiryMap<String, String> createMayNotUpdateMap() {
+		return new ExpiryMap<String,String>(1000 * 60 * 360);
+	}
 }

@@ -11,8 +11,8 @@ spring:
   datasource:  
     name: db
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://192.168.1.236:3306/test1?useUnicode=true&characterEncoding=utf-8
-    username: tyf
+    url: jdbc:mysql://127.0.0.1:3306/test1?useUnicode=true&characterEncoding=utf-8
+    username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
     minIdle: 5
@@ -39,7 +39,7 @@ mybatis:
   configLocation: classpath:/mybatis-config.xml
 token:
   largeLenth: 2000
-  jsonFile: /home/chendi/zhongjianmall/json/token.json
+  jsonFile: /home/www/zhongjianmall/json/token.json
 upload:
   catalogue: /home/public/upload/pics/
   httpCatalogue: /upload/pics/

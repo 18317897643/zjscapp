@@ -6,7 +6,19 @@
 		CurStatus from tb_proxyapply WHERE UserId = #{UserId,jdbcType=INTEGER}
 	</select>
 	<select id="queryProxyApply" resultType="ProxyApply">
-		SELECT Name,Phone,ProvinceId,CityId,RegionId,Address,Photo1,Photo2,Photo3,CurStatus,RefuseReason
+		SELECT
+		Name,Phone,ProvinceId,CityId,RegionId,Address,Photo1,Photo2,Photo3,CurStatus,RefuseReason
 		FROM tb_proxyapply WHERE UserId = #{UserId,jdbcType=INTEGER}
 	</select>
+	<update id="updateProxyApply">
+		update tb_proxyapply set Name = #{name} ,Phone = #{phone}, ProvinceId = #{provinceid} ,CityId = #{cityid},
+		RegionId = #{regionid} , Address = #{address} , Photo1 = #{photo1} , Photo2 = #{photo2} ,Photo3 = #{photo3},  
+		CurStatus = #{curstatus} where UserId = #{userid}
+	</update>
+	<insert id="addProxyApply">
+		insert into
+		tb_proxyapply(CreateTime,UserId,Name,Phone,ProvinceId,CityId,RegionId,Address,Photo1,Photo2,Photo3,CurStatus,RefuseReason)
+		VALUES
+		(#{createtime},#{userid},#{name},#{phone},#{provinceid},#{cityid},#{regionid},#{address},#{photo1},#{photo2},#{photo3},#{curstatus},"")
+	</insert>
 </mapper>

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.alipay.api.AlipayApiException;
 import com.zhongjian.webserver.dto.OrderHeadDto;
+import com.zhongjian.webserver.dto.OrderHeadEXDto;
 
 public interface OrderHandleService {
 
@@ -19,6 +20,8 @@ public interface OrderHandleService {
 	Integer getUserIdByOrderC(String orderNoC);
 	
 	Integer getUserIdByOrder(String orderNo);
+	
+	List<OrderHeadDto> handleOrderHeadDtoByAdressId(OrderHeadEXDto orderHeadEXDto);
 	
 	//取消订单
 	void cancelOrder(String orderNo);

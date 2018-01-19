@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public interface MemberShipService {
+import com.zhongjian.webserver.ExceptionHandle.shareBenefitException;
+
+
+public interface MemberShipService  {
 
 	// 生成viporder
 	HashMap<String, Object> createVOrder(Integer lev, BigDecimal needPay, Integer UserId, Integer type);
@@ -21,4 +24,10 @@ public interface MemberShipService {
 	
 	//获取红黄蓝粉
 	List<Map<String, Object>> getRYBFansDetails(Integer userId,String type);
+	
+	//判断升级
+	boolean memberUpdate(Integer userId,Integer type) throws shareBenefitException;
+	
+	//查询某个用户的累计积分
+	BigDecimal getAccumulateScore(Integer inviteCode);
 }

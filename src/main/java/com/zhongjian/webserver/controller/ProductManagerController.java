@@ -115,4 +115,5 @@ public class ProductManagerController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "获取商品详情异常");
 		}
  	}
+
 }

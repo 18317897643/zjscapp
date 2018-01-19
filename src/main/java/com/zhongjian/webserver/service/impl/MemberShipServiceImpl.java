@@ -1,6 +1,7 @@
 package com.zhongjian.webserver.service.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,10 +9,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zhongjian.webserver.common.ExpiryMap;
 import com.zhongjian.webserver.common.RandomUtil;
+import com.zhongjian.webserver.common.ShareBenefitUtil;
+import com.zhongjian.webserver.ExceptionHandle.shareBenefitException;
 import com.zhongjian.webserver.component.AsyncTasks;
 import com.zhongjian.webserver.component.MallData;
 import com.zhongjian.webserver.mapper.LogMapper;
@@ -36,6 +42,10 @@ public class MemberShipServiceImpl implements MemberShipService {
 
 	@Autowired
 	AsyncTasks tasks;
+
+	@Autowired
+	@Qualifier("mayNotUpdateMap")
+	private ExpiryMap<String, String> mayNotUpdateMap;
 
 	@Override
 	public HashMap<String, Object> createVOrder(Integer lev, BigDecimal needPay, Integer UserId, Integer type) {
@@ -167,5 +177,77 @@ public class MemberShipServiceImpl implements MemberShipService {
 			}
 		}
 		return datas;
+	}
+	@Override
+	public boolean memberUpdate(Integer userId, Integer type) throws shareBenefitException {
+		if (mayNotUpdateMap.get(userId.toString()) != null) {
+			return false;
+		}
+		Map<String, Object> inviteCodeAndTotalCost = userMapper.getInviteCodeAndTotalCostById(userId);
+		if (type == 1) {// 升级到vip
+			BigDecimal totalCost = (BigDecimal) inviteCodeAndTotalCost.get("TotalCost");
+			if (totalCost.compareTo(new BigDecimal("3000")) == -1) {
+				return false;
+			}
+			//具体升级vip
+			userMapper.setLev(1, 0, userId);
+			tasks.presentTask(1, userId);
+			return true;
+		} else {
+			Integer inviteCode = (Integer) inviteCodeAndTotalCost.get("InviteCode");
+			// 查询他的所有下级累计积分
+			List<Map<String, Object>> subordinates = userMapper.getDownInviteAndTotalCost(inviteCode);
+			if (subordinates.size() == 0) {
+				mayNotUpdateMap.put(userId.toString(), "false");
+				return false;
+			}
+			List<Integer> scoreList = new ArrayList<>();
+			for (int i = 0; i < subordinates.size(); i++) {
+				Map<String, Object> curSubordinate = subordinates.get(i);
+				Integer curInviteCode = (Integer) curSubordinate.get("InviteCode");
+				BigDecimal curScore = getAccumulateScore(curInviteCode);
+				scoreList.add(curScore.intValue());
+			}
+			if (type == 2) {
+				if (ShareBenefitUtil.isProxy(scoreList, 50000, 2)) {
+					// 升级为准代理
+					userMapper.setLev(2, 1, userId);
+					tasks.presentTask(2, userId);
+					return true;
+				} else {
+					mayNotUpdateMap.put(userId.toString(), "false");
+					return false;
+				}
+			} else {
+				if (ShareBenefitUtil.isProxy(scoreList, 100000, 3)) {
+					// 升级为代理
+					userMapper.setLev(3, 0, userId);
+					tasks.presentTask(2, userId);
+					return true;
+				} else {
+					mayNotUpdateMap.put(userId.toString(), "false");
+					return false;
+				}
+			}
+
+		}
+	}
+
+	@Override
+	@Transactional(propagation = Propagation.NOT_SUPPORTED)
+	public BigDecimal getAccumulateScore(Integer inviteCode) {
+		// 递归求出某个人的累计积分
+		List<Map<String, Object>> subordinates = userMapper.getDownInviteAndTotalCost(inviteCode);
+		if (subordinates.size() == 0) {
+			return BigDecimal.ZERO;
+		}
+		BigDecimal result = BigDecimal.ZERO;
+		for (int i = 0; i < subordinates.size(); i++) {
+			Map<String, Object> curSubordinate = subordinates.get(i);
+			Integer curInviteCode = (Integer) curSubordinate.get("InviteCode");
+			BigDecimal curTotalCost = (BigDecimal) curSubordinate.get("TotalCost");
+			result = result.add(curTotalCost).add(getAccumulateScore(curInviteCode));
+		}
+		return result;
 	}
 }

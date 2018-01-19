@@ -3,14 +3,14 @@
 <mapper namespace="com.zhongjian.webserver.mapper.AddressMapper">
 	<select id="queryAddress" resultType="java.util.Map">
 		select
-		a.`Name`,a.`Phone`,a.`DetailAddress`,a.`IsDefault`,p.ProvinceName,c.CityName,r.RegionName
+		a.`Id`,a.`Name`,a.`Phone`,a.`DetailAddress`,a.`IsDefault`,a.ProvinceId,a.CityId,a.RegionId,p.ProvinceName,c.CityName,r.RegionName
 		from tb_address a JOIN tb_province p on p.Id = a.ProvinceId JOIN
 		tb_city c on c.Id = a.CityId JOIN tb_region r on r.Id = a.RegionId
 		where ${condition} = #{param} ${additionalCondition}
 	</select>
 	<select id="queryAllAddress" resultType="java.util.Map">
 		select
-		a.Id,a.`Name`,a.`Phone`,a.`DetailAddress`,a.`IsDefault`,p.ProvinceName,c.CityName,r.RegionName
+		a.`Id`,a.`Name`,a.`Phone`,a.`DetailAddress`,a.`IsDefault`,a.ProvinceId,a.CityId,a.RegionId,p.ProvinceName,c.CityName,r.RegionName
 		from tb_address a JOIN tb_province p on p.Id = a.ProvinceId JOIN
 		tb_city c on c.Id = a.CityId JOIN tb_region r on r.Id = a.RegionId
 		where a.UserId = #{param} And a.CurStatus = 0

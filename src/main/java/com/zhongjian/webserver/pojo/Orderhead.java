@@ -77,6 +77,9 @@ public class Orderhead {
 
     private String expressno;
     
+    //订单合计
+    private Integer tolnum;
+    
     private List<Orderline> orderlines;
 
     public Integer getId() {
@@ -342,4 +345,13 @@ public class Orderhead {
 	public void setOrderlines(List<Orderline> orderlines) {
 		this.orderlines = orderlines;
 	}
+
+	public Integer getTolnum() {
+		return tolnum;
+	}
+
+	public void setTolnum(Integer tolnum) {
+		this.tolnum = tolnum;
+	}
+	
 }

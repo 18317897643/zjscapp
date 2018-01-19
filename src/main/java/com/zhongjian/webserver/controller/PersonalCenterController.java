@@ -22,8 +22,10 @@ import com.zhongjian.webserver.common.ResultUtil;
 import com.zhongjian.webserver.common.Status;
 import com.zhongjian.webserver.common.TokenManager;
 import com.zhongjian.webserver.dto.OrderHeadDto;
+import com.zhongjian.webserver.dto.OrderHeadEXDto;
 import com.zhongjian.webserver.dto.PANRequestMap;
 import com.zhongjian.webserver.dto.PANResponseMap;
+import com.zhongjian.webserver.pojo.Orderhead;
 import com.zhongjian.webserver.pojo.User;
 import com.zhongjian.webserver.service.LoginAndRegisterService;
 import com.zhongjian.webserver.service.OrderHandleService;
@@ -136,23 +138,36 @@ public class PersonalCenterController {
 	@RequestMapping(value = "/PersonalCenter/getOrder/{token}/{type}", method = RequestMethod.GET)
 	Result<Object> itemsToBePaidFor(@PathVariable("token") String token, @PathVariable("type") String type)
 			throws BusinessException {
-		// all全部 wp待付款ws待发货wr待收货wc待评价
-		if (!"all".equals(type) && !"wp".equals(type) && !"ws".equals(type) && !"wr".equals(type)
-				&& !"wc".equals(type)) {
-			return ResultUtil.error(Status.GeneralError.getStatenum(), "参数异常");
+		try {
+			// all全部 wp待付款ws待发货wr待收货wc待评价
+			if (!"all".equals(type) && !"wp".equals(type) && !"ws".equals(type) && !"wr".equals(type)
+					&& !"wc".equals(type)) {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "参数异常");
+			}
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(token);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			List<Orderhead> orderHead = null;
+			if ("all".equals(type)) {
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "");
+			} else if ("wp".equals(type)) {
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = -1");
+			} else if ("ws".equals(type)) {
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 0");
+			} else if ("wr".equals(type)) {
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 1");
+			} else {
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 2");
+			}
+			return ResultUtil.success(orderHead);
+		} catch (Exception e) {
+			LoggingUtil.e("获取订单异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "获取订单异常");
 		}
-		if ("all".equals(type)) {
-				
-		} else if ("wp".equals(type)) {
 
-		} else if ("ws".equals(type)) {
-
-		} else if ("wr".equals(type)) {
-
-		} else {
-
-		}
-		return null;
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "获取订单详情", value = "获取订单详情")
@@ -346,7 +361,7 @@ public class PersonalCenterController {
 		}
 	}
 
-	@ApiOperation(httpMethod = "POST", notes = "设置邀请码", value = "设置邀请码")
+	@ApiOperation(httpMethod = "POST", notes = "设置推荐人", value = "设置推荐人")
 	@RequestMapping(value = "/PersonalCenter/updateInviteCode/{token}", method = RequestMethod.POST)
 	Result<Object> updateInviteCode(@PathVariable("token") String toKen, @RequestParam Integer inviteCode)
 			throws BusinessException {
@@ -362,20 +377,20 @@ public class PersonalCenterController {
 				userForUpdate.setBeinvitecode(inviteCode);
 				userForUpdate.setUsername(phoneNum);
 				loginAndRegisterService.updateUser(userForUpdate);
+				loginAndRegisterService.sendCouponByUserId(new BigDecimal("100.00"), inviteCode);
 				return ResultUtil.success();
 			} else {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "邀请码不存在");
 			}
 
 		} catch (Exception e) {
-			LoggingUtil.e("更新昵称异常:" + e);
-			throw new BusinessException(Status.SeriousError.getStatenum(), "更新昵称异常");
+			LoggingUtil.e("设置推荐人异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "设置推荐人异常");
 		}
 	}
-
 	@ApiOperation(httpMethod = "POST", notes = "生成购物订单", value = "生成购物订单")
 	@RequestMapping(value = "/PersonalCenter/createBOrder/{token}", method = RequestMethod.POST)
-	Result<Object> createBOrder(@PathVariable("token") String toKen, @RequestBody List<OrderHeadDto> orderHeads)
+	Result<Object> createBOrder(@PathVariable("token") String toKen, @RequestBody OrderHeadEXDto orderHeadEXDto)
 			throws BusinessException {
 		try {
 			// 检查token通过
@@ -385,7 +400,11 @@ public class PersonalCenterController {
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// result中有总金额和单号，再去拼接签名返回给客户端
-			HashMap<String, Object> result = orderHandleService.createOrder(orderHeads, UserId);
+			List<OrderHeadDto> rusult = orderHandleService.handleOrderHeadDtoByAdressId(orderHeadEXDto);
+			if (rusult == null) {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "收货地址ID不存在");
+			}
+			HashMap<String, Object> result = orderHandleService.createOrder(rusult, UserId);
 			HashMap<String, Object> exceptResult = new HashMap<>();
 			BigDecimal totalRealPayCo = (BigDecimal) result.get("totalRealPayCo");
 			BigDecimal totalNotRealPayCo = (BigDecimal) result.get("totalNotRealPayCo");

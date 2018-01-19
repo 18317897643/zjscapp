@@ -123,11 +123,11 @@
 		from
 		tb_orderhead WHERE Id = #{orderId}
 	</select>
-	<select id="getOrderDetails" resultMap="orderDetailsMap">
+	<select id="getOrderDetailsByCurStatus" resultMap="orderDetailsMap">
 		SELECT
 		Id,OrderNo,CreateTime,SendDate,ReceivedTime,CurStatus,TotalAmount,RealPay,Freight
 		from
-		tb_orderhead WHERE ${condition}
+		tb_orderhead WHERE UserId = #{UserId} ${Condition}
 	</select>
 	<select id="selectOrderLineByOrderId" resultType="OrderLine">
 		SELECT

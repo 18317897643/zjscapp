@@ -25,11 +25,13 @@ import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.RandomUtil;
 import com.zhongjian.webserver.component.AsyncTasks;
 import com.zhongjian.webserver.dto.OrderHeadDto;
+import com.zhongjian.webserver.dto.OrderHeadEXDto;
 import com.zhongjian.webserver.dto.OrderLineDto;
 import com.zhongjian.webserver.mapper.LogMapper;
 import com.zhongjian.webserver.mapper.MemberShipMapper;
 import com.zhongjian.webserver.mapper.OrderMapper;
 import com.zhongjian.webserver.mapper.UserMapper;
+import com.zhongjian.webserver.service.AddressManagerService;
 import com.zhongjian.webserver.service.OrderHandleService;
 
 @Service
@@ -52,6 +54,9 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 
 	@Autowired
 	AlipayConfig alipayConfig;
+	
+	@Autowired
+	AddressManagerService addressManagerService;
 	
 	@Override
 	@Transactional
@@ -459,5 +464,28 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 	public void autoCancelOrder() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<OrderHeadDto> handleOrderHeadDtoByAdressId(OrderHeadEXDto orderHeadEXDto) {
+		Integer addressId = orderHeadEXDto.getAdrressId();
+		//根据地址Id查询地址信息
+		Map<String, Object> address = addressManagerService.getAddressById(addressId);
+		if (address == null) {
+			return null;
+		}
+		List<OrderHeadDto> orderHeadDtos = orderHeadEXDto.getOrderHeads();
+		Integer orderHeadDtosSize = orderHeadDtos.size();
+		for (int i = 0; i < orderHeadDtosSize; i++) {
+			OrderHeadDto orderHeadDto = orderHeadDtos.get(i);
+			orderHeadDto.setAddress((String) address.get("DetailAddress"));
+			orderHeadDto.setCityId((Integer) address.get("CityId"));
+			orderHeadDto.setCountryId(0);
+			orderHeadDto.setProvinceId((Integer) address.get("ProvinceId"));
+			orderHeadDto.setRegionId((Integer) address.get("RegionId"));
+			orderHeadDto.setReceiverName((String) address.get("Name"));
+			orderHeadDto.setReceiverPhone((String) address.get("Phone"));
+		}
+		return orderHeadDtos;
 	}
 }

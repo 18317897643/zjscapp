@@ -7,4 +7,8 @@ public interface ProxyApplyMapper {
   Integer queryProxyApplyCurStatus(Integer UserId);
   
   ProxyApply queryProxyApply(Integer UserId);
+  
+  void updateProxyApply(ProxyApply proxyApply);
+  
+  void addProxyApply(ProxyApply proxyApply);
 }

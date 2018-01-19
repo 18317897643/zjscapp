@@ -429,7 +429,7 @@
 	</update>
 	<select id="selectPersonalInform" resultType="java.util.Map">
 		select
-		UserName,SysID,Lev,IsSubProxy,NickName,HeadPhoto,RemainElecNum,RemainPoints,RemainVIPAmount,Coupon,TotalCost,RemainStream,Phone,TrueName,IDCardNo,InviteCode,PayPassword
+		UserName,SysID,Lev,IsSubProxy,NickName,HeadPhoto,RemainElecNum,RemainPoints,RemainVIPAmount,Coupon,TotalCost,RemainStream,Phone,TrueName,IDCardNo,BeInviteCode,InviteCode,PayPassword
 		from tb_user where UserName = #{userName}
 	</select>
 	<select id="selectPersonalInformById" resultType="java.util.Map">
@@ -441,7 +441,6 @@
 		select Id from
 		tb_user where UserName = #{userName}
 	</select>
-
 	<select id="getUserNameByUserId" resultType="java.lang.String">
 		select UserName from
 		tb_user where Id = #{UserId}
@@ -507,15 +506,32 @@
 		#{UserId} ORDER BY CreateTime DESC limit #{page},#{pageNum}
 	</select>
 	<select id="getElecBill" resultMap="BillMap">
-		SELECT CreateTime,Amount,AddSub,Memo from tb_elecrecord where UserId =
+		SELECT
+		CreateTime,Amount,AddSub,Memo from tb_elecrecord where UserId =
 		#{UserId} ORDER BY CreateTime DESC limit #{page},#{pageNum}
 	</select>
 	<select id="getPointBill" resultMap="BillMap">
-		SELECT CreateTime,Amount,AddSub,Memo from tb_pointrecord where UserId =
+		SELECT
+		CreateTime,Amount,AddSub,Memo from tb_pointrecord where UserId =
 		#{UserId} ORDER BY CreateTime DESC limit #{page},#{pageNum}
 	</select>
 	<select id="getVipBill" resultMap="BillMap">
-		SELECT CreateTime,Amount,AddSub,Memo from tb_vipremainrecord where UserId =
+		SELECT
+		CreateTime,Amount,AddSub,Memo from tb_vipremainrecord where UserId =
 		#{UserId} ORDER BY CreateTime DESC limit #{page},#{pageNum}
 	</select>
+	<select id="getInviteCodeAndTotalCostById" resultType="java.util.Map">
+		SELECT
+		InviteCode,TotalCost FROM tb_user where Id = #{UserId}
+	</select>
+	<select id="getDownInviteAndTotalCost" resultType="java.util.Map">
+		SELECT InviteCode ,TotalCost From tb_user where BeInviteCode = #{InviteCode}
+	</select>
+	<select id="getUserInfoBySysID" resultType="java.util.Map">
+		SELECT Id,TrueName,NickName,UserName,SysID From tb_user where SysID = #{SysID}
+	</select>
+	<select id="getUserIdByInviteCode" resultType="java.lang.Integer">
+		SELECT Id From tb_user where InviteCode = #{InviteCode}
+	</select>
+	
 </mapper>

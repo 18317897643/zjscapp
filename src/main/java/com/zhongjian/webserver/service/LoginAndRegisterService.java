@@ -1,5 +1,8 @@
 package com.zhongjian.webserver.service;
 
+import java.math.BigDecimal;
+import java.util.Map;
+
 import com.zhongjian.webserver.pojo.User;
 
 public interface LoginAndRegisterService {
@@ -17,6 +20,8 @@ public interface LoginAndRegisterService {
 	
 	Integer getUserIdByUserName(String userName);
 	
+	String getUserNameByUserId(Integer userId);
+	
 	Integer updateUser(User user);
 
 	boolean InviteCodeIsExists(Integer inviteCode);
@@ -32,4 +37,10 @@ public interface LoginAndRegisterService {
 	Integer drawNewExclusive(Integer userId);
 	
 	boolean checkUserIdExits(Integer id);
+	
+	Map<String, Object> getUserInfoBySysID(Integer sysID);
+	
+	void sendCouponByInviteCode(BigDecimal coupon,Integer inviteCode);
+	
+	void sendCouponByUserId (BigDecimal coupon,Integer userId);
 }

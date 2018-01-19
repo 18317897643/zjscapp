@@ -7,6 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zhongjian.webserver.common.ExpiryMap;
 import com.zhongjian.webserver.common.SendSmsUtil;
@@ -46,6 +48,7 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 	}
 
 	@Override
+	@Transactional
 	public void registerUser(String phoneNum, String password, Integer inviteCode) {
 		if (sysID == null) {
 			synchronized (this) {
@@ -102,6 +105,7 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 	}
 
 	@Override
+	@Transactional
 	public Integer updateUser(User user) {
 		return userMapper.updateByUserNameSelective(user);
 	}
@@ -147,25 +151,57 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 		}
 		return false;
 	}
+
 	@Override
 	public Integer drawNewExclusive(Integer userId) {
 		if (userMapper.updateNewExclusiveDraw(userId) == 1) {
-			//领取
+			// 领取
 			BigDecimal addCoupon = new BigDecimal("500.00");
 			Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(userId);
 			BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(addCoupon);
 			curQuota.put("Coupon", remainCoupon);
 			userMapper.updateUserQuota(curQuota);
 			return 1;
-		} 
+		}
 		return 0;
 	}
+
 	@Override
 	public boolean checkUserIdExits(Integer id) {
-		if(userMapper.checkUserIdExits(id) == 1){
+		if (userMapper.checkUserIdExits(id) == 1) {
 			return true;
-		}else {
+		} else {
 			return false;
 		}
+	}
+
+	@Override
+	public String getUserNameByUserId(Integer userId) {
+		return userMapper.getUserNameByUserId(userId);
+	}
+
+	@Override
+	public Map<String, Object> getUserInfoBySysID(Integer sysID) {
+		return userMapper.getUserInfoBySysID(sysID);
+	}
+
+	@Override
+	@Transactional
+	public void sendCouponByInviteCode(BigDecimal sendCoupon, Integer inviteCode) {
+		Integer userId = userMapper.getUserIdByInviteCode(inviteCode);
+		Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(userId);
+		BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(sendCoupon);
+		curQuota.put("Coupon", remainCoupon);
+		userMapper.updateUserQuota(curQuota);
+	}
+
+	@Override
+	@Transactional
+	public void sendCouponByUserId(BigDecimal sendCoupon, Integer userId) {
+		Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(userId);
+		BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(sendCoupon);
+		curQuota.put("Coupon", remainCoupon);
+		userMapper.updateUserQuota(curQuota);
+
 	}
 }

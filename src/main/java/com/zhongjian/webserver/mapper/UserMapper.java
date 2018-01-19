@@ -25,6 +25,10 @@ public interface UserMapper {
 
 	Map<String, Object> selectPersonalInform(String userName);
 
+	Map<String, Object> getInviteCodeAndTotalCostById(Integer id);
+	
+	Integer getUserIdByInviteCode(Integer inviteCode);
+	
 	Map<String, Object> selectPersonalInformById(Integer userId);
 
 	Integer getUserIdByUserName(String userName);
@@ -69,4 +73,7 @@ public interface UserMapper {
 	List<BillReacord> getVipBill(@Param("UserId") Integer userId, @Param("page") Integer page,
 			@Param("pageNum") Integer pageNum);
 
+	List<Map<String, Object>> getDownInviteAndTotalCost(Integer inviteCode);
+	
+	Map<String, Object> getUserInfoBySysID(Integer sysID);
 }

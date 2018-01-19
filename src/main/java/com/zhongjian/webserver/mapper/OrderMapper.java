@@ -48,4 +48,6 @@ public interface OrderMapper {
 	Integer getUserIdByOrder(String orderNo);
 	
 	Orderhead getOrderDetailsById(Integer id);
+	
+	List<Orderhead> getOrderDetailsByCurStatus(@Param("UserId") Integer userId,@Param("Condition") String condition);
 }

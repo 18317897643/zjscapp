@@ -8,12 +8,16 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.zhongjian.webserver.mapper.OrderMapper;
 import com.zhongjian.webserver.mapper.ProxyApplyMapper;
 import com.zhongjian.webserver.mapper.ShoppingCartMapper;
 import com.zhongjian.webserver.mapper.UserMapper;
 import com.zhongjian.webserver.pojo.BillReacord;
 import com.zhongjian.webserver.pojo.Orderhead;
+import com.zhongjian.webserver.pojo.Orderline;
 import com.zhongjian.webserver.pojo.Product;
 import com.zhongjian.webserver.pojo.ProxyApply;
 import com.zhongjian.webserver.pojo.ShoppingCart;
@@ -117,6 +121,7 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 		}
 	}
 	@Override
+	@Transactional(propagation = Propagation.SUPPORTS)
 	public boolean isGCMember(Integer UserId) {
 		Date expireTime = userMapper.getExpireTimeFromGcOfUser(UserId);
 		//如果当前时间大于大于过期时间则过期
@@ -138,5 +143,32 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 		}else {
 			return null;
 		}
+	}
+	@Override
+	public List<Orderhead> getOrderDetailsByCurStatus(Integer userId, String condition) {
+		List<Orderhead> orderheads = orderMapper.getOrderDetailsByCurStatus(userId, condition);
+		for (int i = 0; i < orderheads.size(); i++) {
+			Integer tolNum = 0;
+			List<Orderline> orderlines = orderheads.get(i).getOrderlines();
+			for (int j = 0; j < orderlines.size(); j++) {
+				tolNum += orderlines.get(j).getProductnum();
+			}
+			orderheads.get(i).setTolnum(tolNum);
+		}
+		return orderheads;
+	}
+	@Override
+	public void addProxyApply(ProxyApply proxyApply,Integer userId) {
+		proxyApply.setCurstatus(0);
+		proxyApply.setUserid(userId);
+		proxyApply.setCreatetime(new Date());
+		proxyApplyMapper.addProxyApply(proxyApply);
+	}
+	@Override
+	public void updateProxyApply(ProxyApply proxyApply,Integer userId) {
+		proxyApply.setCurstatus(0);
+		proxyApply.setUserid(userId);
+		proxyApplyMapper.updateProxyApply(proxyApply);
+		
 	}
 }

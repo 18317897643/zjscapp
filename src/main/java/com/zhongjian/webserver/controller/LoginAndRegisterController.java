@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.controller;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
@@ -76,16 +77,19 @@ public class LoginAndRegisterController {
 				}else {
 					if (loginAndRegisterService.InviteCodeIsExists(inviteCodeInteger)) {
 						loginAndRegisterService.registerUser(phoneNum, password, inviteCodeInteger);
+						loginAndRegisterService.sendCouponByInviteCode(new BigDecimal("100.00"), inviteCodeInteger);	
+					}else{
+						return ResultUtil.error(Status.BussinessError.getStatenum(), "邀请码不存在");
 					}
 				}
 			} else {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "验证码有误");
 			}
+			return ResultUtil.success();
 		} catch (Exception e) {
 			LoggingUtil.e("注册异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "注册异常");
 		}
-		return ResultUtil.success();
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "用户登录", value = "用户登录")
@@ -258,6 +262,18 @@ public class LoginAndRegisterController {
 		} catch (Exception e) {
 			LoggingUtil.e("支付密码设置异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "支付密码设置异常");
+		}
+	}
+	
+	@ApiOperation(httpMethod = "POST", notes = "剔除token", value = "剔除token")
+	@RequestMapping(value = "/LoginAndRegister/getRidOf/{userId}", method = RequestMethod.POST)
+	Result<Object> logout(@PathVariable("userId") Integer userId) throws BusinessException {
+		try {
+			tokenManager.releaseUserName(loginAndRegisterService.getUserNameByUserId(userId));
+			return ResultUtil.success();
+		} catch (Exception e) {
+			LoggingUtil.e("剔除token异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "剔除token异常");
 		}
 	}
 }
