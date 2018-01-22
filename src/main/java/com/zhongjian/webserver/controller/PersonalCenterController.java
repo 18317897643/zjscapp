@@ -578,4 +578,25 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "取消订单异常");
 		}
 	}
+	
+	@ApiOperation(httpMethod = "POST", notes = "现金转让", value = "现金转让")
+	@RequestMapping(value = "/PersonalCenter/TransferOfMoney/{token}", method = RequestMethod.POST)
+	Result<Object> transferOfMoney(@PathVariable("token") String toKen, @RequestParam String orderNo)
+			throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
+				orderHandleService.cancelOrder(orderNo);
+			}
+			return ResultUtil.success();
+		} catch (Exception e) {
+			LoggingUtil.e("取消订单异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "取消订单异常");
+		}
+	}
 }

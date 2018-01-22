@@ -18,9 +18,14 @@ $(function() {
     $('.waterPurifierText').bind('input propertychange',function () {
         if( $(this).val() == "" ){
             $('.waterPurifierBtn').css('background-color','silver');
+            $('.close').css('display','none');
         }else {
             $('.waterPurifierBtn').css('background-color','#5a97fd');
+            $('.close').css('display','block');
         }
+    });
+    $('.close').on('click',function () {
+        $('.waterPurifierText').val("");
     });
     //获取url中的参数
     var token;
@@ -36,14 +41,14 @@ $(function() {
     if (theRequest.token != "") {
         token = theRequest.token;
         $('.waterPurifierBtn').on('click',function () {
-            $.post('/zjapp/v1/waterPurifier/drawCupon/' + token ,{codeNo: $('.waterPurifierText').val()}, function (res) {
+            $.post('/zjapp/v1/waterPurifier/drawCupon/' + token ,{code: $('.waterPurifierText').val()}, function (res) {
                 if ( res.error_code == 0 ){
                     alert("领取成功！");
                     setTimeout('$(".tip").fadeOut()', 1500);
                 }else if ( res.error_code == 1 ){
                     alert("请使用正确的兑换码！");
                 }else {
-                    alert("无效兑换码！");
+                    alert("该兑换码已被领取！");
                 }
             });
         })

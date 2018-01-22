@@ -26,12 +26,31 @@ ol,li,ul,dl,dt,dd{list-style:none;}
 .waterPurifierText{
     width: 7.3rem;
     height: 0.6rem;
+    outline:none;
 }
+
 .waterPurifierBtn{
     width: 7.3rem;
     height: 0.6rem;
     border-radius: 0.3rem;
+    -webkit-border-radius:0.3rem;
+    -moz-border-radius: 0.3rem;
     border: none;
     background-color: silver;
     color: white;
+    -webkit-appearance: none;
+    outline:none;
 }
+span{height:0.4rem; width:0.4rem;  position:relative;
+    top: -1.86rem; left: 6.9rem;}
+
+.close{border-radius:0.5rem;-webkit-border-radius:0.5rem;-moz-border-radius:0.5rem; background:silver;display:none;}
+
+.close:before, .close:after{content:''; height:0.06rem;
+    width: 0.28rem; display:block; background:#fff;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;-webkit-border-radius:0.1rem;-moz-border-radius:0.1rem; position:absolute;
+    top: 0.17rem; left:0.06rem; transform:rotate(-45deg);-webkit-transform:rotate(-45deg);-moz-transform:rotate(-45deg);-o-transform:rotate(-45deg);-ms-transform:rotate(-45deg);}
+
+.close:after{transform:rotate(45deg);-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);-ms-transform:rotate(45deg);}

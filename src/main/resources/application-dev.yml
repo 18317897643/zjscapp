@@ -11,9 +11,9 @@ spring:
   datasource:  
     name: db
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://116.62.124.54:3308/zjsc?useUnicode=true&characterEncoding=utf-8
-    username: dog
-    password: zjsc&!
+    url: jdbc:mysql://192.168.1.236:3306/test1?useUnicode=true&characterEncoding=utf-8
+    username: tyf
+    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
     minIdle: 5
     maxActive: 100
