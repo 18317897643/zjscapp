@@ -73,6 +73,7 @@ public class HomePageServiceImpl implements HomePageService{
 
 	@Override
 	public List<Product> getAreaProducts(Integer tag,String condition , Integer page,Integer pageNum) {
+		page = page * pageNum;
 		return productMapper.getProductsOfTag( tag, condition, page, pageNum);
 	}
 

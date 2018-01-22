@@ -42,5 +42,9 @@ public interface MemberShipMapper {
 
 	// 计算贡献额度
 	BigDecimal getContributeAmount(@Param("FromUserId") Integer fromUserId, @Param("UserId") Integer userId);
+	
+	List<Map<String, Object>> getPossessorPresent(Integer userId);
+	
+	List<Map<String, Integer>> getAlreadyGivePresent(Integer userId);
 
 }

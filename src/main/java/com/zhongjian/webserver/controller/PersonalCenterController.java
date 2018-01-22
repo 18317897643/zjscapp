@@ -136,7 +136,7 @@ public class PersonalCenterController {
 
 	@ApiOperation(httpMethod = "GET", notes = "获取订单", value = "获取订单")
 	@RequestMapping(value = "/PersonalCenter/getOrder/{token}/{type}", method = RequestMethod.GET)
-	Result<Object> itemsToBePaidFor(@PathVariable("token") String token, @PathVariable("type") String type)
+	Result<Object> itemsToBePaidFor(@PathVariable("token") String token, @PathVariable("type") String type,@RequestParam Integer page,@RequestParam Integer pageNum)
 			throws BusinessException {
 		try {
 			// all全部 wp待付款ws待发货wr待收货wc待评价
@@ -152,15 +152,15 @@ public class PersonalCenterController {
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			List<Orderhead> orderHead = null;
 			if ("all".equals(type)) {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "");
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "",page,pageNum);
 			} else if ("wp".equals(type)) {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = -1");
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = -1",page,pageNum);
 			} else if ("ws".equals(type)) {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 0");
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 0",page,pageNum);
 			} else if ("wr".equals(type)) {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 1");
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 1",page,pageNum);
 			} else {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 2");
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 2",page,pageNum);
 			}
 			return ResultUtil.success(orderHead);
 		} catch (Exception e) {
@@ -400,11 +400,11 @@ public class PersonalCenterController {
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// result中有总金额和单号，再去拼接签名返回给客户端
-			List<OrderHeadDto> rusult = orderHandleService.handleOrderHeadDtoByAdressId(orderHeadEXDto);
-			if (rusult == null) {
+			List<OrderHeadDto> orderHeadDtos = orderHandleService.handleOrderHeadDtoByAdressId(orderHeadEXDto);
+			if (orderHeadDtos == null) {
 				return ResultUtil.error(Status.BussinessError.getStatenum(), "收货地址ID不存在");
 			}
-			HashMap<String, Object> result = orderHandleService.createOrder(rusult, UserId);
+			HashMap<String, Object> result = orderHandleService.createOrder(orderHeadDtos, UserId);
 			HashMap<String, Object> exceptResult = new HashMap<>();
 			BigDecimal totalRealPayCo = (BigDecimal) result.get("totalRealPayCo");
 			BigDecimal totalNotRealPayCo = (BigDecimal) result.get("totalNotRealPayCo");
@@ -579,9 +579,9 @@ public class PersonalCenterController {
 		}
 	}
 	
-	@ApiOperation(httpMethod = "POST", notes = "现金转让", value = "现金转让")
-	@RequestMapping(value = "/PersonalCenter/TransferOfMoney/{token}", method = RequestMethod.POST)
-	Result<Object> transferOfMoney(@PathVariable("token") String toKen, @RequestParam String orderNo)
+	@ApiOperation(httpMethod = "POST", notes = "现金体现", value = "现金体现")
+	@RequestMapping(value = "/PersonalCenter/TxElecNum/{token}", method = RequestMethod.POST)
+	Result<Object> txElecNum(@PathVariable("token") String toKen, @RequestParam String orderNo)
 			throws BusinessException {
 		try {
 			// 检查token通过

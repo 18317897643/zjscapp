@@ -443,6 +443,54 @@ public class MemberShipController {
 		} catch (Exception e) {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "分流接口异常");
 		}
-
 	}
+	@ApiOperation(httpMethod = "POST", notes = "现金转让", value = "现金转让")
+	@RequestMapping(value = "/PersonalCenter/TransferOfMoney/{token}", method = RequestMethod.POST)
+	Result<Object> transferOfMoney(@PathVariable("token") String toKen, @RequestParam BigDecimal money,@RequestParam Integer sysID)
+			throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			BigDecimal actualMoney =  money.setScale(2, BigDecimal.ROUND_HALF_UP);
+			if (memberShipService.transferOfMoney(actualMoney, UserId, sysID)) {
+				return ResultUtil.success();
+			}else {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "现金币不足");
+			}
+		} catch (Exception e) {
+			LoggingUtil.e("现金转让异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "现金转让异常");
+		}
+	}
+	
+	@ApiOperation(httpMethod = "GET", notes = "查看赠送名额", value = "查看赠送名额")
+	@RequestMapping(value = "/PersonalCenter/GetPresent/{token}", method = RequestMethod.GET)
+	Result<Object> getPresent(@PathVariable("token") String toKen,@RequestParam Integer type)
+			throws BusinessException {
+		//type 1 未赠送 2 已赠送
+		try {
+			if (type != 1 && type != 2) {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "参数异常");
+			}
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			if (type == 1) {
+				return ResultUtil.success(memberShipService.getPossessorPresent(UserId));
+			}else {
+				return ResultUtil.success(memberShipService.getAlreadyGivePresent(UserId));
+			}
+		} catch (Exception e) {
+			LoggingUtil.e("查看赠送名额异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "查看赠送名额异常");
+		}
+	}
+	
 }

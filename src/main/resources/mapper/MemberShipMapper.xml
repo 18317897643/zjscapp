@@ -81,5 +81,16 @@
 		=
 		#{FromUserId} AND User_Id = #{UserId}
 	</select>
-
+	<select id="getPossessorPresent" resultType="java.util.Map">
+		SELECT
+		CreateTime,Lev from tb_sendhead WHERE UserId=#{UserId} AND CurStatus =
+		0
+	</select>
+	<select id="getAlreadyGivePresent" resultType="java.util.Map">
+		SELECT
+		s.Lev,u.SysID from tb_sendhead s,tb_sendheaduserecord sr,tb_user u
+		WHERE s.UserId=#{UserId} AND s.CurStatus = 1 AND s.Id = sr.SendHeadId
+		and
+		u.Id = sr.UserId
+	</select>
 </mapper>

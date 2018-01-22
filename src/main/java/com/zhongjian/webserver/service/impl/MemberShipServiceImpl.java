@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zhongjian.webserver.common.DateUtil;
 import com.zhongjian.webserver.common.ExpiryMap;
 import com.zhongjian.webserver.common.RandomUtil;
 import com.zhongjian.webserver.common.ShareBenefitUtil;
@@ -178,6 +179,7 @@ public class MemberShipServiceImpl implements MemberShipService {
 		}
 		return datas;
 	}
+
 	@Override
 	public boolean memberUpdate(Integer userId, Integer type) throws shareBenefitException {
 		if (mayNotUpdateMap.get(userId.toString()) != null) {
@@ -189,7 +191,7 @@ public class MemberShipServiceImpl implements MemberShipService {
 			if (totalCost.compareTo(new BigDecimal("3000")) == -1) {
 				return false;
 			}
-			//具体升级vip
+			// 具体升级vip
 			userMapper.setLev(1, 0, userId);
 			tasks.presentTask(1, userId);
 			return true;
@@ -249,5 +251,54 @@ public class MemberShipServiceImpl implements MemberShipService {
 			result = result.add(curTotalCost).add(getAccumulateScore(curInviteCode));
 		}
 		return result;
+	}
+
+	@Override
+	@Transactional
+	public boolean transferOfMoney(BigDecimal actualMoney, Integer userId, Integer sysID) {
+		Map<String, Object> passiveUserCurQuota = userMapper.selectUserQuotaForUpdate(userId);
+		BigDecimal passiveUserCurElec = (BigDecimal) passiveUserCurQuota.get("RemainElecNum");
+		if (passiveUserCurElec.compareTo(actualMoney) == 1) {
+			// 扣钱
+			BigDecimal remainElecNum = passiveUserCurElec.subtract(actualMoney);
+			passiveUserCurQuota.put("RemainElecNum", remainElecNum);
+			userMapper.updateUserQuota(passiveUserCurQuota);
+			// 加钱
+			Map<String, Object> activeUser = userMapper.getUserInfoBySysID(sysID);
+			Integer activeUserId = (Integer) activeUser.get("Id");
+			Map<String, Object> activeUserCurQuota = userMapper.selectUserQuotaForUpdate(activeUserId);
+			BigDecimal activeUserCurElec = (BigDecimal) activeUserCurQuota.get("RemainElecNum");
+			remainElecNum = activeUserCurElec.add(actualMoney);
+			activeUserCurQuota.put("RemainElecNum", remainElecNum);
+			userMapper.updateUserQuota(activeUserCurQuota);
+			// 记录
+			logMapper.insertElecRecord(userId, new Date(), actualMoney, "-", "转让 " + actualMoney + " 现金币到用户 " + sysID);
+			Integer passiveUserSysID = (Integer) userMapper.selectPersonalInformById(userId).get("SysID");
+			logMapper.insertElecRecord(activeUserId, new Date(), actualMoney, "+",
+					"从用户 " + passiveUserSysID + " 收到 " + actualMoney + " 现金币");
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	@Override
+	public List<Map<String, Object>> getPossessorPresent(Integer userId) {
+		List<Map<String, Object>> datas = memberShipMapper.getPossessorPresent(userId);
+		for (int i = 0; i < datas.size(); i++) {
+			Date createTime = (Date) datas.get(i).get("CreateTime");
+			if (DateUtil.isLatestWeek(createTime, new Date())) {
+				datas.get(i).put("canUse", 0);
+			} else {
+				datas.get(i).put("canUse", 1);
+			}
+		}
+		return datas;
+	}
+
+	@Override
+	public List<Map<String, Integer>> getAlreadyGivePresent(Integer userId) {
+		return memberShipMapper.getAlreadyGivePresent(userId);
 	}
 }

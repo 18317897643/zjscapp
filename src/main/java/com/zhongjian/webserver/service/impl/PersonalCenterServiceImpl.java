@@ -161,6 +161,7 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 
 	@Override
 	public List<BillReacord> accountBill(Integer userId, String type, Integer page, Integer pageNum) {
+		page = page * pageNum;
 		if ("coupon".equals(type)) {
 			return userMapper.getCouponBill(userId, page, pageNum);
 		} else if ("points".equals(type)) {
@@ -175,8 +176,9 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	}
 
 	@Override
-	public List<Orderhead> getOrderDetailsByCurStatus(Integer userId, String condition) {
-		List<Orderhead> orderheads = orderMapper.getOrderDetailsByCurStatus(userId, condition);
+	public List<Orderhead> getOrderDetailsByCurStatus(Integer userId, String condition,Integer page,Integer pageNum) {
+		Integer offSet = page * pageNum;
+		List<Orderhead> orderheads = orderMapper.getOrderDetailsByCurStatus(userId, condition,offSet,pageNum);
 		for (int i = 0; i < orderheads.size(); i++) {
 			Integer tolNum = 0;
 			List<Orderline> orderlines = orderheads.get(i).getOrderlines();

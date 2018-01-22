@@ -53,6 +53,7 @@ public class ProductManagerServiceImpl implements ProductManagerService {
 
 	@Override
 	public List<ProductComment> getProductComment(Integer productId, Integer page, Integer pageNum) {
+		page = page * pageNum;
 		return productMapper.selectProductcommentById(productId, page, pageNum);
 	}
 
@@ -78,6 +79,7 @@ public class ProductManagerServiceImpl implements ProductManagerService {
 	}
 	@Override
 	public List<HashMap<String, Object>> getSubProductOfCategory(Integer subCategoryId,String condition,Integer page,Integer pageNum) {
+		page = page * pageNum; 
 		List<Product> subProducts = productMapper.getProductsOfSubCategory(subCategoryId,condition,page,pageNum);
 		List<HashMap<String, Object>> datas = new ArrayList<>();
 		for (int i = 0; i < subProducts.size(); i++) {

@@ -127,7 +127,7 @@
 		SELECT
 		Id,OrderNo,CreateTime,SendDate,ReceivedTime,CurStatus,TotalAmount,RealPay,Freight
 		from
-		tb_orderhead WHERE UserId = #{UserId} ${Condition}
+		tb_orderhead WHERE UserId = #{UserId} ${Condition} order by CreateTime desc limit #{OffSet},#{PageNum}
 	</select>
 	<select id="selectOrderLineByOrderId" resultType="OrderLine">
 		SELECT

@@ -17,7 +17,6 @@ import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.Result;
 import com.zhongjian.webserver.service.MemberShipService;
 import com.zhongjian.webserver.service.OrderHandleService;
-import com.zhongjian.webserver.service.impl.MemberShipServiceImpl;
 
 import io.swagger.annotations.ApiOperation;
 

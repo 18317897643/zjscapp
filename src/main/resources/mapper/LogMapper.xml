@@ -9,7 +9,7 @@
 	<insert id="insertElecRecord">
 		insert into tb_elecrecord
 		(UserId,CreateTime,Amount,AddSub,Memo,CurStatus) VALUES
-		(#{UserId},#{CreateTime},#{Amount},#{AddSub},#{Memo},0})
+		(#{UserId},#{CreateTime},#{Amount},#{AddSub},#{Memo},0)
 	</insert>
 	<insert id="insertVipRemainRecord">
 		insert into tb_vipremainrecord

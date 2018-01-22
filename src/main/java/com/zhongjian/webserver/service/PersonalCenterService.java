@@ -44,7 +44,7 @@ public interface PersonalCenterService {
 	
 	Orderhead getOrderDetailsById(Integer id);
 	
-	List<Orderhead> getOrderDetailsByCurStatus(Integer userId,String condition);
+	List<Orderhead> getOrderDetailsByCurStatus(Integer userId,String condition,Integer page,Integer pageNum);
 
 	// 判断实名认证
 	boolean isAlreadyAuth(Integer UserId);
