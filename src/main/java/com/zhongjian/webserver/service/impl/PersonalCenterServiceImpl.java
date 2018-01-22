@@ -125,8 +125,15 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 			Orderline orderline = orderlines.get(j);
 			// 获取商品id
 			Integer productId = orderline.getProductId();
+			if (productId == null) {
+				orderline.setProductId(0);
+			}
 			String photo = orderMapper.getPhotoByProductId(productId);
-			orderline.setPhoto(photo);
+			if (photo == null) {
+				orderline.setPhoto("");
+			} else {
+				orderline.setPhoto(photo);
+			}
 		}
 		return orderhead;
 	}
@@ -179,8 +186,16 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 				tolNum += orderline.getProductnum();
 				// 获取商品id
 				Integer productId = orderline.getProductId();
+				if (productId == null) {
+					orderline.setProductId(0);
+				}
 				String photo = orderMapper.getPhotoByProductId(productId);
-				orderline.setPhoto(photo);
+				if (photo == null) {
+					orderline.setPhoto("");
+				} else {
+					orderline.setPhoto(photo);
+				}
+
 			}
 			orderheads.get(i).setTolnum(tolNum);
 		}
