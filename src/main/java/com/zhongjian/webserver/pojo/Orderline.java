@@ -1,6 +1,7 @@
 package com.zhongjian.webserver.pojo;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -13,6 +14,8 @@ public class Orderline {
 
 	private String productname;
 
+	private Integer productId;
+	
 	private String specname;
 
 	private Integer productnum;
@@ -21,6 +24,8 @@ public class Orderline {
 
 	private BigDecimal amount;
 
+    private String photo;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -43,6 +48,14 @@ public class Orderline {
 
 	public void setProductname(String productname) {
 		this.productname = productname;
+	}
+
+	public Integer getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Integer productId) {
+		this.productId = productId;
 	}
 
 	public String getSpecname() {
@@ -76,4 +89,13 @@ public class Orderline {
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
 	}
+
+	public String getPhoto() {
+		return photo;
+	}
+
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
+
 }

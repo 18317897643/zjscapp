@@ -34,7 +34,7 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 
 	@Autowired
 	ShoppingCartMapper shoppingCartMapper;
-	
+
 	@Autowired
 	ProxyApplyMapper proxyApplyMapper;
 
@@ -42,10 +42,12 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	public Map<String, Object> getInformOfConsumption(String userName) {
 		return userMapper.selectPersonalInform(userName);
 	}
+
 	@Override
 	public List<Integer> getUserOrderStatus(Integer userId) {
 		return orderMapper.getUserOrderStatus(userId);
 	}
+
 	@Override
 	public List<HashMap<String, Object>> getShoppingCartInfo(Integer userId) {
 		List<ShoppingCart> shoppingCarts = shoppingCartMapper.getShoppingCartInfo(userId);
@@ -74,6 +76,7 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 		}
 		return resultList;
 	}
+
 	@Override
 	public boolean delShoppingCartInfoById(Integer userId, Integer id) {
 		if (shoppingCartMapper.delShoppingCartInfoById(userId, id) == 1) {
@@ -82,68 +85,88 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 			return false;
 		}
 	}
+
 	@Override
-	public Integer addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum,Date CreateTime) {
-		return shoppingCartMapper.addShoppingCartInfo(userId, productId, specId, productNum,CreateTime);
+	public Integer addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum,
+			Date CreateTime) {
+		return shoppingCartMapper.addShoppingCartInfo(userId, productId, specId, productNum, CreateTime);
 	}
+
 	@Override
 	public Integer setShoppingCartInfo(Integer userId, Integer shoppingCartId, Integer productNum) {
 		return shoppingCartMapper.setShoppingCartInfo(userId, shoppingCartId, productNum);
 	}
+
 	@Override
 	public Integer getProductIdByShoppingId(Integer shoppingCartId) {
 		return shoppingCartMapper.getProductIdByShoppingId(shoppingCartId);
 	}
+
 	@Override
 	public boolean isAlreadyApply(Integer UserId) {
 		Integer curStatus = proxyApplyMapper.queryProxyApplyCurStatus(UserId);
 		if (curStatus == null || curStatus == -1) {
 			return false;
-		}else {
+		} else {
 			return true;
 		}
 	}
+
 	@Override
 	public ProxyApply getProxyApply(Integer UserId) {
 		return proxyApplyMapper.queryProxyApply(UserId);
 	}
+
 	@Override
 	public Orderhead getOrderDetailsById(Integer id) {
-		return orderMapper.getOrderDetailsById(id);
+		Orderhead orderhead = orderMapper.getOrderDetailsById(id);
+		List<Orderline> orderlines = orderhead.getOrderlines();
+		for (int j = 0; j < orderlines.size(); j++) {
+			Orderline orderline = orderlines.get(j);
+			// 获取商品id
+			Integer productId = orderline.getProductId();
+			String photo = orderMapper.getPhotoByProductId(productId);
+			orderline.setPhoto(photo);
+		}
+		return orderhead;
 	}
+
 	@Override
 	public boolean isAlreadyAuth(Integer UserId) {
 		Integer curStatus = userMapper.queryUserAuth(UserId);
 		if (curStatus == 2) {
 			return true;
-		}else {
+		} else {
 			return false;
 		}
 	}
+
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public boolean isGCMember(Integer UserId) {
 		Date expireTime = userMapper.getExpireTimeFromGcOfUser(UserId);
-		//如果当前时间大于大于过期时间则过期
+		// 如果当前时间大于大于过期时间则过期
 		if (expireTime == null || new Date().getTime() > expireTime.getTime()) {
 			return false;
 		}
 		return true;
 	}
+
 	@Override
 	public List<BillReacord> accountBill(Integer userId, String type, Integer page, Integer pageNum) {
 		if ("coupon".equals(type)) {
 			return userMapper.getCouponBill(userId, page, pageNum);
-		}else if("points".equals(type)){
+		} else if ("points".equals(type)) {
 			return userMapper.getPointBill(userId, page, pageNum);
-		} else if("vip".equals(type)){
+		} else if ("vip".equals(type)) {
 			return userMapper.getVipBill(userId, page, pageNum);
-		}else if("elec".equals(type)){
+		} else if ("elec".equals(type)) {
 			return userMapper.getElecBill(userId, page, pageNum);
-		}else {
+		} else {
 			return null;
 		}
 	}
+
 	@Override
 	public List<Orderhead> getOrderDetailsByCurStatus(Integer userId, String condition) {
 		List<Orderhead> orderheads = orderMapper.getOrderDetailsByCurStatus(userId, condition);
@@ -151,24 +174,32 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 			Integer tolNum = 0;
 			List<Orderline> orderlines = orderheads.get(i).getOrderlines();
 			for (int j = 0; j < orderlines.size(); j++) {
-				tolNum += orderlines.get(j).getProductnum();
+				Orderline orderline = orderlines.get(j);
+				// 订单中每个商品的数量
+				tolNum += orderline.getProductnum();
+				// 获取商品id
+				Integer productId = orderline.getProductId();
+				String photo = orderMapper.getPhotoByProductId(productId);
+				orderline.setPhoto(photo);
 			}
 			orderheads.get(i).setTolnum(tolNum);
 		}
 		return orderheads;
 	}
+
 	@Override
-	public void addProxyApply(ProxyApply proxyApply,Integer userId) {
+	public void addProxyApply(ProxyApply proxyApply, Integer userId) {
 		proxyApply.setCurstatus(0);
 		proxyApply.setUserid(userId);
 		proxyApply.setCreatetime(new Date());
 		proxyApplyMapper.addProxyApply(proxyApply);
 	}
+
 	@Override
-	public void updateProxyApply(ProxyApply proxyApply,Integer userId) {
+	public void updateProxyApply(ProxyApply proxyApply, Integer userId) {
 		proxyApply.setCurstatus(0);
 		proxyApply.setUserid(userId);
 		proxyApplyMapper.updateProxyApply(proxyApply);
-		
+
 	}
 }

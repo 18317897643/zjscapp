@@ -50,4 +50,7 @@ public interface OrderMapper {
 	Orderhead getOrderDetailsById(Integer id);
 	
 	List<Orderhead> getOrderDetailsByCurStatus(@Param("UserId") Integer userId,@Param("Condition") String condition);
+	
+	String getPhotoByProductId(Integer productId);
+	
 }

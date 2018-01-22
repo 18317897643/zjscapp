@@ -13,6 +13,7 @@
 		<result column="ProvinceId" property="provinceid" />
 		<result column="CityId" property="cityid" />
 		<result column="RegionId" property="regionid" />
+		<result column="Address" property="address" />
 		<result column="TotalAmount" property="totalamount" />
 		<result column="UseElecNum" property="useelecnum" />
 		<result column="UseCoupon" property="usecoupon" />
@@ -26,8 +27,7 @@
 			<result column="SpecName" property="specname" />
 			<result column="ProductNum" property="productnum" />
 			<result column="Price" property="price" />
-			<result column="ExpressName" property="expressname" />
-			<result column="ExpressNo" property="expressno" />
+			<result column="ProductId" property="productId" />
 		</collection>
 	</resultMap>
 	<select id="getUserOrderStatus" resultType="java.lang.Integer">
@@ -119,7 +119,7 @@
 	</select>
 	<select id="getOrderDetailsById" resultMap="orderDetailsMap">
 		SELECT
-		Id,OrderNo,CreateTime,SendDate,ReceivedTime,CurStatus,ReceiverName,ReceiverPhone,ProvinceId,CityId,RegionId,TotalAmount,Freight,RealPay,UseElecNum,UseCoupon,UsePointNum,UseVIPRemainNum,ExpressName,ExpressNo
+		Id,OrderNo,CreateTime,SendDate,ReceivedTime,CurStatus,ReceiverName,ReceiverPhone,ProvinceId,CityId,RegionId,Address,TotalAmount,Freight,RealPay,UseElecNum,UseCoupon,UsePointNum,UseVIPRemainNum,ExpressName,ExpressNo
 		from
 		tb_orderhead WHERE Id = #{orderId}
 	</select>
@@ -131,15 +131,20 @@
 	</select>
 	<select id="selectOrderLineByOrderId" resultType="OrderLine">
 		SELECT
-		ProductName,SpecName,ProductNum,Price from
-		tb_orderline WHERE OrderId =
-		#{orderId}
+		ProductId, ProductName,SpecName,ProductNum,Price
+		FROM tb_orderline where
+		OrderId = #{OrderId}
 	</select>
-
 	<select id="selectOrderNoAndCTWForPaid" resultType="java.util.Map">
 		SELECT
 		ProductName,SpecName,ProductNum,Price from
 		tb_orderline WHERE OrderId =
 		#{orderId}
 	</select>
+	<select id="getPhotoByProductId" resultType="java.lang.String">
+		SELECT Photo FROM tb_productphoto where ProductId = #{ProductId} and
+		CurStatus = 0 limit 1
+	</select>
+
+
 </mapper>
