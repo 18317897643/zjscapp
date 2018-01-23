@@ -5,12 +5,15 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zhongjian.webserver.common.ExpiryMap;
 import com.zhongjian.webserver.common.SendSmsUtil;
+import com.zhongjian.webserver.common.TokenManager;
+import com.zhongjian.webserver.common.jpushUtil;
 import com.zhongjian.webserver.mapper.UserMapper;
 import com.zhongjian.webserver.pojo.User;
 import com.zhongjian.webserver.service.LoginAndRegisterService;
@@ -24,6 +27,8 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 	@Autowired
 	private UserMapper userMapper;
 
+	@Autowired TokenManager tokenManager;
+	
 	private AtomicInteger sysID = null;
 
 	@Override
@@ -202,5 +207,15 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 		curQuota.put("Coupon", remainCoupon);
 		userMapper.updateUserQuota(curQuota);
 
+	}
+
+	@Override
+	public void jPush(Integer userId,String message) {
+		// 推送token
+		String userName = userMapper.getUserNameByUserId(userId);
+		String token = tokenManager.getTokenByUserName(userName);
+		if (token != null) {
+			jpushUtil.sendAlias(message, DigestUtils.md5Hex(token), "extKey", "extValue");
+		}
 	}
 }

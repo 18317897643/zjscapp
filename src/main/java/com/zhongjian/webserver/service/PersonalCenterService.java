@@ -23,7 +23,7 @@ public interface PersonalCenterService {
 	List<HashMap<String, Object>> getShoppingCartInfo(Integer userId);
 
 	// 购物车新增
-	Integer addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum, Date CreateTime);
+	void addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum, Date CreateTime);
 
 	// 购物车信息更新（数量更新）
 	Integer setShoppingCartInfo(Integer userId, Integer shoppingCartId, Integer productNum);

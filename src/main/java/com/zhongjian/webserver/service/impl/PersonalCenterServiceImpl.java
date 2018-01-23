@@ -87,9 +87,18 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	}
 
 	@Override
-	public Integer addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum,
+	@Transactional
+	public void addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum,
 			Date CreateTime) {
-		return shoppingCartMapper.addShoppingCartInfo(userId, productId, specId, productNum, CreateTime);
+		Map<String, Integer> data = shoppingCartMapper.getShopCartByUPS(userId, productId, specId); 
+		if ( data == null) {
+			shoppingCartMapper.addShoppingCartInfo(userId, productId, specId, productNum, CreateTime);
+		}else{
+			Integer orignProductNum	= data.get("ProductNum");
+			Integer shoppingCartId = data.get("Id");
+			shoppingCartMapper.setShoppingCartInfo(userId, shoppingCartId, orignProductNum + productNum);
+		}
+		
 	}
 
 	@Override
@@ -149,7 +158,6 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS)
 	public boolean isGCMember(Integer UserId) {
 		Date expireTime = userMapper.getExpireTimeFromGcOfUser(UserId);
 		// 如果当前时间大于大于过期时间则过期

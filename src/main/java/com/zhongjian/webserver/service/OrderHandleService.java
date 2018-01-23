@@ -30,9 +30,10 @@ public interface OrderHandleService {
 	void autoCancelOrder();
 	
 	//确认收货
-	void test(String orderNo);
+	void confirmOrder(String orderNo);
 	
-	
+	//自动确认收货
+	void autoConfirmOrder();
 	
 	
 }

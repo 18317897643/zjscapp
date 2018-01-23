@@ -1,6 +1,7 @@
 package com.zhongjian.webserver.mapper;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -42,9 +43,21 @@ public interface MemberShipMapper {
 
 	// 计算贡献额度
 	BigDecimal getContributeAmount(@Param("FromUserId") Integer fromUserId, @Param("UserId") Integer userId);
-	
+
 	List<Map<String, Object>> getPossessorPresent(Integer userId);
-	
+
 	List<Map<String, Integer>> getAlreadyGivePresent(Integer userId);
+
+	Integer getPresentById(Integer sendHeadId);
+
+	Integer changePresentStatusToOne(Integer sendHeadId);
+
+	void insertSendHeadRecord(@Param("SendHeadId") Integer sendHeadId, @Param("UserId") Integer userId,
+			@Param("Lev") Integer lev, @Param("CreateTime") Date createTime);
+
+	void insertSplitStreamRecord(@Param("CreateTime") Date createTime, @Param("FromUserId") Integer fromUserId,
+			@Param("ToUserId") Integer toUserId, @Param("Amount") BigDecimal amount);
+
+	Map<String, Object> selectSplitStreamRecord(Integer fromUserId);
 
 }

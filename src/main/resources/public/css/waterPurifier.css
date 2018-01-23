@@ -22,17 +22,21 @@ ol,li,ul,dl,dt,dd{list-style:none;}
     /*background: url("../image/np-background.jpg") center no-repeat;
     background-size: 7.5rem 15rem;*/
     overflow: hidden;
+    font-size: 0.28rem;
 }
 .waterPurifierText{
+    margin-top: 0.5rem;
     width: 7.3rem;
-    height: 0.6rem;
+    height: 0.64rem;
+    font-size: 0.3rem;
     outline:none;
 }
-
 .waterPurifierBtn{
+    margin-top: 0.5rem;
     width: 7.3rem;
     height: 0.6rem;
     border-radius: 0.3rem;
+    font-size: 0.3rem;
     -webkit-border-radius:0.3rem;
     -moz-border-radius: 0.3rem;
     border: none;
@@ -41,16 +45,19 @@ ol,li,ul,dl,dt,dd{list-style:none;}
     -webkit-appearance: none;
     outline:none;
 }
-span{height:0.4rem; width:0.4rem;  position:relative;
-    top: -1.86rem; left: 6.9rem;}
+span{height:0.4rem; width:0.4rem;  position:relative; top: -11%; left: 92%;}
 
 .close{border-radius:0.5rem;-webkit-border-radius:0.5rem;-moz-border-radius:0.5rem; background:silver;display:none;}
 
-.close:before, .close:after{content:''; height:0.06rem;
+.close:before, .close:after{
+    content:''; height:0.06rem;
     width: 0.28rem; display:block; background:#fff;
     -webkit-border-radius: 0.1rem;
     -moz-border-radius: 0.1rem;
-    border-radius: 0.1rem;-webkit-border-radius:0.1rem;-moz-border-radius:0.1rem; position:absolute;
-    top: 0.17rem; left:0.06rem; transform:rotate(-45deg);-webkit-transform:rotate(-45deg);-moz-transform:rotate(-45deg);-o-transform:rotate(-45deg);-ms-transform:rotate(-45deg);}
+    border-radius: 0.1rem;-webkit-border-radius:0.1rem;-moz-border-radius:0.1rem;
+    position:absolute;
+    top: 0.17rem; left:0.06rem;
+    transform:rotate(-45deg);-webkit-transform:rotate(-45deg);-moz-transform:rotate(-45deg);-o-transform:rotate(-45deg);-ms-transform:rotate(-45deg);
+}
 
 .close:after{transform:rotate(45deg);-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);-ms-transform:rotate(45deg);}

@@ -21,6 +21,7 @@ import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.zhongjian.webserver.alipay.AlipayConfig;
+import com.zhongjian.webserver.common.DateUtil;
 import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.RandomUtil;
 import com.zhongjian.webserver.component.AsyncTasks;
@@ -54,10 +55,10 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 
 	@Autowired
 	AlipayConfig alipayConfig;
-	
+
 	@Autowired
 	AddressManagerService addressManagerService;
-	
+
 	@Override
 	@Transactional
 	public HashMap<String, Object> createOrder(List<OrderHeadDto> orderHeads, Integer UserId) {
@@ -105,9 +106,9 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 				score.add(0);
 				orderLines.forEach(f -> {
 					Integer productNum = f.getProductNum();
-					//查询该规格的分值和价格
-					Map<String,Object> specElecNumAndPrice = orderMapper.getSpecElecNumAndPriceById(f.getSpecId());
-					//分值计算最终录入订单
+					// 查询该规格的分值和价格
+					Map<String, Object> specElecNumAndPrice = orderMapper.getSpecElecNumAndPriceById(f.getSpecId());
+					// 分值计算最终录入订单
 					Integer specElecNum = (Integer) specElecNumAndPrice.get("ElecNum");
 					Integer thisTimeScore = productNum * specElecNum;
 					score.set(0, score.get(0) + thisTimeScore);
@@ -147,53 +148,53 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 	public boolean syncHandleOrder(String orderNo) {
 		if (orderNo.startsWith("CB")) {
 			Map<String, Object> map = orderMapper.getDetailsFormorderheadC(orderNo);
-				if (orderMapper.updateOrderHeadCoCur() == 1) {
-					String orderNoCName = (String) map.get("OrderNoC");
-					String[] orderNoC = orderNoCName.split("|");
-					int orderNoClenth = orderNoC.length;
-					for (int i = 0; i < orderNoClenth; i++) {
-						// 查看订单积分，现金币，购物币，红包使用情况去扣
-						// 需要扣除的
-						Map<String, Object> needSubMap = orderMapper.getNeedSubDetailsOfOrderHead(orderNoC[i]);
-						Integer userId = (Integer) needSubMap.get("UserId");
-						BigDecimal useCoupon = (BigDecimal) needSubMap.get("UseCoupon");
-						BigDecimal usePointNum = (BigDecimal) needSubMap.get("UsePointNum");
-						BigDecimal useElecNum = (BigDecimal) needSubMap.get("UseElecNum");
-						BigDecimal useVIPRemainNum = (BigDecimal) needSubMap.get("UseVIPRemainNum");
-						Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(userId);
-						BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).subtract(useCoupon);
-						BigDecimal remainPoints = ((BigDecimal) curQuota.get("RemainPoints")).subtract(usePointNum);
-						BigDecimal remainElecNum = ((BigDecimal) curQuota.get("RemainElecNum")).subtract(useElecNum);
-						BigDecimal remainVIPAmount = ((BigDecimal) curQuota.get("RemainVIPAmount"))
-								.subtract(useVIPRemainNum);
-						curQuota.put("Coupon", remainCoupon);
-						curQuota.put("RemainPoints", remainPoints);
-						curQuota.put("RemainElecNum", remainElecNum);
-						curQuota.put("RemainVIPAmount", remainVIPAmount);
-						curQuota.put("UserId", userId);
-						userMapper.updateUserQuota(curQuota);
-						// 记录日志
-						Date curDate = new Date();
-						if (useCoupon.compareTo(BigDecimal.ZERO) == 1) {
-							logMapper.insertCouponRecord(userId, curDate, useCoupon, "-", "购买商品，订单号：" + orderNoC[i]);
-						}
-						if (useElecNum.compareTo(BigDecimal.ZERO) == 1) {
-							logMapper.insertElecRecord(userId, curDate, useElecNum, "-", "购买商品，订单号：" + orderNoC[i]);
-						}
-						if (usePointNum.compareTo(BigDecimal.ZERO) == 1) {
-							logMapper.insertPointRecord(userId, curDate, usePointNum, "-", "购买商品，订单号：" + orderNoC[i]);
-						}
-						if (remainVIPAmount.compareTo(BigDecimal.ZERO) == 1) {
-							logMapper.insertVipRemainRecord(userId, curDate, useVIPRemainNum, "-",
-									"购买商品，订单号：" + orderNoC[i]);
-						}
-						// 更改订单状态
-						orderMapper.updateOrderHeadStatus(0, orderNoC[i]);
+			if (orderMapper.updateOrderHeadCoCur() == 1) {
+				String orderNoCName = (String) map.get("OrderNoC");
+				String[] orderNoC = orderNoCName.split("|");
+				int orderNoClenth = orderNoC.length;
+				for (int i = 0; i < orderNoClenth; i++) {
+					// 查看订单积分，现金币，购物币，红包使用情况去扣
+					// 需要扣除的
+					Map<String, Object> needSubMap = orderMapper.getNeedSubDetailsOfOrderHead(orderNoC[i]);
+					Integer userId = (Integer) needSubMap.get("UserId");
+					BigDecimal useCoupon = (BigDecimal) needSubMap.get("UseCoupon");
+					BigDecimal usePointNum = (BigDecimal) needSubMap.get("UsePointNum");
+					BigDecimal useElecNum = (BigDecimal) needSubMap.get("UseElecNum");
+					BigDecimal useVIPRemainNum = (BigDecimal) needSubMap.get("UseVIPRemainNum");
+					Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(userId);
+					BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).subtract(useCoupon);
+					BigDecimal remainPoints = ((BigDecimal) curQuota.get("RemainPoints")).subtract(usePointNum);
+					BigDecimal remainElecNum = ((BigDecimal) curQuota.get("RemainElecNum")).subtract(useElecNum);
+					BigDecimal remainVIPAmount = ((BigDecimal) curQuota.get("RemainVIPAmount"))
+							.subtract(useVIPRemainNum);
+					curQuota.put("Coupon", remainCoupon);
+					curQuota.put("RemainPoints", remainPoints);
+					curQuota.put("RemainElecNum", remainElecNum);
+					curQuota.put("RemainVIPAmount", remainVIPAmount);
+					curQuota.put("UserId", userId);
+					userMapper.updateUserQuota(curQuota);
+					// 记录日志
+					Date curDate = new Date();
+					if (useCoupon.compareTo(BigDecimal.ZERO) == 1) {
+						logMapper.insertCouponRecord(userId, curDate, useCoupon, "-", "购买商品，订单号：" + orderNoC[i]);
 					}
-					return true;
-				} else {
-					return false;
+					if (useElecNum.compareTo(BigDecimal.ZERO) == 1) {
+						logMapper.insertElecRecord(userId, curDate, useElecNum, "-", "购买商品，订单号：" + orderNoC[i]);
+					}
+					if (usePointNum.compareTo(BigDecimal.ZERO) == 1) {
+						logMapper.insertPointRecord(userId, curDate, usePointNum, "-", "购买商品，订单号：" + orderNoC[i]);
+					}
+					if (remainVIPAmount.compareTo(BigDecimal.ZERO) == 1) {
+						logMapper.insertVipRemainRecord(userId, curDate, useVIPRemainNum, "-",
+								"购买商品，订单号：" + orderNoC[i]);
+					}
+					// 更改订单状态
+					orderMapper.updateOrderHeadStatus(0, orderNoC[i]);
 				}
+				return true;
+			} else {
+				return false;
+			}
 		} else if (orderNo.startsWith("B")) {
 			if (orderMapper.updateOrderHeadStatusToWP(orderNo) == 1) {
 				// 查看订单积分，现金币，购物币，红包使用情况去扣
@@ -237,6 +238,7 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 			return false;
 		}
 	}
+
 	@Override
 	@Transactional
 	public boolean asyncHandleOrder(String orderNo, String totalAmount, String seller_id, String app_id) {
@@ -247,12 +249,12 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 		if (orderNo.startsWith("CB")) {
 			Map<String, Object> map = orderMapper.getDetailsFormorderheadC(orderNo);
 			if (!map.get("TolAmount").toString().equals(totalAmount)) {
-				LoggingUtil.w("订单实付额为" +map.get("TolAmount").toString() + "，支付宝实付" + totalAmount +  "总金额不对！！！！");
+				LoggingUtil.w("订单实付额为" + map.get("TolAmount").toString() + "，支付宝实付" + totalAmount + "总金额不对！！！！");
 				return false;
 			} else {
 				if (orderMapper.updateOrderHeadCoCur() == 1) {
 					String orderNoCName = (String) map.get("OrderNoC");
-					
+
 					String[] orderNoC = orderNoCName.split("|");
 					int orderNoClenth = orderNoC.length;
 					for (int i = 0; i < orderNoClenth; i++) {
@@ -386,7 +388,7 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 				BigDecimal remainElecNum = ((BigDecimal) curQuota.get("RemainElecNum")).add(amount);
 				curQuota.put("RemainElecNum", remainElecNum);
 				userMapper.updateUserQuota(curQuota);
-				//充值记录
+				// 充值记录
 				logMapper.insertCouponRecord(UserId, new Date(), amount, "+", "现金币充值");
 			}
 
@@ -415,8 +417,8 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 		orderMap.put("product_code", "QUICK_WAP_PAY");
 		// 实例化客户端
 		AlipayClient client = new DefaultAlipayClient(alipayConfig.URL, alipayConfig.APPID,
-				alipayConfig.RSA_PRIVATE_KEY, alipayConfig.FORMAT, alipayConfig.CHARSET,
-				alipayConfig.ALIPAY_PUBLIC_KEY, alipayConfig.SIGNTYPE);
+				alipayConfig.RSA_PRIVATE_KEY, alipayConfig.FORMAT, alipayConfig.CHARSET, alipayConfig.ALIPAY_PUBLIC_KEY,
+				alipayConfig.SIGNTYPE);
 		// 实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
 		AlipayTradeAppPayRequest ali_request = new AlipayTradeAppPayRequest();
 		// SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
@@ -451,25 +453,50 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 	@Override
 	public void cancelOrder(String orderNo) {
 		orderMapper.updateOrderHeadStatus(-2, orderNo);
-		
+
 	}
 
 	@Override
-	public void test(String orderNo) {
-		// TODO Auto-generated method stub
-		
+	@Transactional
+	public void confirmOrder(String orderNo) {
+		//改状态（防止重复确认）
+		if (orderMapper.updateOrderHeadStatusToWC(orderNo) == 1){
+		//分润
+		Map<String, Object> orderMap = orderMapper.getOrderDetailsByOrderNo(orderNo);
+		Integer userId = (Integer) orderMap.get("UserId");
+		BigDecimal useCoupon = (BigDecimal) orderMap.get("UseCoupon");
+		BigDecimal useVIPRemainNum = (BigDecimal) orderMap.get("UseVIPRemainNum");
+		Integer score = (Integer) orderMap.get("Score");
+		BigDecimal bigDecimalScore = new BigDecimal(score);
+		BigDecimal ElecNum = bigDecimalScore.subtract(useCoupon).subtract(useVIPRemainNum);
+		tasks.shareBenitTask(1, userId, 0, "订单消费", ElecNum);
+		//累计积分增加
+		Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(userId);
+		BigDecimal remianTotalCost = ((BigDecimal) curQuota.get("TotalCost")).add(bigDecimalScore);
+		curQuota.put("TotalCost", remianTotalCost);
+		userMapper.updateUserQuota(curQuota);
+		}
 	}
 
 	@Override
 	public void autoCancelOrder() {
-		// TODO Auto-generated method stub
-		
+		// 自动取消两天未支付订单
+		orderMapper.autoCancelOrder(DateUtil.DateToStr(new Date()), 172800);
+	}
+
+	@Override
+	@Transactional
+	public void autoConfirmOrder() {
+		List<String> orderNos = orderMapper.getWROrderNo(DateUtil.DateToStr(new Date()), 604800);
+		for (int i = 0; i < orderNos.size(); i++) {
+			confirmOrder(orderNos.get(i));
+		}
 	}
 
 	@Override
 	public List<OrderHeadDto> handleOrderHeadDtoByAdressId(OrderHeadEXDto orderHeadEXDto) {
 		Integer addressId = orderHeadEXDto.getAdrressId();
-		//根据地址Id查询地址信息
+		// 根据地址Id查询地址信息
 		Map<String, Object> address = addressManagerService.getAddressById(addressId);
 		if (address == null) {
 			return null;

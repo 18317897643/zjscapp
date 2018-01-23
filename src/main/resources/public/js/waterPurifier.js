@@ -26,6 +26,7 @@ $(function() {
     });
     $('.close').on('click',function () {
         $('.waterPurifierText').val("");
+        $('.close').css('display','none');
     });
     //获取url中的参数
     var token;

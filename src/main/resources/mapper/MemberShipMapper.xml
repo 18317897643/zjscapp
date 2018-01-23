@@ -93,4 +93,27 @@
 		and
 		u.Id = sr.UserId
 	</select>
+
+	<select id="getPresentById" resultType="java.lang.Integer">
+		SELECT
+		Lev from
+		tb_sendhead WHERE Id= #{SendHeadId}
+	</select>
+	<update id="changePresentStatusToOne">
+		update tb_sendhead set CurStatus = 1 where Id =
+		#{SendHeadId} and CurStatus = 0;
+	</update>
+	<insert id="insertSendHeadRecord">
+		insert into tb_sendheaduserecord
+		(SendHeadId,UserId,Lev,CreateTime,CurStatus) VALUES
+		(#{SendHeadId},#{UserId},#{Lev},#{CreateTime,jdbcType=TIMESTAMP},0)
+	</insert>
+	<insert id="insertSplitStreamRecord">
+		insert into tb_splitstreamrecord
+		(CreateTime,FromUserId,ToUserId,Amount,CurStatus) VALUES
+		(#{CreateTime,jdbcType=TIMESTAMP},#{FromUserId},#{ToUserId},#{Amount},0)
+	</insert>
+	<select id="selectSplitStreamRecord" resultType="java.util.Map">
+		select CreateTime,ToUserId,Amount from tb_splitstreamrecord where FromUserId = #{FromUserId}
+	</select>
 </mapper>

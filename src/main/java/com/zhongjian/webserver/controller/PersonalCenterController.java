@@ -113,8 +113,8 @@ public class PersonalCenterController {
 			resultMap.put("isGCmemeber", isGCmemeber);
 			return ResultUtil.success(resultMap);
 		} catch (Exception e) {
-			LoggingUtil.e("个人中心数据初始化异常:" + e);
-			throw new BusinessException(Status.SeriousError.getStatenum(), "个人中心数据初始化异常");
+			LoggingUtil.e("我的钱包异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "我的钱包异常");
 		}
 	}
 
@@ -136,8 +136,8 @@ public class PersonalCenterController {
 
 	@ApiOperation(httpMethod = "GET", notes = "获取订单", value = "获取订单")
 	@RequestMapping(value = "/PersonalCenter/getOrder/{token}/{type}", method = RequestMethod.GET)
-	Result<Object> itemsToBePaidFor(@PathVariable("token") String token, @PathVariable("type") String type,@RequestParam Integer page,@RequestParam Integer pageNum)
-			throws BusinessException {
+	Result<Object> itemsToBePaidFor(@PathVariable("token") String token, @PathVariable("type") String type,
+			@RequestParam Integer page, @RequestParam Integer pageNum) throws BusinessException {
 		try {
 			// all全部 wp待付款ws待发货wr待收货wc待评价
 			if (!"all".equals(type) && !"wp".equals(type) && !"ws".equals(type) && !"wr".equals(type)
@@ -152,15 +152,19 @@ public class PersonalCenterController {
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			List<Orderhead> orderHead = null;
 			if ("all".equals(type)) {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "",page,pageNum);
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "", page, pageNum);
 			} else if ("wp".equals(type)) {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = -1",page,pageNum);
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = -1", page,
+						pageNum);
 			} else if ("ws".equals(type)) {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 0",page,pageNum);
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 0", page,
+						pageNum);
 			} else if ("wr".equals(type)) {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 1",page,pageNum);
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 1", page,
+						pageNum);
 			} else {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 2",page,pageNum);
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 2", page,
+						pageNum);
 			}
 			return ResultUtil.success(orderHead);
 		} catch (Exception e) {
@@ -228,11 +232,8 @@ public class PersonalCenterController {
 			}
 			// 获取用户Id
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			if (personalCenterService.addShoppingCartInfo(userId, productId, specId, productNum, new Date()) == 1) {
-				return ResultUtil.success();
-			} else {
-				return ResultUtil.error(Status.GeneralError.getStatenum(), "数据库添加购物车记录失败");
-			}
+			personalCenterService.addShoppingCartInfo(userId, productId, specId, productNum, new Date());
+			return ResultUtil.success();
 		} catch (Exception e) {
 			LoggingUtil.e("添加购物车记录异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "添加购物车记录异常");
@@ -388,6 +389,7 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "设置推荐人异常");
 		}
 	}
+
 	@ApiOperation(httpMethod = "POST", notes = "生成购物订单", value = "生成购物订单")
 	@RequestMapping(value = "/PersonalCenter/createBOrder/{token}", method = RequestMethod.POST)
 	Result<Object> createBOrder(@PathVariable("token") String toKen, @RequestBody OrderHeadEXDto orderHeadEXDto)
@@ -578,7 +580,27 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "取消订单异常");
 		}
 	}
-	
+
+	@ApiOperation(httpMethod = "POST", notes = "确认收货", value = "确认收货")
+	@RequestMapping(value = "/PersonalCenter/confirmOrder/{token}", method = RequestMethod.POST)
+	Result<Object> confirmOrder(@PathVariable("token") String toKen, @RequestParam String orderNo)
+			throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
+				orderHandleService.confirmOrder(orderNo);
+			}
+			return ResultUtil.success();
+		} catch (Exception e) {
+			LoggingUtil.e("确认收货异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "确认收货异常");
+		}
+	}
 	@ApiOperation(httpMethod = "POST", notes = "现金体现", value = "现金体现")
 	@RequestMapping(value = "/PersonalCenter/TxElecNum/{token}", method = RequestMethod.POST)
 	Result<Object> txElecNum(@PathVariable("token") String toKen, @RequestParam String orderNo)
@@ -595,8 +617,8 @@ public class PersonalCenterController {
 			}
 			return ResultUtil.success();
 		} catch (Exception e) {
-			LoggingUtil.e("取消订单异常:" + e);
-			throw new BusinessException(Status.SeriousError.getStatenum(), "取消订单异常");
+			LoggingUtil.e("现金体现异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "现金体现异常");
 		}
 	}
 }

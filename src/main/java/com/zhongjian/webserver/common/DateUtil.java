@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.common;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -14,5 +15,11 @@ public class DateUtil {
 		} else {
 			return false;
 		}
+	}
+
+	public static String DateToStr(Date date) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String str = format.format(date);
+		return str;
 	}
 }

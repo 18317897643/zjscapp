@@ -15,6 +15,7 @@ import com.zhongjian.webserver.ExceptionHandle.BusinessException;
 import com.zhongjian.webserver.alipay.AlipayConfig;
 import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.Result;
+import com.zhongjian.webserver.mapper.ShoppingCartMapper;
 import com.zhongjian.webserver.service.MemberShipService;
 import com.zhongjian.webserver.service.OrderHandleService;
 
@@ -31,6 +32,9 @@ public class AlipayNotifyUrlController {
 
 	@Autowired
 	MemberShipService memberShipService;
+	
+	@Autowired
+	ShoppingCartMapper shoppingCartMapper;
 	/**
 	 * 支付宝异步通知
 	 * 
@@ -84,7 +88,7 @@ public class AlipayNotifyUrlController {
 	@ApiOperation(httpMethod = "GET", notes = "测试接口", value = "测试接口")
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	Result<Object> test(HttpServletRequest request) {
-		System.out.println(memberShipService.getAccumulateScore(100188));
+		System.out.println(1);
 		return null;
 
 		// Map<String, Object>map =

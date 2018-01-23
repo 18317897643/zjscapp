@@ -65,4 +65,9 @@
 		select Photo from tb_productphoto where ProductId =
 		#{id} and CurStatus = 0 limit 1
 	</select>
+	<select id="getShopCartByUPS" resultType="java.util.Map">
+		select Id,ProductNum from
+		tb_shoppingcart where UserId = #{UserId} and ProductId = #{ProductId}
+		and SpecId = #{SpecId} for update
+	</select>
 </mapper>
