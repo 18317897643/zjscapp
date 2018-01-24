@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhongjian.webserver.mapper.ApplyReturnOrderMapper">
+	<insert id="insertSelective" parameterType="ApplyReturnOrder">
+		insert into tb_applyreturnorder
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				Id,
+			</if>
+			<if test="createtime != null">
+				CreateTime,
+			</if>
+			<if test="orderid != null">
+				OrderId,
+			</if>
+			<if test="memo != null">
+				Memo,
+			</if>
+			<if test="curstatus != null">
+				CurStatus,
+			</if>
+			<if test="photo1 != null">
+				Photo1,
+			</if>
+			<if test="photo2 != null">
+				Photo2,
+			</if>
+			<if test="photo3 != null">
+				Photo3,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="createtime != null">
+				#{createtime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="orderid != null">
+				#{orderid,jdbcType=INTEGER},
+			</if>
+			<if test="memo != null">
+				#{memo,jdbcType=VARCHAR},
+			</if>
+			<if test="curstatus != null">
+				#{curstatus,jdbcType=INTEGER},
+			</if>
+			<if test="photo1 != null">
+				#{photo1,jdbcType=VARCHAR},
+			</if>
+			<if test="photo2 != null">
+				#{photo2,jdbcType=VARCHAR},
+			</if>
+			<if test="photo3 != null">
+				#{photo3,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+</mapper>
