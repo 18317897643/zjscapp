@@ -80,12 +80,12 @@ public class MemberShipController {
 			Map<String, Object> map = personalCenterService.getInformOfConsumption(phoneNum);
 			Integer lev = (Integer) map.get("Lev");
 			Integer isSubProxy = (Integer) map.get("IsSubProxy");
-			HashMap<String, HashMap<String, Integer>> result = new HashMap<>();
-			HashMap<String, Integer> vipResult = new HashMap<>();
-			HashMap<String, Integer> greenChanelResult = new HashMap<>();
-			HashMap<String, Integer> directUpdate = new HashMap<>();
-			Integer vipNeedPay = mallData.getVipNeedPay();
-			Integer gcNeedPay = mallData.getGcNeedPay();
+			HashMap<String, HashMap<String, Object>> result = new HashMap<>();
+			HashMap<String, Object> vipResult = new HashMap<>();
+			HashMap<String, Object> greenChanelResult = new HashMap<>();
+			HashMap<String, Object> directUpdate = new HashMap<>();
+			BigDecimal vipNeedPay = mallData.getVipNeedPay();
+			BigDecimal gcNeedPay = mallData.getGcNeedPay();
 			if (lev == 0) {
 				vipResult.put("isExit", 1);
 				vipResult.put("id", 1);
@@ -141,9 +141,9 @@ public class MemberShipController {
 			// lev=0绿色通道 lev=1 vip通道
 			BigDecimal needPay = null;
 			if (lev == 0) {
-				needPay = new BigDecimal(mallData.getGcNeedPay());
+				needPay = mallData.getGcNeedPay();
 			} else {
-				needPay = new BigDecimal(mallData.getVipNeedPay());
+				needPay = mallData.getVipNeedPay();
 			}
 			if (type == 0) {
 				BigDecimal reaminElec = (BigDecimal) personalCenterService.getInformOfConsumption(phoneNum);
