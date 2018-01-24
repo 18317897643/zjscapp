@@ -604,9 +604,10 @@ public class PersonalCenterController {
 
 	@ApiOperation(httpMethod = "POST", notes = "现金提现", value = "现金提现")
 	@RequestMapping(value = "/PersonalCenter/TxElecNum/{token}", method = RequestMethod.POST)
-	Result<Object> txElecNum(@PathVariable("token") String toKen, @RequestParam BigDecimal money,@RequestParam(required=false,defaultValue="提现") String memo,
-			@RequestParam String txType,@RequestParam String cardNo,@RequestParam String trueName,@RequestParam(required=false,defaultValue="支付宝")  String bankName)
-			throws BusinessException {
+	Result<Object> txElecNum(@PathVariable("token") String toKen, @RequestParam BigDecimal money,
+			@RequestParam(required = false, defaultValue = "提现") String memo, @RequestParam String txType,
+			@RequestParam String cardNo, @RequestParam String trueName,
+			@RequestParam(required = false, defaultValue = "支付宝") String bankName) throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
@@ -617,13 +618,13 @@ public class PersonalCenterController {
 			if (!personalCenterService.isAlreadyAuth(UserId)) {
 				return ResultUtil.error(Status.BussinessError.getStatenum(), "未通过实名认证");
 			}
-			personalCenterService.txElecNum(UserId, money, memo,txType,cardNo,trueName,bankName);
+			personalCenterService.txElecNum(UserId, money, memo, txType, cardNo, trueName, bankName);
 			return ResultUtil.success();
 		} catch (Exception e) {
 			LoggingUtil.e("现金提现异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "现金提现异常");
 		}
-		
+
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "实名认证界面", value = "实名认证界面")
@@ -672,4 +673,25 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "实名认证界面异常");
 		}
 	}
+
+	@ApiOperation(httpMethod = "POST", notes = "申请退款", value = "申请退款")
+	@RequestMapping(value = "/PersonalCenter/ApplyRefund/{token}", method = RequestMethod.POST)
+	Result<Object> applyRefund(@PathVariable("token") String toKen, @RequestParam String oderNo,@RequestParam String Memo)
+			throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			
+			
+			return ResultUtil.success();
+		} catch (Exception e) {
+			LoggingUtil.e("申请退款异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "申请退款异常");
+		}
+	}
+
 }
