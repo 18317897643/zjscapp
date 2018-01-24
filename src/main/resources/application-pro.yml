@@ -46,6 +46,6 @@ upload:
   maxFileSize: 30720KB
   maxRequestSize: 102400KB
 malldata:
-  vipNeedPay: 100
+  vipNeedPay: 0.02
   subProxyNeedPay: 50000   
-  gcNeedPay: 50
+  gcNeedPay: 0.01
