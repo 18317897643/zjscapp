@@ -75,7 +75,7 @@ public class AlipayNotifyUrlController {
 				return "failure";
 			}
 		} catch (Exception e) {
-			LoggingUtil.e("支付宝异步通知发生异常，请注意处理");
+			LoggingUtil.e("支付宝异步通知发生异常，请注意处理 " + e );
 			return "failure";
 		}
 	}
