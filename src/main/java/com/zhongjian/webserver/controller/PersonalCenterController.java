@@ -28,6 +28,7 @@ import com.zhongjian.webserver.dto.PANResponseMap;
 import com.zhongjian.webserver.pojo.Orderhead;
 import com.zhongjian.webserver.pojo.User;
 import com.zhongjian.webserver.service.LoginAndRegisterService;
+import com.zhongjian.webserver.service.OrderApplyService;
 import com.zhongjian.webserver.service.OrderHandleService;
 import com.zhongjian.webserver.service.PersonalCenterService;
 import com.zhongjian.webserver.service.ProductManagerService;
@@ -53,6 +54,9 @@ public class PersonalCenterController {
 
 	@Autowired
 	OrderHandleService orderHandleService;
+
+	@Autowired
+	OrderApplyService orderApplyService;
 
 	@ApiOperation(httpMethod = "GET", notes = "根据token获取个人中心数据", value = "初始化个人中心数据")
 	@RequestMapping(value = "/PersonalCenter/initPersonalCenterData/{token}", method = RequestMethod.GET)
@@ -676,8 +680,8 @@ public class PersonalCenterController {
 
 	@ApiOperation(httpMethod = "POST", notes = "申请退款", value = "申请退款")
 	@RequestMapping(value = "/PersonalCenter/ApplyRefund/{token}", method = RequestMethod.POST)
-	Result<Object> applyRefund(@PathVariable("token") String toKen, @RequestParam String oderNo,@RequestParam String Memo)
-			throws BusinessException {
+	Result<Object> applyRefund(@PathVariable("token") String toKen, @RequestParam String orderNo,
+			@RequestParam String memo, @RequestParam() String photo1) throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
@@ -685,12 +689,46 @@ public class PersonalCenterController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			
-			
-			return ResultUtil.success();
+			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
+				if (orderApplyService.applyCancelOrder(orderNo, memo)) {
+					return ResultUtil.success();
+				} else {
+					return ResultUtil.error(Status.BussinessError.getStatenum(), "您已经取消过了");
+				}
+			} else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "您确定是该用户生成的订单吗");
+			}
 		} catch (Exception e) {
 			LoggingUtil.e("申请退款异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "申请退款异常");
+		}
+	}
+
+	@ApiOperation(httpMethod = "POST", notes = "申请退货", value = "申请退货")
+	@RequestMapping(value = "/PersonalCenter/ApplySaleReturn/{token}", method = RequestMethod.POST)
+	Result<Object> applySaleReturn(@PathVariable("token") String toKen, @RequestParam String orderNo,
+			@RequestParam String memo, @RequestParam(required = false, defaultValue = "") String photo1,
+			@RequestParam(required = false, defaultValue = "") String photo2,
+			@RequestParam(required = false, defaultValue = "") String photo3) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
+				if (orderApplyService.applySaleReturn(orderNo, memo, photo1, photo2, photo3)) {
+					return ResultUtil.success();
+				} else {
+					return ResultUtil.error(Status.BussinessError.getStatenum(), "您已经取消过了");
+				}
+			} else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "您确定是该用户生成的订单吗");
+			}
+		} catch (Exception e) {
+			LoggingUtil.e("申请退货异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "申请退货异常");
 		}
 	}
 

@@ -339,7 +339,7 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 			return true;
 		} else if (orderNo.startsWith("VO")) {
 			if (memberShipMapper.changeVipOrderToPaid(orderNo) == 1) {
-				Map<String, Object> data = memberShipMapper.selectViporderByOrder(orderNo);
+				Map<String, Object> data = memberShipMapper.selectViporderByOrderNo(orderNo);
 				Integer lev = (Integer) data.get("Lev");
 				BigDecimal useMoney = (BigDecimal) data.get("TolAmout");
 				Integer UserId = (Integer) data.get("UserId");

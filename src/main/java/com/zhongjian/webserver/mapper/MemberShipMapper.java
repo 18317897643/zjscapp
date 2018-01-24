@@ -15,7 +15,7 @@ public interface MemberShipMapper {
 
 	Map<String, Object> selectViporderByOrderAndUser(@Param("OrderNo") String orderNo, @Param("UserId") Integer userId);
 
-	Map<String, Object> selectViporderByOrder(String orderNo);
+	Map<String, Object> selectViporderByOrderNo(String orderNo);
 
 	Map<String, Object> selectCOrderByOrderNo(String orderNo);
 

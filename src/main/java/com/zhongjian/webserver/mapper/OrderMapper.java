@@ -67,4 +67,6 @@ public interface OrderMapper {
 	Map<String, Object> getOrderDetailsByOrderNo(String oderNo);
 	
 	List<String> getWROrderNo(@Param("DateStrString") String dateStr,@Param("Duration") Integer duration);
+	
+	Integer getOrderIdByOrderNo(String orderNo);
 }
