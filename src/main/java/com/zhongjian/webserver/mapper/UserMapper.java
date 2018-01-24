@@ -76,4 +76,6 @@ public interface UserMapper {
 	List<Map<String, Object>> getDownInviteAndTotalCost(Integer inviteCode);
 	
 	Map<String, Object> getUserInfoBySysID(Integer sysID);
+	
+	Map<String, Object> getCertificationInfo(Integer userId);
 }

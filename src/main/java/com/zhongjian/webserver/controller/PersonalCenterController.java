@@ -601,9 +601,11 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "确认收货异常");
 		}
 	}
-	@ApiOperation(httpMethod = "POST", notes = "现金体现", value = "现金体现")
+
+	@ApiOperation(httpMethod = "POST", notes = "现金提现", value = "现金提现")
 	@RequestMapping(value = "/PersonalCenter/TxElecNum/{token}", method = RequestMethod.POST)
-	Result<Object> txElecNum(@PathVariable("token") String toKen, @RequestParam String orderNo)
+	Result<Object> txElecNum(@PathVariable("token") String toKen, @RequestParam BigDecimal money,@RequestParam(required=false,defaultValue="提现") String memo,
+			@RequestParam String txType,@RequestParam String cardNo,@RequestParam String trueName,@RequestParam(required=false,defaultValue="支付宝")  String bankName)
 			throws BusinessException {
 		try {
 			// 检查token通过
@@ -612,13 +614,62 @@ public class PersonalCenterController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
-				orderHandleService.cancelOrder(orderNo);
+			if (!personalCenterService.isAlreadyAuth(UserId)) {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "未通过实名认证");
 			}
+			personalCenterService.txElecNum(UserId, money, memo,txType,cardNo,trueName,bankName);
 			return ResultUtil.success();
 		} catch (Exception e) {
-			LoggingUtil.e("现金体现异常:" + e);
-			throw new BusinessException(Status.SeriousError.getStatenum(), "现金体现异常");
+			LoggingUtil.e("现金提现异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "现金提现异常");
+		}
+		
+	}
+
+	@ApiOperation(httpMethod = "GET", notes = "实名认证界面", value = "实名认证界面")
+	@RequestMapping(value = "/PersonalCenter/GetCertificationInfo/{token}", method = RequestMethod.GET)
+	Result<Object> getCertificationInfo(@PathVariable("token") String toKen) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			return ResultUtil.success(personalCenterService.getCertificationInfo(UserId));
+		} catch (Exception e) {
+			LoggingUtil.e("实名认证界面异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "实名认证界面异常");
+		}
+	}
+
+	@ApiOperation(httpMethod = "POST", notes = "提交实名认证申请", value = "提交实名认证申请")
+	@RequestMapping(value = "/PersonalCenter/PostCertificationInfo/{token}", method = RequestMethod.POST)
+	Result<Object> postCertificationInfo(@PathVariable("token") String toKen, @RequestBody User user)
+			throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			if (personalCenterService.isAlreadyAuth(UserId)) {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "已经审核通过的用户");
+			}
+			User userForUpdate = new User();
+			userForUpdate.setTruename(user.getTruename());
+			userForUpdate.setPhone(user.getPhone());
+			userForUpdate.setIdcardno(user.getIdcardno());
+			userForUpdate.setIdcardphoto(user.getIdcardphoto());
+			userForUpdate.setIdcardphoto2(user.getIdcardphoto2());
+			userForUpdate.setIdcardphoto3(user.getIdcardphoto3());
+			userForUpdate.setUsername(phoneNum);
+			loginAndRegisterService.updateUser(userForUpdate);
+			return ResultUtil.success();
+		} catch (Exception e) {
+			LoggingUtil.e("实名认证界面异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "实名认证界面异常");
 		}
 	}
 }

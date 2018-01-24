@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,12 +9,12 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.zhongjian.webserver.mapper.OrderMapper;
 import com.zhongjian.webserver.mapper.ProxyApplyMapper;
 import com.zhongjian.webserver.mapper.ShoppingCartMapper;
+import com.zhongjian.webserver.mapper.TxElecMapper;
 import com.zhongjian.webserver.mapper.UserMapper;
 import com.zhongjian.webserver.pojo.BillReacord;
 import com.zhongjian.webserver.pojo.Orderhead;
@@ -21,6 +22,7 @@ import com.zhongjian.webserver.pojo.Orderline;
 import com.zhongjian.webserver.pojo.Product;
 import com.zhongjian.webserver.pojo.ProxyApply;
 import com.zhongjian.webserver.pojo.ShoppingCart;
+import com.zhongjian.webserver.pojo.TxElec;
 import com.zhongjian.webserver.service.PersonalCenterService;
 
 @Service
@@ -37,6 +39,9 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 
 	@Autowired
 	ProxyApplyMapper proxyApplyMapper;
+	
+	@Autowired
+	TxElecMapper txElecMapper;
 
 	@Override
 	public Map<String, Object> getInformOfConsumption(String userName) {
@@ -149,8 +154,8 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 
 	@Override
 	public boolean isAlreadyAuth(Integer UserId) {
-		Integer curStatus = userMapper.queryUserAuth(UserId);
-		if (curStatus == 2) {
+		Integer isAuth = userMapper.queryUserAuth(UserId);
+		if (isAuth == 2) {
 			return true;
 		} else {
 			return false;
@@ -226,5 +231,41 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 		proxyApply.setUserid(userId);
 		proxyApplyMapper.updateProxyApply(proxyApply);
 
+	}
+
+	@Override
+	public Map<String, Object> getCertificationInfo(Integer userId) {
+		return userMapper.getCertificationInfo(userId);
+	}
+
+	@Override
+	@Transactional
+	public boolean txElecNum(Integer userId,BigDecimal money,String memo,String txType,String cardNo,String trueName,String bankName) {
+		BigDecimal handAmount = money.multiply(new BigDecimal("0.03")).setScale(2, BigDecimal.ROUND_HALF_UP);
+		BigDecimal deductMoney = money.add(handAmount);
+		Map<String, Object> userCurQuota = userMapper.selectUserQuotaForUpdate(userId);
+		BigDecimal remainElecNum = (BigDecimal) userCurQuota.get("RemainElecNum");
+		if (deductMoney.compareTo(remainElecNum) == 1) {
+			return false;
+		}
+		//扣除现金币
+		remainElecNum = remainElecNum.subtract(deductMoney);
+		userCurQuota.put("RemainElecNum", remainElecNum);
+		userMapper.updateUserQuota(userCurQuota);
+		//提交待审核的体现
+		TxElec txElec = new TxElec();
+		txElec.setAmount(money);
+		txElec.setHandamount(handAmount);
+		txElec.setCreatetime(new Date());
+		txElec.setUserid(userId);
+		txElec.setPoints(0);
+		txElec.setCurstatus(0);
+		txElec.setMemo(memo);
+		txElec.setTxtype(txType);
+		txElec.setCardno(cardNo);
+		txElec.setTruename(trueName);
+		txElec.setBankname(bankName);
+		txElecMapper.insertSelective(txElec);
+		return true;
 	}
 }

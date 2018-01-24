@@ -26,14 +26,14 @@ useUnicode=true&amp;characterEncoding=utf8" userId="root" password="123456">
             <property name="trimStrings" value="false"/>    
         </javaModelGenerator>    
         <!-- 生成映射文件的包名和位置-->    
-        <sqlMapGenerator targetPackage="mapper" targetProject="/home">    
+        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources">    
             <property name="enableSubPackages" value="true"/>    
         </sqlMapGenerator>    
         <!-- 生成DAO的包名和位置-->    
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.zhongjian.webserver.mapper" targetProject="/home">    
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.zhongjian.webserver.mapper" targetProject="src/main/java">    
             <property name="enableSubPackages" value="true"/>    
         </javaClientGenerator>    
         <!-- 要生成的表      tableName：数据库中的表名或视图名 domainObjectName：实体类名-->    
-        <table tableName="tb_proxyapply" domainObjectName="ProxyApply" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="tb_txelec" domainObjectName="TxElec" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
     </context>    
 </generatorConfiguration>  

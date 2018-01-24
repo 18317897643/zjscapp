@@ -472,7 +472,7 @@
 	</select>
 	<select id="queryUserAuth" resultType="java.lang.Integer"
 		parameterType="java.lang.Integer">
-		SELECT CurStatus from tb_user WHERE Id = #{id}
+		SELECT IsAuth from tb_user WHERE Id = #{id}
 	</select>
 	<select id="getExpireTimeFromGcOfUser" resultType="java.util.Date"
 		parameterType="java.lang.Integer">
@@ -533,5 +533,7 @@
 	<select id="getUserIdByInviteCode" resultType="java.lang.Integer">
 		SELECT Id From tb_user where InviteCode = #{InviteCode}
 	</select>
-	
+	<select id="getCertificationInfo" resultType="java.util.Map">
+		SELECT IsAuth,TrueName,Phone,IDCardNo,IDCardPhoto,IDCardPhoto2,IDCardPhoto3 From tb_user where Id = #{UserId}
+	</select>
 </mapper>

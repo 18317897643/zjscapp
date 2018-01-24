@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +50,13 @@ public interface PersonalCenterService {
 	// 判断实名认证
 	boolean isAlreadyAuth(Integer UserId);
 	
+	//实名认证信息
+	Map<String, Object> getCertificationInfo(Integer userId);
+	
 	boolean isGCMember(Integer UserId);
 	
 	List<BillReacord> accountBill(Integer userId,String type,Integer page,Integer pageNum);
+	
+	//现金体现
+	boolean txElecNum(Integer userId,BigDecimal money,String memo,String txType,String cardNo,String trueName,String bankName);
 }
