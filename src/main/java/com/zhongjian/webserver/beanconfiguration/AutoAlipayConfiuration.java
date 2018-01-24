@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 import com.zhongjian.webserver.alipay.AlipayConfig;
+import com.zhongjian.webserver.common.LoggingUtil;
 
 @Configuration
 public class AutoAlipayConfiuration {
@@ -16,6 +17,7 @@ public class AutoAlipayConfiuration {
 	@Bean
 	public AlipayConfig aipayConfig() {
 		if ("dev".equals(env.getActiveProfiles()[0])) {
+			LoggingUtil.i("读取测试环境支付宝参数配置");
 			AlipayConfig alipayConfig = new AlipayConfig();
 			alipayConfig.setAPPID("2016082100305178");
 			alipayConfig.setBUSINESSID("2088102172419687");
@@ -28,6 +30,7 @@ public class AutoAlipayConfiuration {
 			alipayConfig.setSIGNTYPE("RSA2");
 			return alipayConfig;
 		}else{
+			LoggingUtil.i("读取正式环境支付宝参数配置");
 			AlipayConfig alipayConfig = new AlipayConfig();
 			alipayConfig.setAPPID("2018011001747966");
 			alipayConfig.setBUSINESSID("2088621931824615");
