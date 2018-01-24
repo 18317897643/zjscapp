@@ -58,6 +58,12 @@ public interface OrderMapper {
 	
 	Integer updateOrderHeadStatusToWC(String orderNo);
 	
+	//改变状态至申请退款 5
+	Integer updateOrderHeadStatusToAR(String orderNo);
+	
+	//改变状态至申请退货 4
+	Integer updateOrderHeadStatusToASR(String orderNo);
+	
 	Map<String, Object> getOrderDetailsByOrderNo(String oderNo);
 	
 	List<String> getWROrderNo(@Param("DateStrString") String dateStr,@Param("Duration") Integer duration);

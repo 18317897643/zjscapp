@@ -163,6 +163,18 @@
 		CurStatus
 		= 1 and OrderNo = #{OrderNo}
 	</update>
+	<update id="updateOrderHeadStatusToAR">
+		UPDATE tb_orderhead set CurStatus = 5 WHERE
+		CurStatus
+		= 0 and OrderNo = #{OrderNo}
+	</update>
+	
+	<update id="updateOrderHeadStatusToASR">
+		UPDATE tb_orderhead set CurStatus = 4 WHERE
+		CurStatus
+		= 1 and OrderNo = #{OrderNo}
+	</update>
+	
 	<select id="getOrderDetailsByOrderNo" resultType="java.util.Map">
 		SELECT
 		UserId,TotalAmount,UseCoupon,UseVIPRemainNum,Score FROM
@@ -170,6 +182,12 @@
 		WHERE OrderNo = #{OrderNo}
 	</select>
 	<select id="getWROrderNo" resultType="java.lang.String">
+		SELECT OrderNo FROM tb_orderhead WHERE CurStatus = 1  and
+		unix_timestamp(#{DateStrString}) - unix_timestamp(SendDate) >
+		#{Duration} for update
+	</select>
+	
+	<select id="getOrderIdByOrderNo" resultType="java.lang.String">
 		SELECT OrderNo FROM tb_orderhead WHERE CurStatus = 1  and
 		unix_timestamp(#{DateStrString}) - unix_timestamp(SendDate) >
 		#{Duration} for update

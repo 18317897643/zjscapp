@@ -61,6 +61,7 @@ public class AlipayNotifyUrlController {
 					String total_amount = request.getParameter("total_amount"); // 订单金额
 					String seller_id = request.getParameter("seller_id"); // 商家app_id
 					String app_id = request.getParameter("app_id"); // 商家seller_id
+					LoggingUtil.i("订单号为 " + out_trade_no + " 支付金额为 " + total_amount + " 开始回调啦！");
 					// 校验四项
 					if (orderHandleService.asyncHandleOrder(out_trade_no, total_amount, seller_id, app_id)) {
 						return "success";
