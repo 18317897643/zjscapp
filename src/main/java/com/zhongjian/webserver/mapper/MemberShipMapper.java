@@ -33,13 +33,16 @@ public interface MemberShipMapper {
 	Integer getYellowFans(Integer inviteCode);
 
 	// 红粉具体数据
-	List<Map<String, Object>> getRedFansDetails(Integer inviteCode);
+	List<Map<String, Object>> getRedFansDetails(@Param("inviteCode") Integer inviteCode,
+			@Param("OffSet") Integer offSet, @Param("PageNum") Integer pageNum);
 
 	// 蓝粉具体数据
-	List<Map<String, Object>> getBlueFansDetails(Integer inviteCode);
+	List<Map<String, Object>> getBlueFansDetails(@Param("inviteCode") Integer inviteCode,
+			@Param("OffSet") Integer offSet, @Param("PageNum") Integer pageNum);
 
 	// 黄粉具体数据
-	List<Map<String, Object>> getYellowFansDetails(Integer inviteCode);
+	List<Map<String, Object>> getYellowFansDetails(@Param("inviteCode") Integer inviteCode,
+			@Param("OffSet") Integer offSet, @Param("PageNum") Integer pageNum);
 
 	// 计算贡献额度
 	BigDecimal getContributeAmount(@Param("FromUserId") Integer fromUserId, @Param("UserId") Integer userId);
@@ -58,6 +61,6 @@ public interface MemberShipMapper {
 	void insertSplitStreamRecord(@Param("CreateTime") Date createTime, @Param("FromUserId") Integer fromUserId,
 			@Param("ToUserId") Integer toUserId, @Param("Amount") BigDecimal amount);
 
-	Map<String, Object> selectSplitStreamRecord(Integer fromUserId);
+	List<Map<String, Object>> selectSplitStreamRecord(Integer fromUserId);
 
 }

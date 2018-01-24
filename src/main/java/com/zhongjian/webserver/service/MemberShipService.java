@@ -24,7 +24,7 @@ public interface MemberShipService {
 	Map<String, Integer> getRYBFans(Integer userId);
 
 	// 获取红黄蓝粉
-	List<Map<String, Object>> getRYBFansDetails(Integer userId, String type);
+	List<Map<String, Object>> getRYBFansDetails(Integer userId, String type,Integer page,Integer pageNum);
 
 	// 判断升级
 	boolean memberUpdate(Integer userId, Integer type) throws shareBenefitException;
@@ -48,7 +48,7 @@ public interface MemberShipService {
 	String splitStream(Integer fromUserId,Integer toUserId,Integer type);
 	
 	//分流记录
-	Map<String, Object> getSplitStreamRecord(Integer userId);
+	List<Map<String, Object>> getSplitStreamRecord(Integer userId);
 	
 	
 

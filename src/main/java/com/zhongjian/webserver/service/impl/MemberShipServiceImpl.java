@@ -140,11 +140,13 @@ public class MemberShipServiceImpl implements MemberShipService {
 	}
 
 	@Override
-	public List<Map<String, Object>> getRYBFansDetails(Integer userId, String type) {
+	public List<Map<String, Object>> getRYBFansDetails(Integer userId, String type,Integer page,Integer pageNum) {
 		Integer inviteCode = (Integer) (userMapper.selectPersonalInformById(userId).get("InviteCode"));
 		List<Map<String, Object>> datas = null;
+		//算页
+		Integer offSet = page * pageNum;
 		if ("Red".equals(type)) {
-			datas = memberShipMapper.getRedFansDetails(inviteCode);
+			datas = memberShipMapper.getRedFansDetails(inviteCode,offSet,pageNum);
 			for (int i = 0; i < datas.size(); i++) {
 				Map<String, Object> data = datas.get(i);
 				Integer fromUserId = (Integer) data.get("Id");
@@ -155,7 +157,7 @@ public class MemberShipServiceImpl implements MemberShipService {
 				data.put("amount", amount);
 			}
 		} else if ("Blue".equals(type)) {
-			datas = memberShipMapper.getBlueFansDetails(inviteCode);
+			datas = memberShipMapper.getBlueFansDetails(inviteCode,offSet,pageNum);
 			for (int i = 0; i < datas.size(); i++) {
 				Map<String, Object> data = datas.get(i);
 				Integer fromUserId = (Integer) data.get("Id");
@@ -166,7 +168,7 @@ public class MemberShipServiceImpl implements MemberShipService {
 				data.put("amount", amount);
 			}
 		} else {
-			datas = memberShipMapper.getYellowFansDetails(inviteCode);
+			datas = memberShipMapper.getYellowFansDetails(inviteCode,offSet,pageNum);
 			for (int i = 0; i < datas.size(); i++) {
 				Map<String, Object> data = datas.get(i);
 				Integer fromUserId = (Integer) data.get("Id");
@@ -410,7 +412,13 @@ public class MemberShipServiceImpl implements MemberShipService {
 		}
 	}
 	@Override
-	public Map<String, Object> getSplitStreamRecord(Integer userId) {
-		return memberShipMapper.selectSplitStreamRecord(userId);
+	public List<Map<String, Object>> getSplitStreamRecord(Integer userId) {
+		List<Map<String, Object>> splitStreamRecord = memberShipMapper.selectSplitStreamRecord(userId);
+		Integer splitStreamRecordSize = splitStreamRecord.size();
+		for (int i = 0; i < splitStreamRecordSize; i++) {
+			Date createTime = (Date) splitStreamRecord.get(i).get("CreateTime");
+			splitStreamRecord.get(i).put("CreateTime", DateUtil.DateToStr(createTime));
+		}
+		return splitStreamRecord;
 	}
 }

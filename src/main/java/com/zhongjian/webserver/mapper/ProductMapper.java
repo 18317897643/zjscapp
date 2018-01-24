@@ -1,6 +1,7 @@
 package com.zhongjian.webserver.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -30,5 +31,7 @@ public interface ProductMapper {
     List<Product> getProductsOfTag(@Param("Tag") Integer tag,@Param("Condition") String condition,@Param("page") Integer page,@Param("pageNum") Integer pageNum);
     
 	Integer getMemberTag();
+	
+	List<Map<String, Object>> searchProduct(String key);
     	
 }

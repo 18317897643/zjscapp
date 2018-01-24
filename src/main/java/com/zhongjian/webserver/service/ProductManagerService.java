@@ -2,6 +2,7 @@ package com.zhongjian.webserver.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.zhongjian.webserver.dto.PANRequestMap;
 import com.zhongjian.webserver.dto.PANResponseMap;
@@ -21,5 +22,7 @@ public interface ProductManagerService {
 	List<PANResponseMap> checkProductStoreNum(List<PANRequestMap> pANRequestMaps);
 	
 	List<HashMap<String, Object>> getSubProductOfCategory(Integer subCategoryId,String condition,Integer page,Integer pageNum);
+	
+	List<Map<String, Object>> searchProduct(String key);
 	
 }

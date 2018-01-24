@@ -55,25 +55,25 @@
 	</select>
 	<select id="getRedFansDetails" resultType="java.util.Map">
 		SELECT
-		Id,SysID,UserName from tb_user
-		where BeInviteCode = #{inviteCode}
+		Id,SysID,UserName,HeadPhoto from tb_user
+		where BeInviteCode = #{inviteCode} limit #{OffSet},#{PageNum}
 	</select>
 	<select id="getBlueFansDetails" resultType="java.util.Map">
 		SELECT
-		Id,SysID,UserName from tb_user
+		Id,SysID,UserName,HeadPhoto from tb_user
 		where BeInviteCode in (SELECT InviteCode
 		from tb_user where
-		BeInviteCode = #{inviteCode})
+		BeInviteCode = #{inviteCode}) limit #{OffSet},#{PageNum}
 	</select>
 	<select id="getYellowFansDetails" resultType="java.util.Map">
 		SELECT
-		Id,SysID,UserName from
+		Id,SysID,UserName,HeadPhoto from
 		tb_user where BeInviteCode in (SELECT InviteCode
 		from
 		tb_user where
 		BeInviteCode in (SELECT InviteCode from tb_user where
 		BeInviteCode =
-		#{inviteCode}))
+		#{inviteCode})) limit #{OffSet},#{PageNum}
 	</select>
 	<select id="getContributeAmount" resultType="java.math.BigDecimal">
 		SELECT

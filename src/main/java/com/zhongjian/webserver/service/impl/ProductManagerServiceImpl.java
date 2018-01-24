@@ -3,6 +3,7 @@ package com.zhongjian.webserver.service.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,5 +94,20 @@ public class ProductManagerServiceImpl implements ProductManagerService {
            	datas.add(data);		
 		}
 		return datas;
+	}
+
+	@Override
+	public List<Map<String, Object>> searchProduct(String key) {
+		List<Map<String, Object>> productMapList = productMapper.searchProduct("%" + key + "%");
+		Integer productMapListSize = productMapList.size();
+		for (int i = 0; i < productMapListSize; i++) {
+			Integer theTag = (Integer) productMapList.get(i).get("Tag");
+			if (theTag != null && theTag == mallData.getProductTag()) {
+				productMapList.get(i).put("beLongToVIP", true);
+			}else {
+				productMapList.get(i).put("beLongToVIP", false);
+			}
+		}
+		return productMapList;
 	}
 }

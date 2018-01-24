@@ -3,6 +3,7 @@ package com.zhongjian.webserver.controller;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -341,8 +342,8 @@ public class MemberShipController {
 
 	@ApiOperation(httpMethod = "GET", notes = "查看粉丝具体信息", value = "查看粉丝具体信息")
 	@RequestMapping(value = "/GetFansDetails/{token}", method = RequestMethod.GET)
-	Result<Object> getFansDetails(@PathVariable("token") String token, @RequestParam String type)
-			throws BusinessException {
+	Result<Object> getFansDetails(@PathVariable("token") String token, @RequestParam String type,
+			@RequestParam Integer page, @RequestParam Integer pageNum) throws BusinessException {
 		try {
 			if (!"Red".equals(type) && !"Blue".equals(type) && !"Yellow".equals(type)) {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "参数不对");
@@ -353,7 +354,7 @@ public class MemberShipController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			return ResultUtil.success(memberShipService.getRYBFansDetails(UserId, type));
+			return ResultUtil.success(memberShipService.getRYBFansDetails(UserId, type,page,pageNum));
 		} catch (Exception e) {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "查看粉丝具体信息异常");
 		}
@@ -568,9 +569,7 @@ public class MemberShipController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			Map<String, Object> result = memberShipService.getSplitStreamRecord(userId);
-			Date createTime = (Date) result.get("CreateTime");
-			result.put("CreateTimeStr", DateUtil.DateToStr(createTime));
+			List<Map<String, Object>> result = memberShipService.getSplitStreamRecord(userId);
 			return ResultUtil.success(result);
 		} catch (Exception e) {
 			LoggingUtil.e("分流异常:" + e);
