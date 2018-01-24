@@ -1,7 +1,6 @@
 package com.zhongjian.webserver.controller;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zhongjian.webserver.ExceptionHandle.BusinessException;
-import com.zhongjian.webserver.common.DateUtil;
 import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.Result;
 import com.zhongjian.webserver.common.ResultUtil;
@@ -30,8 +28,6 @@ import com.zhongjian.webserver.service.MemberShipService;
 import com.zhongjian.webserver.service.OrderHandleService;
 import com.zhongjian.webserver.service.PersonalCenterService;
 
-import cn.jpush.api.schedule.model.TriggerPayload.Type;
-import cn.jpush.api.schedule.model.TriggerPayload.Type;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -433,23 +429,6 @@ public class MemberShipController {
 
 	}
 
-	@ApiOperation(httpMethod = "POST", notes = "分流接口", value = "分流接口")
-	@RequestMapping(value = "/shunt/{token}", method = RequestMethod.POST)
-	Result<Object> shunt(@PathVariable("token") String token, @RequestParam Integer type,
-			@RequestParam Integer diversionUserId) throws BusinessException {
-		try {
-			// 检查token通过
-			String phoneNum = tokenManager.checkTokenGetUser(token);
-			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
-			}
-			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-
-			return null;
-		} catch (Exception e) {
-			throw new BusinessException(Status.SeriousError.getStatenum(), "分流接口异常");
-		}
-	}
 
 	@ApiOperation(httpMethod = "POST", notes = "现金转让", value = "现金转让")
 	@RequestMapping(value = "/TransferOfMoney/{token}", method = RequestMethod.POST)
