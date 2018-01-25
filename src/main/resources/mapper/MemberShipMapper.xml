@@ -83,7 +83,7 @@
 	</select>
 	<select id="getPossessorPresent" resultType="java.util.Map">
 		SELECT
-		CreateTime,Lev from tb_sendhead WHERE UserId=#{UserId} AND CurStatus =
+		Id,CreateTime,Lev from tb_sendhead WHERE UserId=#{UserId} AND CurStatus =
 		0
 	</select>
 	<select id="getAlreadyGivePresent" resultType="java.util.Map">
