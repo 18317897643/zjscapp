@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zhongjian.webserver.mapper.LogMapper;
 import com.zhongjian.webserver.mapper.OrderMapper;
 import com.zhongjian.webserver.mapper.ProxyApplyMapper;
 import com.zhongjian.webserver.mapper.ShoppingCartMapper;
@@ -42,6 +43,9 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	
 	@Autowired
 	TxElecMapper txElecMapper;
+	
+	@Autowired
+	LogMapper logMapper;
 
 	@Override
 	public Map<String, Object> getInformOfConsumption(String userName) {
@@ -252,6 +256,8 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 		remainElecNum = remainElecNum.subtract(deductMoney);
 		userCurQuota.put("RemainElecNum", remainElecNum);
 		userMapper.updateUserQuota(userCurQuota);
+		//扣除现金币记录，申请提现
+		logMapper.insertElecRecord(userId, new Date(), deductMoney, "-", "申请提现");
 		//提交待审核的体现
 		TxElec txElec = new TxElec();
 		txElec.setAmount(money);
@@ -267,5 +273,20 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 		txElec.setBankname(bankName);
 		txElecMapper.insertSelective(txElec);
 		return true;
+	}
+
+	@Override
+	public boolean estimateUpgrade(Integer userId, Integer lev) {
+		Integer curlev = (Integer) userMapper.selectPersonalInformById(userId).get("Lev");
+		//充值绿色通道或VIP
+		if (lev == 0 || lev == 1) {
+			if (curlev != 0) {
+				return false;//不可以充
+			}else{
+				return true;
+			}
+		}else {
+			return false; //不可以充
+		}
 	}
 }

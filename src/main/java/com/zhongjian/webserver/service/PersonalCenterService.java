@@ -59,4 +59,8 @@ public interface PersonalCenterService {
 	
 	//现金体现
 	boolean txElecNum(Integer userId,BigDecimal money,String memo,String txType,String cardNo,String trueName,String bankName);
+	
+	//判断等级能不能升
+	boolean estimateUpgrade(Integer userId,Integer lev);
+	
 }

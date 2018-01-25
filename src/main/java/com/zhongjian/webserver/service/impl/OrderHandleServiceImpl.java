@@ -362,12 +362,31 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 					// 升级提交生成二送一和一送一任务
 					tasks.presentTask(1, UserId);
 				} else {
-					Calendar c = Calendar.getInstance();
-					c.add(Calendar.DATE, 30);// 计算30天后的时间
-					Date expireTime = c.getTime();
+					// Calendar c = Calendar.getInstance();
+					// c.add(Calendar.DATE, 30);
+					// Date expireTime = c.getTime();
 					// 升级绿色通道
-					if (userMapper.updateExpireTimeOfGcOfUser(expireTime, UserId) != 1) {
-						userMapper.insertExpireTimeOfGcOfUser(expireTime, UserId);
+					Date curExpireTime = userMapper.getExpireTimeFromGcOfUser(UserId);
+					Date newExpireTime = null;
+					if (curExpireTime == null) {
+						Calendar c = Calendar.getInstance();
+						c.add(Calendar.DATE, 30);
+						newExpireTime = c.getTime();
+						userMapper.insertExpireTimeOfGcOfUser(newExpireTime, UserId);
+					} else {
+						if (curExpireTime.getTime() > new Date().getTime()) {
+							// 没过期
+							Calendar c = Calendar.getInstance();
+							c.setTime(curExpireTime);// 计算30天后的时间
+							c.add(Calendar.DATE, 30);
+							newExpireTime = c.getTime();
+
+						} else {
+							Calendar c = Calendar.getInstance();
+							c.add(Calendar.DATE, 30);
+							newExpireTime = c.getTime();
+						}
+						userMapper.updateExpireTimeOfGcOfUser(newExpireTime, UserId);
 					}
 					memo = "购买绿色通道，订单号：" + orderNo;
 				}
@@ -378,7 +397,9 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 				tasks.shareBenitTask(1, UserId, 0, "购买会员", useMoney);
 			}
 			return true;
-		} else if (orderNo.startsWith("CZ")) {
+		} else if (orderNo.startsWith("CZ"))
+
+		{
 			// 现金币到账
 			if (memberShipMapper.changeCOrderToPaid(orderNo) == 1) {
 				Map<String, Object> data = memberShipMapper.selectCOrderByOrderNo(orderNo);
@@ -459,22 +480,24 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 	@Override
 	@Transactional
 	public void confirmOrder(String orderNo) {
-		//改状态（防止重复确认）
-		if (orderMapper.updateOrderHeadStatusToWC(orderNo) == 1){
-		//分润
-		Map<String, Object> orderMap = orderMapper.getOrderDetailsByOrderNo(orderNo);
-		Integer userId = (Integer) orderMap.get("UserId");
-		BigDecimal useCoupon = (BigDecimal) orderMap.get("UseCoupon");
-		BigDecimal useVIPRemainNum = (BigDecimal) orderMap.get("UseVIPRemainNum");
-		Integer score = (Integer) orderMap.get("Score");
-		BigDecimal bigDecimalScore = new BigDecimal(score);
-		BigDecimal ElecNum = bigDecimalScore.subtract(useCoupon).subtract(useVIPRemainNum);
-		tasks.shareBenitTask(1, userId, 0, "订单消费", ElecNum);
-		//累计积分增加
-		Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(userId);
-		BigDecimal remianTotalCost = ((BigDecimal) curQuota.get("TotalCost")).add(bigDecimalScore);
-		curQuota.put("TotalCost", remianTotalCost);
-		userMapper.updateUserQuota(curQuota);
+		// 改状态（防止重复确认）
+		if (orderMapper.updateOrderHeadStatusToWC(orderNo) == 1) {
+			// 分润
+			Map<String, Object> orderMap = orderMapper.getOrderDetailsByOrderNo(orderNo);
+			Integer userId = (Integer) orderMap.get("UserId");
+			BigDecimal useCoupon = (BigDecimal) orderMap.get("UseCoupon");
+			BigDecimal useVIPRemainNum = (BigDecimal) orderMap.get("UseVIPRemainNum");
+			Integer score = (Integer) orderMap.get("Score");
+			BigDecimal bigDecimalScore = new BigDecimal(score);
+			BigDecimal ElecNum = bigDecimalScore.subtract(useCoupon).subtract(useVIPRemainNum);
+			tasks.shareBenitTask(1, userId, 0, "订单消费", ElecNum);
+			// 累计分值增加
+			Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(userId);
+			BigDecimal remianTotalCost = ((BigDecimal) curQuota.get("TotalCost")).add(bigDecimalScore);
+			curQuota.put("TotalCost", remianTotalCost);
+			userMapper.updateUserQuota(curQuota);
+			// 把saleNum增加
+
 		}
 	}
 

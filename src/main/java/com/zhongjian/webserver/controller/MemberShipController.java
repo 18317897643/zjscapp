@@ -137,6 +137,10 @@ public class MemberShipController {
 			}
 			// recive args
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			//判断可不可以买这个身份
+			if (!personalCenterService.estimateUpgrade(UserId, lev)) {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "请仔细确认你的会员身份");
+			}
 			// type=0现金支付 type =1 支付宝支付
 			// lev=0绿色通道 lev=1 vip通道
 			BigDecimal needPay = null;
@@ -179,7 +183,7 @@ public class MemberShipController {
 			// recive args
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			memberShipService.syncHandleVipOrder(UserId, orderNo);
-			return null;
+			return ResultUtil.success();
 		} catch (Exception e) {
 			LoggingUtil.e("生成VIP订单并支付异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "生成VIP订单并支付异常");

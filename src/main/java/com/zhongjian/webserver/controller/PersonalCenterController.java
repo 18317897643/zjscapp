@@ -471,6 +471,32 @@ public class PersonalCenterController {
 		}
 	}
 
+	
+	@ApiOperation(httpMethod = "POST", notes = "子订单处理", value = "子订单处理")
+	@RequestMapping(value = "/PersonalCenter/HandleEOrder/{token}", method = RequestMethod.POST)
+	Result<Object> handleEOrder(@PathVariable("token") String toKen, @RequestParam String orderNo)
+			throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			// 通过订单查询
+			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
+				// 继续处理订单
+				return ResultUtil.success();
+				
+			} else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "您确定是该用户生成的订单吗");
+			}
+
+		} catch (Exception e) {
+			LoggingUtil.e("子订单处理异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "子订单处理异常");
+		}
+	}
 	@ApiOperation(httpMethod = "POST", notes = "同步处理支付子订单", value = "同步处理支付子订单")
 	@RequestMapping(value = "/PersonalCenter/syncHandleOrder/{token}", method = RequestMethod.POST)
 	Result<Object> syncHandleOrder(@PathVariable("token") String toKen, @RequestParam String orderNo)

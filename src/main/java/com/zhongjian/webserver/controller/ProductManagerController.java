@@ -138,5 +138,21 @@ public class ProductManagerController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "商品搜索异常");
 		}
 	}
+	@ApiOperation(httpMethod = "POST", notes = "商品评价", value = "商品评价")
+	@RequestMapping(value = "/ProductManager/ProductCommet", method = RequestMethod.POST)
+	Result<Object> productCommet(@RequestParam String key) throws BusinessException {
+		try {
+			List<Map<String, Object>> result = productManagerService.searchProduct(key);
+			if (result == null) {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "搜不到");
+			} else {
+				return ResultUtil.success(result);
+			}
+		} catch (Exception e) {
+			LoggingUtil.e("商品评价异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "商品评价异常");
+		}
+	}
+	
 
 }
