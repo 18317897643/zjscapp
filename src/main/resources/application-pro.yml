@@ -48,4 +48,4 @@ upload:
 malldata:
   vipNeedPay: 3000
   subProxyNeedPay: 50000   
-  gcNeedPay: 0.01
+  gcNeedPay: 99

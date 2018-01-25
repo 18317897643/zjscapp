@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiOperation;
 public class WebTitleController {
 
 	@Autowired
-	WebTitleService webTitleService;
+	private WebTitleService webTitleService;
 	
 	@ApiOperation(httpMethod = "GET", notes = "获取各种协议", value = "获取各种协议")
 	@RequestMapping(value = "/getProtocol", method = RequestMethod.GET)

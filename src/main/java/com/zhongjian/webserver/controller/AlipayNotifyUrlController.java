@@ -15,8 +15,6 @@ import com.zhongjian.webserver.ExceptionHandle.BusinessException;
 import com.zhongjian.webserver.alipay.AlipayConfig;
 import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.Result;
-import com.zhongjian.webserver.mapper.ShoppingCartMapper;
-import com.zhongjian.webserver.service.MemberShipService;
 import com.zhongjian.webserver.service.OrderHandleService;
 
 import io.swagger.annotations.ApiOperation;
@@ -25,16 +23,10 @@ import io.swagger.annotations.ApiOperation;
 public class AlipayNotifyUrlController {
 
 	@Autowired
-	OrderHandleService orderHandleService;
+	private OrderHandleService orderHandleService;
 	
 	@Autowired
-	AlipayConfig alipayConfig;
-
-	@Autowired
-	MemberShipService memberShipService;
-	
-	@Autowired
-	ShoppingCartMapper shoppingCartMapper;
+	private AlipayConfig alipayConfig;
 	/**
 	 * 支付宝异步通知
 	 * 

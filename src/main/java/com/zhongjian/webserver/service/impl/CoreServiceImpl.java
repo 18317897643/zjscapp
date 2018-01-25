@@ -23,19 +23,19 @@ import com.zhongjian.webserver.service.PersonalCenterService;
 public class CoreServiceImpl implements CoreService {
 
 	@Autowired
-	UserMapper userMapper;
+	private UserMapper userMapper;
 
 	@Autowired
-	CoreMapper coreMapper;
+	private CoreMapper coreMapper;
 
 	@Autowired
-	LogMapper logMapper;
+	private LogMapper logMapper;
 
 	@Autowired
-	PersonalCenterService personalCenterService;
+	private PersonalCenterService personalCenterService;
 
 	@Autowired
-	TokenManager tokenManager;
+	private TokenManager tokenManager;
 
 	@Override
 	public void preRecordShareBenti(Integer type, Integer masterUserId, Integer slaveUserId, String memo,

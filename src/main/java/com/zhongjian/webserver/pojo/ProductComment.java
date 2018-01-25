@@ -1,37 +1,26 @@
 package com.zhongjian.webserver.pojo;
 
 import java.util.Date;
-import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-@JsonInclude(Include.NON_NULL)
 public class ProductComment {
-    private Integer id;
+    private Integer id;      
 
-    private Integer productid;
+    private Integer productid;//商品id
 
     private Integer specid;
 
-    private Integer orderid;
+    private Integer orderid; //订单id
 
     private Integer userid;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createtime;
 
-    private String memo;
+    private String memo; //评价内容
 
-    private Integer star;
+    private Integer star;   //星级
 
-    private Integer curstatus;
+    private Integer curstatus; 
 
-    private List<ProductCommentPhoto> productCommentPhotos;
-    
-    private User user;
-    
     public Integer getId() {
         return id;
     }
@@ -103,21 +92,4 @@ public class ProductComment {
     public void setCurstatus(Integer curstatus) {
         this.curstatus = curstatus;
     }
-
-
-	public List<ProductCommentPhoto> getProductCommentPhotos() {
-		return productCommentPhotos;
-	}
-
-	public void setProductCommentPhotos(List<ProductCommentPhoto> productCommentPhotos) {
-		this.productCommentPhotos = productCommentPhotos;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
 }

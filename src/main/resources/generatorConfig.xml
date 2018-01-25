@@ -39,7 +39,7 @@ useUnicode=true&amp;characterEncoding=utf8"
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 		<!-- 要生成的表 tableName：数据库中的表名或视图名 domainObjectName：实体类名 -->
-		<table tableName="tb_" domainObjectName="ApplyCancelOrder"
+		<table tableName="tb_productcomment" domainObjectName="ProductComment"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false"></table>

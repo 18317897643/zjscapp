@@ -17,13 +17,13 @@ import com.zhongjian.webserver.service.OrderApplyService;
 public class OrderApplyServiceImpl implements OrderApplyService {
 
 	@Autowired
-	OrderMapper orderMapper;
+	private OrderMapper orderMapper;
 
 	@Autowired
-	ApplyCancelOrderMapper applyCancelOrderMapper;
+	private ApplyCancelOrderMapper applyCancelOrderMapper;
 
 	@Autowired
-	ApplyReturnOrderMapper applyReturnOrderMapper;
+	private ApplyReturnOrderMapper applyReturnOrderMapper;
 
 	@Override
 	@Transactional
@@ -57,6 +57,7 @@ public class OrderApplyServiceImpl implements OrderApplyService {
 			record.setPhoto1(photo1);
 			record.setPhoto2(photo2);
 			record.setPhoto3(photo3);
+			applyReturnOrderMapper.insertSelective(record);
 			return true;
 		}else{
 			return false;

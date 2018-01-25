@@ -16,10 +16,10 @@ import com.zhongjian.webserver.service.WaterPurifierService;
 public class WaterPurifierServiceImpl implements WaterPurifierService {
 
 	@Autowired
-	WaterPurifierMapper waterPurifierMapper;
+	private WaterPurifierMapper waterPurifierMapper;
 	
 	@Autowired
-	LoginAndRegisterService LoginAndRegisterService;
+	private LoginAndRegisterService LoginAndRegisterService;
 	
 	@Override
 	@Transactional

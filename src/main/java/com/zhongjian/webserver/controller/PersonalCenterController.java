@@ -41,22 +41,22 @@ import io.swagger.annotations.ApiOperation;
 public class PersonalCenterController {
 
 	@Autowired
-	TokenManager tokenManager;
+    private TokenManager tokenManager;
 
 	@Autowired
-	PersonalCenterService personalCenterService;
+	private PersonalCenterService personalCenterService;
 
 	@Autowired
-	LoginAndRegisterService loginAndRegisterService;
+	private LoginAndRegisterService loginAndRegisterService;
 
 	@Autowired
-	ProductManagerService productManagerService;
+	private ProductManagerService productManagerService;
 
 	@Autowired
-	OrderHandleService orderHandleService;
+	private OrderHandleService orderHandleService;
 
 	@Autowired
-	OrderApplyService orderApplyService;
+	private OrderApplyService orderApplyService;
 
 	@ApiOperation(httpMethod = "GET", notes = "根据token获取个人中心数据", value = "初始化个人中心数据")
 	@RequestMapping(value = "/PersonalCenter/initPersonalCenterData/{token}", method = RequestMethod.GET)
@@ -484,7 +484,7 @@ public class PersonalCenterController {
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// 通过订单查询
-			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
+			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
 				// 继续处理订单
 				return ResultUtil.success();
 				
@@ -509,7 +509,7 @@ public class PersonalCenterController {
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// 通过订单查询
-			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
+			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
 				// 继续处理订单
 				// 直接订单同步处理
 				if (orderHandleService.syncHandleOrder(orderNo)) {
@@ -601,7 +601,7 @@ public class PersonalCenterController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
+			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo)) ) {
 				orderHandleService.cancelOrder(orderNo);
 			}
 			return ResultUtil.success();
@@ -622,7 +622,7 @@ public class PersonalCenterController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
+			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
 				orderHandleService.confirmOrder(orderNo);
 			}
 			return ResultUtil.success();
@@ -715,7 +715,8 @@ public class PersonalCenterController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
+			Integer userId = orderHandleService.getUserIdByOrder(orderNo);
+			if (UserId.equals(userId)) {
 				if (orderApplyService.applyCancelOrder(orderNo, memo)) {
 					return ResultUtil.success();
 				} else {
@@ -743,7 +744,7 @@ public class PersonalCenterController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
+			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo)) ) {
 				if (orderApplyService.applySaleReturn(orderNo, memo, photo1, photo2, photo3)) {
 					return ResultUtil.success();
 				} else {

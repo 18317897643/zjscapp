@@ -39,25 +39,25 @@ import com.zhongjian.webserver.service.OrderHandleService;
 public class OrderHandleServiceImpl implements OrderHandleService {
 
 	@Autowired
-	OrderMapper orderMapper;
+	private OrderMapper orderMapper;
 
 	@Autowired
-	UserMapper userMapper;
+	private UserMapper userMapper;
 
 	@Autowired
-	LogMapper logMapper;
+	private LogMapper logMapper;
 
 	@Autowired
-	MemberShipMapper memberShipMapper;
+	private MemberShipMapper memberShipMapper;
 
 	@Autowired
-	AsyncTasks tasks;
+	private AsyncTasks tasks;
 
 	@Autowired
-	AlipayConfig alipayConfig;
+	private AlipayConfig alipayConfig;
 
 	@Autowired
-	AddressManagerService addressManagerService;
+	private AddressManagerService addressManagerService;
 
 	@Override
 	@Transactional
@@ -410,7 +410,7 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 				curQuota.put("RemainElecNum", remainElecNum);
 				userMapper.updateUserQuota(curQuota);
 				// 充值记录
-				logMapper.insertCouponRecord(UserId, new Date(), amount, "+", "现金币充值");
+				logMapper.insertElecRecord(UserId, new Date(), amount, "+", "现金币充值");
 			}
 
 		} else {
@@ -468,7 +468,8 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 
 	@Override
 	public Integer getUserIdByOrder(String orderNo) {
-		return orderMapper.getUserIdByOrder(orderNo);
+		Integer userId = orderMapper.getUserIdByOrder(orderNo);
+		return userId;
 	}
 
 	@Override

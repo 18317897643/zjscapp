@@ -11,7 +11,6 @@ import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.Result;
 import com.zhongjian.webserver.common.ResultUtil;
 import com.zhongjian.webserver.common.Status;
-import com.zhongjian.webserver.common.TokenManager;
 import com.zhongjian.webserver.component.MallData;
 import com.zhongjian.webserver.service.HomePageService;
 
@@ -23,14 +22,12 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(value = "/HomePage")
 public class HomePageController {
 
-	@Autowired
-	TokenManager tokenManager;
 
 	@Autowired
-	HomePageService homePageService;
+	private HomePageService homePageService;
 	
 	@Autowired
-	MallData mallData;
+	private MallData mallData;
 
 	// "picList": [],"tile": null 有可能出现
 	@ApiOperation(httpMethod = "GET", notes = "首页初始化数据", value = "首页初始化数据")

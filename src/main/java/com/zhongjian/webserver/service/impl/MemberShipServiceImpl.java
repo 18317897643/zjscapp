@@ -20,7 +20,6 @@ import com.zhongjian.webserver.common.RandomUtil;
 import com.zhongjian.webserver.common.ShareBenefitUtil;
 import com.zhongjian.webserver.ExceptionHandle.shareBenefitException;
 import com.zhongjian.webserver.component.AsyncTasks;
-import com.zhongjian.webserver.component.MallData;
 import com.zhongjian.webserver.mapper.LogMapper;
 import com.zhongjian.webserver.mapper.MemberShipMapper;
 import com.zhongjian.webserver.mapper.UserMapper;
@@ -30,19 +29,16 @@ import com.zhongjian.webserver.service.MemberShipService;
 public class MemberShipServiceImpl implements MemberShipService {
 
 	@Autowired
-	MallData mallData;
+	private MemberShipMapper memberShipMapper;
 
 	@Autowired
-	MemberShipMapper memberShipMapper;
+	private UserMapper userMapper;
 
 	@Autowired
-	UserMapper userMapper;
+	private LogMapper logMapper;
 
 	@Autowired
-	LogMapper logMapper;
-
-	@Autowired
-	AsyncTasks tasks;
+	private AsyncTasks tasks;
 
 	@Autowired
 	@Qualifier("mayNotUpdateMap")

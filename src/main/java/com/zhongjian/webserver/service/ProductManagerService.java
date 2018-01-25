@@ -25,4 +25,7 @@ public interface ProductManagerService {
 	
 	List<Map<String, Object>> searchProduct(String key);
 	
+	void addProductComment(Integer userId, List<Map<String, Object>> productCommentMaps);
+
+	
 }

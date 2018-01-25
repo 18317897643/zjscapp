@@ -14,7 +14,7 @@ import com.zhongjian.webserver.service.AddressManagerService;
 public class AddressManagerServiceImpl implements AddressManagerService {
 	
 	@Autowired
-	AddressMapper addressMapper;
+	private AddressMapper addressMapper;
 	
 	@Override
 	public List<Map<String, Object>> getAllAddressByUserId(Integer userId) {

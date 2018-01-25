@@ -30,22 +30,22 @@ import com.zhongjian.webserver.service.PersonalCenterService;
 public class PersonalCenterServiceImpl implements PersonalCenterService {
 
 	@Autowired
-	UserMapper userMapper;
+	private UserMapper userMapper;
 
 	@Autowired
-	OrderMapper orderMapper;
+	private OrderMapper orderMapper;
 
 	@Autowired
-	ShoppingCartMapper shoppingCartMapper;
+	private ShoppingCartMapper shoppingCartMapper;
 
 	@Autowired
-	ProxyApplyMapper proxyApplyMapper;
+	private ProxyApplyMapper proxyApplyMapper;
 	
 	@Autowired
-	TxElecMapper txElecMapper;
+	private TxElecMapper txElecMapper;
 	
 	@Autowired
-	LogMapper logMapper;
+	private LogMapper logMapper;
 
 	@Override
 	public Map<String, Object> getInformOfConsumption(String userName) {

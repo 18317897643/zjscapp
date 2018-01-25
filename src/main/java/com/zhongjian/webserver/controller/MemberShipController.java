@@ -22,7 +22,6 @@ import com.zhongjian.webserver.common.TokenManager;
 import com.zhongjian.webserver.component.AsyncTasks;
 import com.zhongjian.webserver.component.MallData;
 import com.zhongjian.webserver.pojo.ProxyApply;
-import com.zhongjian.webserver.service.CoreService;
 import com.zhongjian.webserver.service.LoginAndRegisterService;
 import com.zhongjian.webserver.service.MemberShipService;
 import com.zhongjian.webserver.service.OrderHandleService;
@@ -39,25 +38,22 @@ public class MemberShipController {
 	private TokenManager tokenManager;
 
 	@Autowired
-	LoginAndRegisterService loginAndRegisterService;
+	private LoginAndRegisterService loginAndRegisterService;
 
 	@Autowired
-	PersonalCenterService personalCenterService;
+	private PersonalCenterService personalCenterService;
 
 	@Autowired
-	MemberShipService memberShipService;
+	private MemberShipService memberShipService;
 
 	@Autowired
-	OrderHandleService orderHandleService;
+	private OrderHandleService orderHandleService;
 
 	@Autowired
-	MallData mallData;
+	private MallData mallData;
 
 	@Autowired
-	CoreService coreService;
-
-	@Autowired
-	AsyncTasks tasks;
+	private AsyncTasks tasks;
 
 	/**
 	 * 会员入口

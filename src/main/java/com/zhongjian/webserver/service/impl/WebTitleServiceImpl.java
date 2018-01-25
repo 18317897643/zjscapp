@@ -11,7 +11,7 @@ import com.zhongjian.webserver.service.WebTitleService;
 public class WebTitleServiceImpl implements WebTitleService {
 
 	@Autowired
-	AdvMapper advMapper;
+	private AdvMapper advMapper;
 	
 	@Override
 	public Article getProtocol(Integer id) {

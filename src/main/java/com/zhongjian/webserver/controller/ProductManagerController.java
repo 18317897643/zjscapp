@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zhongjian.webserver.ExceptionHandle.BusinessException;
@@ -19,6 +20,7 @@ import com.zhongjian.webserver.common.Status;
 import com.zhongjian.webserver.common.TokenManager;
 import com.zhongjian.webserver.dto.PANRequestMap;
 import com.zhongjian.webserver.pojo.ProductComment;
+import com.zhongjian.webserver.service.LoginAndRegisterService;
 import com.zhongjian.webserver.service.ProductManagerService;
 
 import io.swagger.annotations.Api;
@@ -28,8 +30,11 @@ import io.swagger.annotations.ApiOperation;
 @Api(value = "/ProductManager/", description = "商品相关")
 public class ProductManagerController {
 	@Autowired
-	TokenManager tokenManager;
-
+	private TokenManager tokenManager;
+	
+    @Autowired
+    private LoginAndRegisterService loginAndRegisterService;
+	
 	@Autowired
 	private ProductManagerService productManagerService;
 
@@ -138,21 +143,24 @@ public class ProductManagerController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "商品搜索异常");
 		}
 	}
+
 	@ApiOperation(httpMethod = "POST", notes = "商品评价", value = "商品评价")
-	@RequestMapping(value = "/ProductManager/ProductCommet", method = RequestMethod.POST)
-	Result<Object> productCommet(@RequestParam String key) throws BusinessException {
+	@RequestMapping(value = "/ProductManager/ProductCommet/{token}", method = RequestMethod.POST)
+	Result<Object> productCommet(@PathVariable("token") String token, @RequestBody List<Map<String, Object>> productCommentMaps)
+			throws BusinessException {
 		try {
-			List<Map<String, Object>> result = productManagerService.searchProduct(key);
-			if (result == null) {
-				return ResultUtil.error(Status.BussinessError.getStatenum(), "搜不到");
-			} else {
-				return ResultUtil.success(result);
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(token);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			productManagerService.addProductComment(UserId, productCommentMaps);
+			return ResultUtil.success();
 		} catch (Exception e) {
 			LoggingUtil.e("商品评价异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "商品评价异常");
 		}
 	}
-	
 
 }
