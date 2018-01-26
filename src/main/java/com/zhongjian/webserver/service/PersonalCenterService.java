@@ -63,4 +63,6 @@ public interface PersonalCenterService {
 	//判断等级能不能升
 	boolean estimateUpgrade(Integer userId,Integer lev);
 	
+	void complaintAndAdvice(Integer userId, String memo);
+	
 }

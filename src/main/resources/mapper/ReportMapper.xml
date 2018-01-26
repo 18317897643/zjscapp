@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhongjian.webserver.mapper.ReportMapper">
+	<insert id="insert" parameterType="Report">
+		insert into tb_report (Id, CreateTime, UserId,
+		Memo, CurStatus)
+		values (#{id,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP},
+		#{userid,jdbcType=INTEGER},
+		#{memo,jdbcType=VARCHAR}, #{curstatus,jdbcType=INTEGER})
+	</insert>
+</mapper>

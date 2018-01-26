@@ -15,6 +15,7 @@ import com.zhongjian.webserver.mapper.LogMapper;
 import com.zhongjian.webserver.mapper.OrderMapper;
 import com.zhongjian.webserver.mapper.ProductMapper;
 import com.zhongjian.webserver.mapper.ProxyApplyMapper;
+import com.zhongjian.webserver.mapper.ReportMapper;
 import com.zhongjian.webserver.mapper.ShoppingCartMapper;
 import com.zhongjian.webserver.mapper.TxElecMapper;
 import com.zhongjian.webserver.mapper.UserMapper;
@@ -23,6 +24,7 @@ import com.zhongjian.webserver.pojo.Orderhead;
 import com.zhongjian.webserver.pojo.Orderline;
 import com.zhongjian.webserver.pojo.Product;
 import com.zhongjian.webserver.pojo.ProxyApply;
+import com.zhongjian.webserver.pojo.Report;
 import com.zhongjian.webserver.pojo.ShoppingCart;
 import com.zhongjian.webserver.pojo.TxElec;
 import com.zhongjian.webserver.service.PersonalCenterService;
@@ -51,6 +53,8 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	@Autowired
 	private ProductMapper productMapper;
 
+	@Autowired
+	private ReportMapper reportMapper;
 	@Override
 	public Map<String, Object> getInformOfConsumption(String userName) {
 		return userMapper.selectPersonalInform(userName);
@@ -296,5 +300,15 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 		}else {
 			return false; //不可以充
 		}
+	}
+
+	@Override
+	public void complaintAndAdvice(Integer userId, String memo) {
+		Report report = new Report();
+		report.setCreatetime(new Date());
+		report.setCurstatus(0);
+		report.setMemo(memo);
+		report.setUserid(userId);
+		reportMapper.insert(report);
 	}
 }

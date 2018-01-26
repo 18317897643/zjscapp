@@ -759,5 +759,23 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "申请退货异常");
 		}
 	}
+	
+	@ApiOperation(httpMethod = "POST", notes = "投诉建议", value = "投诉建议")
+	@RequestMapping(value = "/PersonalCenter/ComplaintAndAdvice/{token}", method = RequestMethod.POST)
+	Result<Object> complaintAndAdvice(@PathVariable("token") String toKen, @RequestParam String memo) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			personalCenterService.complaintAndAdvice( UserId, memo);
+			return ResultUtil.success();
+		} catch (Exception e) {
+			LoggingUtil.e("投诉建议异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "投诉建议异常");
+		}
+	}
 
 }
