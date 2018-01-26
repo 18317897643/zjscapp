@@ -1,0 +1,25 @@
+@charset "utf-8";
+/*通用*/
+body {
+    margin:0;
+    padding:0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+/*@font-face {
+    font-family: "SourceHanSansCN-Regular";
+    src:url(../font/SourceHanSansCN-Regular.otf);
+    font-weight:normal;
+    font-style:normal;
+}*/
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,p,blockquote,th,td{margin:0; padding:0;}
+header,footer,article,aside,section,nav,menu,hgroup,details,dialog,figure,figcaption{display:block}
+ol,li,ul,dl,dt,dd{list-style:none;}
+table {border-collapse:collapse;border-spacing:0;}
+.container{
+    width: 7.5rem;
+    height: 17.29rem;
+    background: url("../image/fans.jpg") center no-repeat;
+    background-size: 7.5rem 17.29rem;
+    overflow: hidden;
+}
