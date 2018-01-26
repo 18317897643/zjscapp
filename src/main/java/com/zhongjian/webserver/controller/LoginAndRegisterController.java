@@ -267,8 +267,8 @@ public class LoginAndRegisterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "剔除token", value = "剔除token")
-	@RequestMapping(value = "/LoginAndRegister/getRidOf.do/{userId}", method = RequestMethod.POST)
-	Result<Object> logout(@PathVariable("userId") Integer userId) throws BusinessException {
+	@RequestMapping(value = "/LoginAndRegister/getRidOf.do", method = RequestMethod.POST)
+	Result<Object> logout(@RequestParam Integer userId) throws BusinessException {
 		try {
 			tokenManager.releaseUserName(loginAndRegisterService.getUserNameByUserId(userId));
 			return ResultUtil.success();
@@ -279,8 +279,8 @@ public class LoginAndRegisterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "推送", value = "推送")
-	@RequestMapping(value = "/LoginAndRegister/Jpush.do/{userId}", method = RequestMethod.POST)
-	Result<Object> logout(@PathVariable("userId") Integer userId,@RequestParam String message) throws BusinessException {
+	@RequestMapping(value = "/LoginAndRegister/Jpush.do", method = RequestMethod.POST)
+	Result<Object> logout(@RequestParam Integer userId,@RequestParam String message) throws BusinessException {
 		try {
 			loginAndRegisterService.jPush(userId, message);
 			return ResultUtil.success();
