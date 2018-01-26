@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.zhongjian.webserver.mapper.LogMapper;
 import com.zhongjian.webserver.mapper.OrderMapper;
+import com.zhongjian.webserver.mapper.ProductMapper;
 import com.zhongjian.webserver.mapper.ProxyApplyMapper;
 import com.zhongjian.webserver.mapper.ShoppingCartMapper;
 import com.zhongjian.webserver.mapper.TxElecMapper;
@@ -46,6 +47,9 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	
 	@Autowired
 	private LogMapper logMapper;
+	
+	@Autowired
+	private ProductMapper productMapper;
 
 	@Override
 	public Map<String, Object> getInformOfConsumption(String userName) {
@@ -97,17 +101,21 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 
 	@Override
 	@Transactional
-	public void addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum,
+	public boolean addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum,
 			Date CreateTime) {
 		Map<String, Integer> data = shoppingCartMapper.getShopCartByUPS(userId, productId, specId); 
 		if ( data == null) {
+			if (productNum < productMapper.findById(productId).getStartnum()) {
+				return false;	
+				}
 			shoppingCartMapper.addShoppingCartInfo(userId, productId, specId, productNum, CreateTime);
+			return true;
 		}else{
 			Integer orignProductNum	= data.get("ProductNum");
 			Integer shoppingCartId = data.get("Id");
 			shoppingCartMapper.setShoppingCartInfo(userId, shoppingCartId, orignProductNum + productNum);
+			return true;
 		}
-		
 	}
 
 	@Override

@@ -41,7 +41,7 @@ import io.swagger.annotations.ApiOperation;
 public class PersonalCenterController {
 
 	@Autowired
-    private TokenManager tokenManager;
+	private TokenManager tokenManager;
 
 	@Autowired
 	private PersonalCenterService personalCenterService;
@@ -236,8 +236,12 @@ public class PersonalCenterController {
 			}
 			// 获取用户Id
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			personalCenterService.addShoppingCartInfo(userId, productId, specId, productNum, new Date());
-			return ResultUtil.success();
+			if (personalCenterService.addShoppingCartInfo(userId, productId, specId, productNum, new Date())) {
+				return ResultUtil.success();
+			}else {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "未达到起售数量");
+			}
+
 		} catch (Exception e) {
 			LoggingUtil.e("添加购物车记录异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "添加购物车记录异常");
@@ -266,11 +270,8 @@ public class PersonalCenterController {
 			}
 			// 获取用户Id
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			if (personalCenterService.setShoppingCartInfo(userId, shoppingCartId, productNum) == 1) {
-				return ResultUtil.success();
-			} else {
-				return ResultUtil.error(Status.GeneralError.getStatenum(), "数据库添加购物车记录失败");
-			}
+			personalCenterService.setShoppingCartInfo(userId, shoppingCartId, productNum);
+			return ResultUtil.success();
 		} catch (Exception e) {
 			LoggingUtil.e("添加购物车记录异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "添加购物车记录异常");
@@ -471,7 +472,6 @@ public class PersonalCenterController {
 		}
 	}
 
-	
 	@ApiOperation(httpMethod = "POST", notes = "子订单处理", value = "子订单处理")
 	@RequestMapping(value = "/PersonalCenter/HandleEOrder/{token}", method = RequestMethod.POST)
 	Result<Object> handleEOrder(@PathVariable("token") String toKen, @RequestParam String orderNo)
@@ -487,7 +487,7 @@ public class PersonalCenterController {
 			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
 				// 继续处理订单
 				return ResultUtil.success();
-				
+
 			} else {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "您确定是该用户生成的订单吗");
 			}
@@ -497,6 +497,7 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "子订单处理异常");
 		}
 	}
+
 	@ApiOperation(httpMethod = "POST", notes = "同步处理支付子订单", value = "同步处理支付子订单")
 	@RequestMapping(value = "/PersonalCenter/syncHandleOrder/{token}", method = RequestMethod.POST)
 	Result<Object> syncHandleOrder(@PathVariable("token") String toKen, @RequestParam String orderNo)
@@ -601,7 +602,7 @@ public class PersonalCenterController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo)) ) {
+			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
 				orderHandleService.cancelOrder(orderNo);
 			}
 			return ResultUtil.success();
@@ -646,7 +647,7 @@ public class PersonalCenterController {
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (!personalCenterService.isAlreadyAuth(UserId)) {
-				return ResultUtil.error(Status.BussinessError.getStatenum(), "未通过实名认证");
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "未通过实名认证");
 			}
 			personalCenterService.txElecNum(UserId, money, memo, txType, cardNo, trueName, bankName);
 			return ResultUtil.success();
@@ -744,7 +745,7 @@ public class PersonalCenterController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo)) ) {
+			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
 				if (orderApplyService.applySaleReturn(orderNo, memo, photo1, photo2, photo3)) {
 					return ResultUtil.success();
 				} else {

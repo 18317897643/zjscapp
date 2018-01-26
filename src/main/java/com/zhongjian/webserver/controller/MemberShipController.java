@@ -133,7 +133,7 @@ public class MemberShipController {
 			}
 			// recive args
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			//判断可不可以买这个身份
+			// 判断可不可以买这个身份
 			if (!personalCenterService.estimateUpgrade(UserId, lev)) {
 				return ResultUtil.error(Status.BussinessError.getStatenum(), "请仔细确认你的会员身份");
 			}
@@ -350,7 +350,7 @@ public class MemberShipController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			return ResultUtil.success(memberShipService.getRYBFansDetails(UserId, type,page,pageNum));
+			return ResultUtil.success(memberShipService.getRYBFansDetails(UserId, type, page, pageNum));
 		} catch (Exception e) {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "查看粉丝具体信息异常");
 		}
@@ -429,7 +429,6 @@ public class MemberShipController {
 
 	}
 
-
 	@ApiOperation(httpMethod = "POST", notes = "现金转让", value = "现金转让")
 	@RequestMapping(value = "/TransferOfMoney/{token}", method = RequestMethod.POST)
 	Result<Object> transferOfMoney(@PathVariable("token") String toKen, @RequestParam BigDecimal money,
@@ -441,12 +440,16 @@ public class MemberShipController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			if (!personalCenterService.isAlreadyAuth(UserId)) {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "未通过实名认证");
+			}
 			BigDecimal actualMoney = money.setScale(2, BigDecimal.ROUND_HALF_UP);
 			if (memberShipService.transferOfMoney(actualMoney, UserId, sysID)) {
 				return ResultUtil.success();
 			} else {
 				return ResultUtil.error(Status.BussinessError.getStatenum(), "现金币不足");
 			}
+
 		} catch (Exception e) {
 			LoggingUtil.e("现金转让异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "现金转让异常");
