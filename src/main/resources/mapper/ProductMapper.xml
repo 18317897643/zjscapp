@@ -96,7 +96,7 @@
 	</select>
 	<select id="findById" resultMap="ProductDetails" parameterType="java.lang.Integer">
 		select
-		p.Tag,p.Id,p.Price,p.ProductName,p.Freight,p.ElecNum,p.StockNum,p.PlaceOfDelivery,p.ProducerNo,p.Producertel,p.ProducerName
+		p.Tag,p.Id,p.Price,p.ProductName,p.Freight,p.ElecNum,p.StartNum,p.StockNum,p.PlaceOfDelivery,p.ProducerNo,p.Producertel,p.ProducerName
 		from
 		tb_product
 		p where Id = #{id}
