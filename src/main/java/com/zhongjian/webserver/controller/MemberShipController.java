@@ -288,7 +288,7 @@ public class MemberShipController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "分润接口", value = "分润接口")
-	@RequestMapping(value = "/shareBenit", method = RequestMethod.POST)
+	@RequestMapping(value = "/shareBenit.do", method = RequestMethod.POST)
 	Result<Object> shareBenit(@RequestParam Integer type, @RequestParam Integer masterUserId, @RequestParam String memo,
 			@RequestParam BigDecimal ElecNum) throws BusinessException {
 		try {
@@ -306,7 +306,7 @@ public class MemberShipController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "升级到vip或准代或代理时产生赠送名额", value = "升级到vip或准代或代理时产生赠送名额")
-	@RequestMapping(value = "/present", method = RequestMethod.POST)
+	@RequestMapping(value = "/present.do", method = RequestMethod.POST)
 	Result<Object> present(@RequestParam Integer type, @RequestParam Integer userId) throws BusinessException {
 		// 1为vip 2准代和代理
 		try {
