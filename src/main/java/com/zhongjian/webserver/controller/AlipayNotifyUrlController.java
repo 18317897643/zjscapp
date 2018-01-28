@@ -15,7 +15,6 @@ import com.zhongjian.webserver.ExceptionHandle.BusinessException;
 import com.zhongjian.webserver.alipay.AlipayConfig;
 import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.Result;
-import com.zhongjian.webserver.service.MemberShipService;
 import com.zhongjian.webserver.service.OrderHandleService;
 
 import io.swagger.annotations.ApiOperation;
@@ -24,13 +23,10 @@ import io.swagger.annotations.ApiOperation;
 public class AlipayNotifyUrlController {
 
 	@Autowired
-	OrderHandleService orderHandleService;
+	private OrderHandleService orderHandleService;
 	
 	@Autowired
-	AlipayConfig alipayConfig;
-
-	@Autowired
-	MemberShipService memberShipService;
+	private AlipayConfig alipayConfig;
 	/**
 	 * 支付宝异步通知
 	 * 
@@ -57,6 +53,7 @@ public class AlipayNotifyUrlController {
 					String total_amount = request.getParameter("total_amount"); // 订单金额
 					String seller_id = request.getParameter("seller_id"); // 商家app_id
 					String app_id = request.getParameter("app_id"); // 商家seller_id
+					LoggingUtil.i("订单号为 " + out_trade_no + " 支付金额为 " + total_amount + " 开始回调啦！");
 					// 校验四项
 					if (orderHandleService.asyncHandleOrder(out_trade_no, total_amount, seller_id, app_id)) {
 						return "success";
@@ -70,7 +67,7 @@ public class AlipayNotifyUrlController {
 				return "failure";
 			}
 		} catch (Exception e) {
-			LoggingUtil.e("支付宝异步通知发生异常，请注意处理");
+			LoggingUtil.e("支付宝异步通知发生异常，请注意处理 " + e );
 			return "failure";
 		}
 	}
@@ -84,7 +81,7 @@ public class AlipayNotifyUrlController {
 	@ApiOperation(httpMethod = "GET", notes = "测试接口", value = "测试接口")
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	Result<Object> test(HttpServletRequest request) {
-		System.out.println(memberShipService.getAccumulateScore(100188));
+		System.out.println(1);
 		return null;
 
 		// Map<String, Object>map =

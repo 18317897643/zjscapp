@@ -28,6 +28,7 @@ import com.zhongjian.webserver.dto.PANResponseMap;
 import com.zhongjian.webserver.pojo.Orderhead;
 import com.zhongjian.webserver.pojo.User;
 import com.zhongjian.webserver.service.LoginAndRegisterService;
+import com.zhongjian.webserver.service.OrderApplyService;
 import com.zhongjian.webserver.service.OrderHandleService;
 import com.zhongjian.webserver.service.PersonalCenterService;
 import com.zhongjian.webserver.service.ProductManagerService;
@@ -40,19 +41,22 @@ import io.swagger.annotations.ApiOperation;
 public class PersonalCenterController {
 
 	@Autowired
-	TokenManager tokenManager;
+	private TokenManager tokenManager;
 
 	@Autowired
-	PersonalCenterService personalCenterService;
+	private PersonalCenterService personalCenterService;
 
 	@Autowired
-	LoginAndRegisterService loginAndRegisterService;
+	private LoginAndRegisterService loginAndRegisterService;
 
 	@Autowired
-	ProductManagerService productManagerService;
+	private ProductManagerService productManagerService;
 
 	@Autowired
-	OrderHandleService orderHandleService;
+	private OrderHandleService orderHandleService;
+
+	@Autowired
+	private OrderApplyService orderApplyService;
 
 	@ApiOperation(httpMethod = "GET", notes = "根据token获取个人中心数据", value = "初始化个人中心数据")
 	@RequestMapping(value = "/PersonalCenter/initPersonalCenterData/{token}", method = RequestMethod.GET)
@@ -113,8 +117,8 @@ public class PersonalCenterController {
 			resultMap.put("isGCmemeber", isGCmemeber);
 			return ResultUtil.success(resultMap);
 		} catch (Exception e) {
-			LoggingUtil.e("个人中心数据初始化异常:" + e);
-			throw new BusinessException(Status.SeriousError.getStatenum(), "个人中心数据初始化异常");
+			LoggingUtil.e("我的钱包异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "我的钱包异常");
 		}
 	}
 
@@ -136,8 +140,8 @@ public class PersonalCenterController {
 
 	@ApiOperation(httpMethod = "GET", notes = "获取订单", value = "获取订单")
 	@RequestMapping(value = "/PersonalCenter/getOrder/{token}/{type}", method = RequestMethod.GET)
-	Result<Object> itemsToBePaidFor(@PathVariable("token") String token, @PathVariable("type") String type,@RequestParam Integer page,@RequestParam Integer pageNum)
-			throws BusinessException {
+	Result<Object> itemsToBePaidFor(@PathVariable("token") String token, @PathVariable("type") String type,
+			@RequestParam Integer page, @RequestParam Integer pageNum) throws BusinessException {
 		try {
 			// all全部 wp待付款ws待发货wr待收货wc待评价
 			if (!"all".equals(type) && !"wp".equals(type) && !"ws".equals(type) && !"wr".equals(type)
@@ -152,15 +156,19 @@ public class PersonalCenterController {
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			List<Orderhead> orderHead = null;
 			if ("all".equals(type)) {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "",page,pageNum);
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "", page, pageNum);
 			} else if ("wp".equals(type)) {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = -1",page,pageNum);
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = -1", page,
+						pageNum);
 			} else if ("ws".equals(type)) {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 0",page,pageNum);
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 0", page,
+						pageNum);
 			} else if ("wr".equals(type)) {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 1",page,pageNum);
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 1", page,
+						pageNum);
 			} else {
-				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 2",page,pageNum);
+				orderHead = personalCenterService.getOrderDetailsByCurStatus(UserId, "and CurStatus = 2", page,
+						pageNum);
 			}
 			return ResultUtil.success(orderHead);
 		} catch (Exception e) {
@@ -228,11 +236,12 @@ public class PersonalCenterController {
 			}
 			// 获取用户Id
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			if (personalCenterService.addShoppingCartInfo(userId, productId, specId, productNum, new Date()) == 1) {
+			if (personalCenterService.addShoppingCartInfo(userId, productId, specId, productNum, new Date())) {
 				return ResultUtil.success();
-			} else {
-				return ResultUtil.error(Status.GeneralError.getStatenum(), "数据库添加购物车记录失败");
+			}else {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "未达到起售数量");
 			}
+
 		} catch (Exception e) {
 			LoggingUtil.e("添加购物车记录异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "添加购物车记录异常");
@@ -261,11 +270,8 @@ public class PersonalCenterController {
 			}
 			// 获取用户Id
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			if (personalCenterService.setShoppingCartInfo(userId, shoppingCartId, productNum) == 1) {
-				return ResultUtil.success();
-			} else {
-				return ResultUtil.error(Status.GeneralError.getStatenum(), "数据库添加购物车记录失败");
-			}
+			personalCenterService.setShoppingCartInfo(userId, shoppingCartId, productNum);
+			return ResultUtil.success();
 		} catch (Exception e) {
 			LoggingUtil.e("添加购物车记录异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "添加购物车记录异常");
@@ -388,6 +394,7 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "设置推荐人异常");
 		}
 	}
+
 	@ApiOperation(httpMethod = "POST", notes = "生成购物订单", value = "生成购物订单")
 	@RequestMapping(value = "/PersonalCenter/createBOrder/{token}", method = RequestMethod.POST)
 	Result<Object> createBOrder(@PathVariable("token") String toKen, @RequestBody OrderHeadEXDto orderHeadEXDto)
@@ -465,6 +472,32 @@ public class PersonalCenterController {
 		}
 	}
 
+	@ApiOperation(httpMethod = "POST", notes = "子订单处理", value = "子订单处理")
+	@RequestMapping(value = "/PersonalCenter/HandleEOrder/{token}", method = RequestMethod.POST)
+	Result<Object> handleEOrder(@PathVariable("token") String toKen, @RequestParam String orderNo)
+			throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			// 通过订单查询
+			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
+				// 继续处理订单
+				return ResultUtil.success();
+
+			} else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "您确定是该用户生成的订单吗");
+			}
+
+		} catch (Exception e) {
+			LoggingUtil.e("子订单处理异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "子订单处理异常");
+		}
+	}
+
 	@ApiOperation(httpMethod = "POST", notes = "同步处理支付子订单", value = "同步处理支付子订单")
 	@RequestMapping(value = "/PersonalCenter/syncHandleOrder/{token}", method = RequestMethod.POST)
 	Result<Object> syncHandleOrder(@PathVariable("token") String toKen, @RequestParam String orderNo)
@@ -477,7 +510,7 @@ public class PersonalCenterController {
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// 通过订单查询
-			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
+			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
 				// 继续处理订单
 				// 直接订单同步处理
 				if (orderHandleService.syncHandleOrder(orderNo)) {
@@ -569,7 +602,7 @@ public class PersonalCenterController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
+			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
 				orderHandleService.cancelOrder(orderNo);
 			}
 			return ResultUtil.success();
@@ -578,10 +611,10 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "取消订单异常");
 		}
 	}
-	
-	@ApiOperation(httpMethod = "POST", notes = "现金体现", value = "现金体现")
-	@RequestMapping(value = "/PersonalCenter/TxElecNum/{token}", method = RequestMethod.POST)
-	Result<Object> txElecNum(@PathVariable("token") String toKen, @RequestParam String orderNo)
+
+	@ApiOperation(httpMethod = "POST", notes = "确认收货", value = "确认收货")
+	@RequestMapping(value = "/PersonalCenter/confirmOrder/{token}", method = RequestMethod.POST)
+	Result<Object> confirmOrder(@PathVariable("token") String toKen, @RequestParam String orderNo)
 			throws BusinessException {
 		try {
 			// 检查token通过
@@ -590,13 +623,159 @@ public class PersonalCenterController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			if (UserId == orderHandleService.getUserIdByOrder(orderNo)) {
-				orderHandleService.cancelOrder(orderNo);
+			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
+				orderHandleService.confirmOrder(orderNo);
 			}
 			return ResultUtil.success();
 		} catch (Exception e) {
-			LoggingUtil.e("取消订单异常:" + e);
-			throw new BusinessException(Status.SeriousError.getStatenum(), "取消订单异常");
+			LoggingUtil.e("确认收货异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "确认收货异常");
 		}
 	}
+
+	@ApiOperation(httpMethod = "POST", notes = "现金提现", value = "现金提现")
+	@RequestMapping(value = "/PersonalCenter/TxElecNum/{token}", method = RequestMethod.POST)
+	Result<Object> txElecNum(@PathVariable("token") String toKen, @RequestParam BigDecimal money,
+			@RequestParam(required = false, defaultValue = "提现") String memo, @RequestParam String txType,
+			@RequestParam String cardNo, @RequestParam String trueName,
+			@RequestParam(required = false, defaultValue = "支付宝") String bankName) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			if (!personalCenterService.isAlreadyAuth(UserId)) {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "未通过实名认证");
+			}
+			personalCenterService.txElecNum(UserId, money, memo, txType, cardNo, trueName, bankName);
+			return ResultUtil.success();
+		} catch (Exception e) {
+			LoggingUtil.e("现金提现异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "现金提现异常");
+		}
+
+	}
+
+	@ApiOperation(httpMethod = "GET", notes = "实名认证界面", value = "实名认证界面")
+	@RequestMapping(value = "/PersonalCenter/GetCertificationInfo/{token}", method = RequestMethod.GET)
+	Result<Object> getCertificationInfo(@PathVariable("token") String toKen) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			return ResultUtil.success(personalCenterService.getCertificationInfo(UserId));
+		} catch (Exception e) {
+			LoggingUtil.e("实名认证界面异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "实名认证界面异常");
+		}
+	}
+
+	@ApiOperation(httpMethod = "POST", notes = "提交实名认证申请", value = "提交实名认证申请")
+	@RequestMapping(value = "/PersonalCenter/PostCertificationInfo/{token}", method = RequestMethod.POST)
+	Result<Object> postCertificationInfo(@PathVariable("token") String toKen, @RequestBody User user)
+			throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			if (personalCenterService.isAlreadyAuth(UserId)) {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "已经审核通过的用户");
+			}
+			User userForUpdate = new User();
+			userForUpdate.setTruename(user.getTruename());
+			userForUpdate.setPhone(user.getPhone());
+			userForUpdate.setIdcardno(user.getIdcardno());
+			userForUpdate.setIdcardphoto(user.getIdcardphoto());
+			userForUpdate.setIdcardphoto2(user.getIdcardphoto2());
+			userForUpdate.setIdcardphoto3(user.getIdcardphoto3());
+			userForUpdate.setUsername(phoneNum);
+			loginAndRegisterService.updateUser(userForUpdate);
+			return ResultUtil.success();
+		} catch (Exception e) {
+			LoggingUtil.e("实名认证界面异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "实名认证界面异常");
+		}
+	}
+
+	@ApiOperation(httpMethod = "POST", notes = "申请退款", value = "申请退款")
+	@RequestMapping(value = "/PersonalCenter/ApplyRefund/{token}", method = RequestMethod.POST)
+	Result<Object> applyRefund(@PathVariable("token") String toKen, @RequestParam String orderNo,
+			@RequestParam String memo, @RequestParam() String photo1) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			Integer userId = orderHandleService.getUserIdByOrder(orderNo);
+			if (UserId.equals(userId)) {
+				if (orderApplyService.applyCancelOrder(orderNo, memo)) {
+					return ResultUtil.success();
+				} else {
+					return ResultUtil.error(Status.BussinessError.getStatenum(), "您已经取消过了");
+				}
+			} else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "您确定是该用户生成的订单吗");
+			}
+		} catch (Exception e) {
+			LoggingUtil.e("申请退款异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "申请退款异常");
+		}
+	}
+
+	@ApiOperation(httpMethod = "POST", notes = "申请退货", value = "申请退货")
+	@RequestMapping(value = "/PersonalCenter/ApplySaleReturn/{token}", method = RequestMethod.POST)
+	Result<Object> applySaleReturn(@PathVariable("token") String toKen, @RequestParam String orderNo,
+			@RequestParam String memo, @RequestParam(required = false, defaultValue = "") String photo1,
+			@RequestParam(required = false, defaultValue = "") String photo2,
+			@RequestParam(required = false, defaultValue = "") String photo3) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
+				if (orderApplyService.applySaleReturn(orderNo, memo, photo1, photo2, photo3)) {
+					return ResultUtil.success();
+				} else {
+					return ResultUtil.error(Status.BussinessError.getStatenum(), "您已经取消过了");
+				}
+			} else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "您确定是该用户生成的订单吗");
+			}
+		} catch (Exception e) {
+			LoggingUtil.e("申请退货异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "申请退货异常");
+		}
+	}
+	
+	@ApiOperation(httpMethod = "POST", notes = "投诉建议", value = "投诉建议")
+	@RequestMapping(value = "/PersonalCenter/ComplaintAndAdvice/{token}", method = RequestMethod.POST)
+	Result<Object> complaintAndAdvice(@PathVariable("token") String toKen, @RequestParam String memo) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			personalCenterService.complaintAndAdvice( UserId, memo);
+			return ResultUtil.success();
+		} catch (Exception e) {
+			LoggingUtil.e("投诉建议异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "投诉建议异常");
+		}
+	}
+
 }

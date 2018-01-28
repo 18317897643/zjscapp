@@ -1,5 +1,7 @@
 package com.zhongjian.webserver.component;
 
+import java.math.BigDecimal;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,13 @@ public class MallData {
 	private Integer productTag;
 
 	@Value("${malldata.vipNeedPay}")
-	private Integer vipNeedPay;
+	private BigDecimal vipNeedPay;
 
 	@Value("${malldata.gcNeedPay}")
-	private Integer gcNeedPay;
+	private BigDecimal gcNeedPay;
 
 	@Value("${malldata.subProxyNeedPay}")
-	private Integer subProxyNeedPay;
+	private BigDecimal subProxyNeedPay;
 
 	public Integer getProductTag() {
 		return productTag;
@@ -33,28 +35,29 @@ public class MallData {
 		this.productTag = productTag;
 	}
 
-	public Integer getVipNeedPay() {
+
+	public BigDecimal getVipNeedPay() {
 		return vipNeedPay;
 	}
 
-	public void setVipNeedPay(Integer vipNeedPay) {
+	public void setVipNeedPay(BigDecimal vipNeedPay) {
 		this.vipNeedPay = vipNeedPay;
 	}
 
-	public Integer getSubProxyNeedPay() {
-		return subProxyNeedPay;
-	}
-
-	public void setSubProxyNeedPay(Integer subProxyNeedPay) {
-		this.subProxyNeedPay = subProxyNeedPay;
-	}
-
-	public Integer getGcNeedPay() {
+	public BigDecimal getGcNeedPay() {
 		return gcNeedPay;
 	}
 
-	public void setGcNeedPay(Integer gcNeedPay) {
+	public void setGcNeedPay(BigDecimal gcNeedPay) {
 		this.gcNeedPay = gcNeedPay;
+	}
+
+	public BigDecimal getSubProxyNeedPay() {
+		return subProxyNeedPay;
+	}
+
+	public void setSubProxyNeedPay(BigDecimal subProxyNeedPay) {
+		this.subProxyNeedPay = subProxyNeedPay;
 	}
 
 	public MallData() {

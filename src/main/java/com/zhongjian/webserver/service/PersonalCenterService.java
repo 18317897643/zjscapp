@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,7 @@ public interface PersonalCenterService {
 	List<HashMap<String, Object>> getShoppingCartInfo(Integer userId);
 
 	// 购物车新增
-	Integer addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum, Date CreateTime);
+	boolean addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum, Date CreateTime);
 
 	// 购物车信息更新（数量更新）
 	Integer setShoppingCartInfo(Integer userId, Integer shoppingCartId, Integer productNum);
@@ -49,7 +50,19 @@ public interface PersonalCenterService {
 	// 判断实名认证
 	boolean isAlreadyAuth(Integer UserId);
 	
+	//实名认证信息
+	Map<String, Object> getCertificationInfo(Integer userId);
+	
 	boolean isGCMember(Integer UserId);
 	
 	List<BillReacord> accountBill(Integer userId,String type,Integer page,Integer pageNum);
+	
+	//现金体现
+	boolean txElecNum(Integer userId,BigDecimal money,String memo,String txType,String cardNo,String trueName,String bankName);
+	
+	//判断等级能不能升
+	boolean estimateUpgrade(Integer userId,Integer lev);
+	
+	void complaintAndAdvice(Integer userId, String memo);
+	
 }

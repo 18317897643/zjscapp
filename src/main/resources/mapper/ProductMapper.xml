@@ -96,7 +96,7 @@
 	</select>
 	<select id="findById" resultMap="ProductDetails" parameterType="java.lang.Integer">
 		select
-		p.Tag,p.Id,p.Price,p.ProductName,p.Freight,p.ElecNum,p.StockNum,p.PlaceOfDelivery,p.ProducerNo,p.Producertel,p.ProducerName
+		p.Tag,p.Id,p.Price,p.ProductName,p.Freight,p.ElecNum,p.StartNum,p.StockNum,p.PlaceOfDelivery,p.ProducerNo,p.Producertel,p.ProducerName
 		from
 		tb_product
 		p where Id = #{id}
@@ -167,5 +167,12 @@
 	<select id="getMemberTag" resultType="java.lang.Integer">
 		SELECT tagId from tb_tag
 		where tagName = '会员专区'
+	</select>
+
+	<select id="searchProduct" resultType="java.util.Map">
+		SELECT Price,OldPrice,ElecNum,ProductName,Tag,Photo from (SELECT
+		Id,Price,OldPrice,ElecNum,ProductName,Tag from tb_product where
+		ProductName LIKE #{Key}) tmpp,tb_productphoto pp where tmpp.Id =
+		pp.ProductId
 	</select>
 </mapper>

@@ -28,10 +28,10 @@ public class SignInController {
 	private TokenManager tokenManager;
 
 	@Autowired
-	LoginAndRegisterService loginAndRegisterService;
+	private LoginAndRegisterService loginAndRegisterService;
 
 	@Autowired
-	SignInService signInService;
+	private SignInService signInService;
 
 	/**
 	 * 获取签到数据

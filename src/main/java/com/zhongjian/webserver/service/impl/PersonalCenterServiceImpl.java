@@ -1,5 +1,6 @@
 package com.zhongjian.webserver.service.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -8,36 +9,52 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.zhongjian.webserver.mapper.LogMapper;
 import com.zhongjian.webserver.mapper.OrderMapper;
+import com.zhongjian.webserver.mapper.ProductMapper;
 import com.zhongjian.webserver.mapper.ProxyApplyMapper;
+import com.zhongjian.webserver.mapper.ReportMapper;
 import com.zhongjian.webserver.mapper.ShoppingCartMapper;
+import com.zhongjian.webserver.mapper.TxElecMapper;
 import com.zhongjian.webserver.mapper.UserMapper;
 import com.zhongjian.webserver.pojo.BillReacord;
 import com.zhongjian.webserver.pojo.Orderhead;
 import com.zhongjian.webserver.pojo.Orderline;
 import com.zhongjian.webserver.pojo.Product;
 import com.zhongjian.webserver.pojo.ProxyApply;
+import com.zhongjian.webserver.pojo.Report;
 import com.zhongjian.webserver.pojo.ShoppingCart;
+import com.zhongjian.webserver.pojo.TxElec;
 import com.zhongjian.webserver.service.PersonalCenterService;
 
 @Service
 public class PersonalCenterServiceImpl implements PersonalCenterService {
 
 	@Autowired
-	UserMapper userMapper;
+	private UserMapper userMapper;
 
 	@Autowired
-	OrderMapper orderMapper;
+	private OrderMapper orderMapper;
 
 	@Autowired
-	ShoppingCartMapper shoppingCartMapper;
+	private ShoppingCartMapper shoppingCartMapper;
 
 	@Autowired
-	ProxyApplyMapper proxyApplyMapper;
+	private ProxyApplyMapper proxyApplyMapper;
+	
+	@Autowired
+	private TxElecMapper txElecMapper;
+	
+	@Autowired
+	private LogMapper logMapper;
+	
+	@Autowired
+	private ProductMapper productMapper;
 
+	@Autowired
+	private ReportMapper reportMapper;
 	@Override
 	public Map<String, Object> getInformOfConsumption(String userName) {
 		return userMapper.selectPersonalInform(userName);
@@ -87,9 +104,22 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	}
 
 	@Override
-	public Integer addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum,
+	@Transactional
+	public boolean addShoppingCartInfo(Integer userId, Integer productId, Integer specId, Integer productNum,
 			Date CreateTime) {
-		return shoppingCartMapper.addShoppingCartInfo(userId, productId, specId, productNum, CreateTime);
+		Map<String, Integer> data = shoppingCartMapper.getShopCartByUPS(userId, productId, specId); 
+		if ( data == null) {
+			if (productNum < productMapper.findById(productId).getStartnum()) {
+				return false;	
+				}
+			shoppingCartMapper.addShoppingCartInfo(userId, productId, specId, productNum, CreateTime);
+			return true;
+		}else{
+			Integer orignProductNum	= data.get("ProductNum");
+			Integer shoppingCartId = data.get("Id");
+			shoppingCartMapper.setShoppingCartInfo(userId, shoppingCartId, orignProductNum + productNum);
+			return true;
+		}
 	}
 
 	@Override
@@ -140,8 +170,8 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 
 	@Override
 	public boolean isAlreadyAuth(Integer UserId) {
-		Integer curStatus = userMapper.queryUserAuth(UserId);
-		if (curStatus == 2) {
+		Integer isAuth = userMapper.queryUserAuth(UserId);
+		if (isAuth == 2) {
 			return true;
 		} else {
 			return false;
@@ -149,7 +179,6 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS)
 	public boolean isGCMember(Integer UserId) {
 		Date expireTime = userMapper.getExpireTimeFromGcOfUser(UserId);
 		// 如果当前时间大于大于过期时间则过期
@@ -218,5 +247,68 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 		proxyApply.setUserid(userId);
 		proxyApplyMapper.updateProxyApply(proxyApply);
 
+	}
+
+	@Override
+	public Map<String, Object> getCertificationInfo(Integer userId) {
+		return userMapper.getCertificationInfo(userId);
+	}
+
+	@Override
+	@Transactional
+	public boolean txElecNum(Integer userId,BigDecimal money,String memo,String txType,String cardNo,String trueName,String bankName) {
+		BigDecimal handAmount = money.multiply(new BigDecimal("0.03")).setScale(2, BigDecimal.ROUND_HALF_UP);
+		BigDecimal deductMoney = money.add(handAmount);
+		Map<String, Object> userCurQuota = userMapper.selectUserQuotaForUpdate(userId);
+		BigDecimal remainElecNum = (BigDecimal) userCurQuota.get("RemainElecNum");
+		if (deductMoney.compareTo(remainElecNum) == 1) {
+			return false;
+		}
+		//扣除现金币
+		remainElecNum = remainElecNum.subtract(deductMoney);
+		userCurQuota.put("RemainElecNum", remainElecNum);
+		userMapper.updateUserQuota(userCurQuota);
+		//扣除现金币记录，申请提现
+		logMapper.insertElecRecord(userId, new Date(), deductMoney, "-", "申请提现");
+		//提交待审核的体现
+		TxElec txElec = new TxElec();
+		txElec.setAmount(money);
+		txElec.setHandamount(handAmount);
+		txElec.setCreatetime(new Date());
+		txElec.setUserid(userId);
+		txElec.setPoints(0);
+		txElec.setCurstatus(0);
+		txElec.setMemo(memo);
+		txElec.setTxtype(txType);
+		txElec.setCardno(cardNo);
+		txElec.setTruename(trueName);
+		txElec.setBankname(bankName);
+		txElecMapper.insertSelective(txElec);
+		return true;
+	}
+
+	@Override
+	public boolean estimateUpgrade(Integer userId, Integer lev) {
+		Integer curlev = (Integer) userMapper.selectPersonalInformById(userId).get("Lev");
+		//充值绿色通道或VIP
+		if (lev == 0 || lev == 1) {
+			if (curlev != 0) {
+				return false;//不可以充
+			}else{
+				return true;
+			}
+		}else {
+			return false; //不可以充
+		}
+	}
+
+	@Override
+	public void complaintAndAdvice(Integer userId, String memo) {
+		Report report = new Report();
+		report.setCreatetime(new Date());
+		report.setCurstatus(0);
+		report.setMemo(memo);
+		report.setUserid(userId);
+		reportMapper.insert(report);
 	}
 }

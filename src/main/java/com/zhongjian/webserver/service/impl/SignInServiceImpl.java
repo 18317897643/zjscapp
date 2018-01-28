@@ -23,10 +23,10 @@ import com.zhongjian.webserver.service.SignInService;
 public class SignInServiceImpl implements SignInService {
 
 	@Autowired
-	SignInMapper signInMapper;
+	private SignInMapper signInMapper;
 	
 	@Autowired
-	UserMapper userMapper;
+	private UserMapper userMapper;
 
 	@Override
 	@Transactional

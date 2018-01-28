@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zhongjian.webserver.ExceptionHandle.BusinessException;
@@ -72,13 +73,13 @@ public class LoginAndRegisterController {
 				inviteCodeInteger = Integer.parseInt(inviteCode);
 			}
 			if (loginAndRegisterService.checkVerifyCode(phoneNum, code)) {
-				if (inviteCodeInteger == null ) {
+				if (inviteCodeInteger == null) {
 					loginAndRegisterService.registerUser(phoneNum, password, inviteCodeInteger);
-				}else {
+				} else {
 					if (loginAndRegisterService.InviteCodeIsExists(inviteCodeInteger)) {
 						loginAndRegisterService.registerUser(phoneNum, password, inviteCodeInteger);
-						loginAndRegisterService.sendCouponByInviteCode(new BigDecimal("100.00"), inviteCodeInteger);	
-					}else{
+						loginAndRegisterService.sendCouponByInviteCode(new BigDecimal("100.00"), inviteCodeInteger);
+					} else {
 						return ResultUtil.error(Status.BussinessError.getStatenum(), "邀请码不存在");
 					}
 				}
@@ -264,16 +265,28 @@ public class LoginAndRegisterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "支付密码设置异常");
 		}
 	}
-	
+
 	@ApiOperation(httpMethod = "POST", notes = "剔除token", value = "剔除token")
-	@RequestMapping(value = "/LoginAndRegister/getRidOf/{userId}", method = RequestMethod.POST)
-	Result<Object> logout(@PathVariable("userId") Integer userId) throws BusinessException {
+	@RequestMapping(value = "/LoginAndRegister/getRidOf.do", method = RequestMethod.POST)
+	Result<Object> logout(@RequestParam Integer userId) throws BusinessException {
 		try {
 			tokenManager.releaseUserName(loginAndRegisterService.getUserNameByUserId(userId));
 			return ResultUtil.success();
 		} catch (Exception e) {
 			LoggingUtil.e("剔除token异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "剔除token异常");
+		}
+	}
+
+	@ApiOperation(httpMethod = "POST", notes = "推送", value = "推送")
+	@RequestMapping(value = "/LoginAndRegister/Jpush.do", method = RequestMethod.POST)
+	Result<Object> logout(@RequestParam Integer userId,@RequestParam String message) throws BusinessException {
+		try {
+			loginAndRegisterService.jPush(userId, message);
+			return ResultUtil.success();
+		} catch (Exception e) {
+			LoggingUtil.e("推送异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "推送异常");
 		}
 	}
 }

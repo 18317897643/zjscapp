@@ -19,13 +19,13 @@ import com.zhongjian.webserver.service.HomePageService;
 public class HomePageServiceImpl implements HomePageService{
 
 	@Autowired
-	AdvMapper advMapper;
+	private AdvMapper advMapper;
 	
 	@Autowired
-	ProductMapper productMapper;
+	private ProductMapper productMapper;
 	
 	@Autowired
-	MallData mallData;
+	private MallData mallData;
 	
 	@Override
 	public HashMap<String, Object> initHomePage(Integer productNum) {

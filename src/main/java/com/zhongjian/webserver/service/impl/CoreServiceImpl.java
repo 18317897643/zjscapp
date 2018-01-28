@@ -23,19 +23,19 @@ import com.zhongjian.webserver.service.PersonalCenterService;
 public class CoreServiceImpl implements CoreService {
 
 	@Autowired
-	UserMapper userMapper;
+	private UserMapper userMapper;
 
 	@Autowired
-	CoreMapper coreMapper;
+	private CoreMapper coreMapper;
 
 	@Autowired
-	LogMapper logMapper;
+	private LogMapper logMapper;
 
 	@Autowired
-	PersonalCenterService personalCenterService;
+	private PersonalCenterService personalCenterService;
 
 	@Autowired
-	TokenManager tokenManager;
+	private TokenManager tokenManager;
 
 	@Override
 	public void preRecordShareBenti(Integer type, Integer masterUserId, Integer slaveUserId, String memo,
@@ -48,8 +48,10 @@ public class CoreServiceImpl implements CoreService {
 	public void shareBenit(Integer type, Integer masterUserId, Integer slaveUserId, String memo, BigDecimal ElecNum) {
 		Map<BigDecimal, Integer> resultMap = null;
 		if (type == 1) {
+			//订单消费  购买会员 后台手动加积分
 			resultMap = normalBenifit(masterUserId);
 		} else if (type == 2) {
+			//推荐代理
 			resultMap = new HashMap<>();
 			Map<String, Integer> map = coreMapper.selectHigherLev(masterUserId);
 			if (map != null) {
@@ -59,6 +61,7 @@ public class CoreServiceImpl implements CoreService {
 			}
 
 		} else {
+			//分流
 			// 此时masterUserId是被分流者，slaveUserId是分流者
 			Map<String, Integer> slaveUpMap = coreMapper.selectHigherLev(slaveUserId);
 			if (slaveUpMap == null || slaveUpMap.get("Lev") != 3) {
@@ -97,7 +100,9 @@ public class CoreServiceImpl implements CoreService {
 					// 推送token
 					String userName = userMapper.getUserNameByUserId(userId);
 					String token = tokenManager.getTokenByUserName(userName);
-					jpushUtil.sendAlias("恭喜您得到" + shareMoney + "分润金额", DigestUtils.md5Hex(token), "extKey", "extValue");
+					if (token != null) {
+						jpushUtil.sendAlias("恭喜您得到" + shareMoney + "分润金额", DigestUtils.md5Hex(token), "extKey", "extValue");
+					}
 					// 个人账单明细记录
 					logMapper.insertPointRecord(userId, date, shareMoney, "+", "分润");
 				} else {
@@ -132,7 +137,9 @@ public class CoreServiceImpl implements CoreService {
 					// 推送token
 					String userName = userMapper.getUserNameByUserId(userId);
 					String token = tokenManager.getTokenByUserName(userName);
-					jpushUtil.sendAlias("恭喜您得到" + shareMoney + "分润金额", DigestUtils.md5Hex(token), "extKey", "extValue");
+					if (token != null) {
+						jpushUtil.sendAlias("恭喜您得到" + shareMoney + "分润金额", DigestUtils.md5Hex(token), "extKey", "extValue");
+					}
 					// 个人账单明细记录
 					logMapper.insertPointRecord(userId, date, shareMoneyToPoint, "+", "分润");
 					logMapper.insertElecRecord(userId, date, shareMoneyToElec, "+", "分润");

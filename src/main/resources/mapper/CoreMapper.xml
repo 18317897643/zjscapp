@@ -29,7 +29,7 @@
 		VALUES (#{CreateTime},#{UserId},0,0,0,#{Lev},#{SendType},0)
 	</insert>
 	
-	<update id="setZeroCommendOfUser">
+	<update id="setNumCommendOfUser">
 		update tb_viprecommendrecord set Num = #{Num} where UserId = #{UserId}
 	</update>
 </mapper>

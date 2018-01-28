@@ -39,6 +39,8 @@ public interface OrderMapper {
 
 	void updateOrderHeadStatus(@Param("CurStatus") Integer curStatus, @Param("OrderNo") String orderNo);
 
+	void autoCancelOrder(@Param("DateStrString") String dateStr,@Param("Duration") Integer duration);
+	
 	void insertPreSubQuata(@Param("UserId") Integer userId, @Param("PreUseCoupon") BigDecimal preUseCoupon,
 			@Param("PreUseElec") BigDecimal preUseElec, @Param("PreUsePoints") BigDecimal preUsePoints,
 			@Param("PreUseVipremain") BigDecimal preUseVipremain, @Param("ExpireTime") Date expireTime);
@@ -53,5 +55,18 @@ public interface OrderMapper {
 			@Param("OffSet") Integer offSet, @Param("PageNum") Integer pageNum);
 
 	String getPhotoByProductId(Integer productId);
-
+	
+	Integer updateOrderHeadStatusToWC(String orderNo);
+	
+	//改变状态至申请退款 5
+	Integer updateOrderHeadStatusToAR(String orderNo);
+	
+	//改变状态至申请退货 4
+	Integer updateOrderHeadStatusToASR(String orderNo);
+	
+	Map<String, Object> getOrderDetailsByOrderNo(String oderNo);
+	
+	List<String> getWROrderNo(@Param("DateStrString") String dateStr,@Param("Duration") Integer duration);
+	
+	Integer getOrderIdByOrderNo(String orderNo);
 }

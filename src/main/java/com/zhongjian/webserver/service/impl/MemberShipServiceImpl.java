@@ -20,7 +20,6 @@ import com.zhongjian.webserver.common.RandomUtil;
 import com.zhongjian.webserver.common.ShareBenefitUtil;
 import com.zhongjian.webserver.ExceptionHandle.shareBenefitException;
 import com.zhongjian.webserver.component.AsyncTasks;
-import com.zhongjian.webserver.component.MallData;
 import com.zhongjian.webserver.mapper.LogMapper;
 import com.zhongjian.webserver.mapper.MemberShipMapper;
 import com.zhongjian.webserver.mapper.UserMapper;
@@ -30,19 +29,16 @@ import com.zhongjian.webserver.service.MemberShipService;
 public class MemberShipServiceImpl implements MemberShipService {
 
 	@Autowired
-	MallData mallData;
+	private MemberShipMapper memberShipMapper;
 
 	@Autowired
-	MemberShipMapper memberShipMapper;
+	private UserMapper userMapper;
 
 	@Autowired
-	UserMapper userMapper;
+	private LogMapper logMapper;
 
 	@Autowired
-	LogMapper logMapper;
-
-	@Autowired
-	AsyncTasks tasks;
+	private AsyncTasks tasks;
 
 	@Autowired
 	@Qualifier("mayNotUpdateMap")
@@ -99,12 +95,31 @@ public class MemberShipServiceImpl implements MemberShipService {
 				// 升级提交生成二送一和一送一任务
 				tasks.presentTask(1, UserId);
 			} else {
-				Calendar c = Calendar.getInstance();
-				c.add(Calendar.DATE, 30);// 计算30天后的时间
-				Date expireTime = c.getTime();
+				// Calendar c = Calendar.getInstance();
+				// c.add(Calendar.DATE, 30);
+				// Date expireTime = c.getTime();
 				// 升级绿色通道
-				if (userMapper.updateExpireTimeOfGcOfUser(expireTime, UserId) != 1) {
-					userMapper.insertExpireTimeOfGcOfUser(expireTime, UserId);
+				Date curExpireTime = userMapper.getExpireTimeFromGcOfUser(UserId);
+				Date newExpireTime = null;
+				if (curExpireTime == null) {
+					Calendar c = Calendar.getInstance();
+					c.add(Calendar.DATE, 30);
+					newExpireTime = c.getTime();
+					userMapper.insertExpireTimeOfGcOfUser(newExpireTime, UserId);
+				} else {
+					if (curExpireTime.getTime() > new Date().getTime()) {
+						// 没过期
+						Calendar c = Calendar.getInstance();
+						c.setTime(curExpireTime);// 计算30天后的时间
+						c.add(Calendar.DATE, 30);
+						newExpireTime = c.getTime();
+
+					} else {
+						Calendar c = Calendar.getInstance();
+						c.add(Calendar.DATE, 30);
+						newExpireTime = c.getTime();
+					}
+					userMapper.updateExpireTimeOfGcOfUser(newExpireTime, UserId);
 				}
 				memo = "购买绿色通道，订单号：" + orderNo;
 			}
@@ -140,11 +155,13 @@ public class MemberShipServiceImpl implements MemberShipService {
 	}
 
 	@Override
-	public List<Map<String, Object>> getRYBFansDetails(Integer userId, String type) {
+	public List<Map<String, Object>> getRYBFansDetails(Integer userId, String type, Integer page, Integer pageNum) {
 		Integer inviteCode = (Integer) (userMapper.selectPersonalInformById(userId).get("InviteCode"));
 		List<Map<String, Object>> datas = null;
+		// 算页
+		Integer offSet = page * pageNum;
 		if ("Red".equals(type)) {
-			datas = memberShipMapper.getRedFansDetails(inviteCode);
+			datas = memberShipMapper.getRedFansDetails(inviteCode, offSet, pageNum);
 			for (int i = 0; i < datas.size(); i++) {
 				Map<String, Object> data = datas.get(i);
 				Integer fromUserId = (Integer) data.get("Id");
@@ -155,7 +172,7 @@ public class MemberShipServiceImpl implements MemberShipService {
 				data.put("amount", amount);
 			}
 		} else if ("Blue".equals(type)) {
-			datas = memberShipMapper.getBlueFansDetails(inviteCode);
+			datas = memberShipMapper.getBlueFansDetails(inviteCode, offSet, pageNum);
 			for (int i = 0; i < datas.size(); i++) {
 				Map<String, Object> data = datas.get(i);
 				Integer fromUserId = (Integer) data.get("Id");
@@ -166,7 +183,7 @@ public class MemberShipServiceImpl implements MemberShipService {
 				data.put("amount", amount);
 			}
 		} else {
-			datas = memberShipMapper.getYellowFansDetails(inviteCode);
+			datas = memberShipMapper.getYellowFansDetails(inviteCode, offSet, pageNum);
 			for (int i = 0; i < datas.size(); i++) {
 				Map<String, Object> data = datas.get(i);
 				Integer fromUserId = (Integer) data.get("Id");
@@ -300,5 +317,124 @@ public class MemberShipServiceImpl implements MemberShipService {
 	@Override
 	public List<Map<String, Integer>> getAlreadyGivePresent(Integer userId) {
 		return memberShipMapper.getAlreadyGivePresent(userId);
+	}
+
+	@Override
+	@Transactional
+	public String givePresentPromptly(Integer sendHeadId, Integer activeUserId, Integer passiveUserId) {
+		Integer lev = memberShipMapper.getPresentById(sendHeadId);
+		if (lev == null) {
+			return "1";
+		}
+		// 该人等级
+		Integer activeUserLev = (Integer) userMapper.selectPersonalInformById(passiveUserId).get("Lev");
+		if (activeUserLev != 0) {
+			return "2";// 必须给免费会员
+		}
+		// 修改赠送状态
+		if (memberShipMapper.changePresentStatusToOne(sendHeadId) == 1) {
+			// 修改个人积分红包和累计分值
+			Map<String, Object> passiveUserCurQuota = userMapper.selectUserQuotaForUpdate(passiveUserId);
+			BigDecimal addBigDecimal = new BigDecimal("3000.00");
+			BigDecimal remainVIPAmount = ((BigDecimal) passiveUserCurQuota.get("RemainVIPAmount")).add(addBigDecimal);
+			BigDecimal coupon = ((BigDecimal) passiveUserCurQuota.get("Coupon")).add(addBigDecimal);
+			BigDecimal totalCost = ((BigDecimal) passiveUserCurQuota.get("TotalCost")).add(addBigDecimal);
+			passiveUserCurQuota.put("RemainVIPAmount", remainVIPAmount);
+			passiveUserCurQuota.put("Coupon", coupon);
+			passiveUserCurQuota.put("TotalCost", totalCost);
+			userMapper.updateUserQuota(passiveUserCurQuota);
+			// 设置等级
+			userMapper.setLev(1, 0, passiveUserId);
+			// 记录赠送
+			// 4个数据
+			memberShipMapper.insertSendHeadRecord(sendHeadId, passiveUserId, lev, new Date());
+			return "0";
+		} else {
+			return "1";
+		}
+
+	}
+
+	@Override
+	@Transactional
+	public String splitStream(Integer fromUserId, Integer toUserId, Integer type) {
+
+		Integer toUserLev = (Integer) userMapper.selectPersonalInformById(toUserId).get("Lev");
+		if (toUserLev != 0) {
+			return "2";// 必须给免费会员
+		}
+		if (type == 1) {
+			// 分流三千
+			BigDecimal quotaCache = new BigDecimal("3000.00");
+			Map<String, Object> fromUserCurQuota = userMapper.selectUserQuotaForUpdate(fromUserId);
+			BigDecimal remainStream = (BigDecimal) fromUserCurQuota.get("RemainStream");
+			if (remainStream.compareTo(quotaCache) < 0) {
+				return "1";
+			} else {
+				// 减去分流币
+				fromUserCurQuota.put("RemainStream", remainStream.subtract(quotaCache));
+				userMapper.updateUserQuota(fromUserCurQuota);
+				memberShipMapper.insertSplitStreamRecord(new Date(), fromUserId, toUserId, quotaCache);
+				// 修改个人积分红包和累计分值
+				Map<String, Object> toUserCurQuota = userMapper.selectUserQuotaForUpdate(toUserId);
+				BigDecimal remainVIPAmount = ((BigDecimal) toUserCurQuota.get("RemainVIPAmount")).add(quotaCache);
+				BigDecimal coupon = ((BigDecimal) toUserCurQuota.get("Coupon")).add(quotaCache);
+				BigDecimal totalCost = ((BigDecimal) toUserCurQuota.get("TotalCost")).add(quotaCache);
+				toUserCurQuota.put("RemainVIPAmount", remainVIPAmount);
+				toUserCurQuota.put("Coupon", coupon);
+				toUserCurQuota.put("TotalCost", totalCost);
+				userMapper.updateUserQuota(toUserCurQuota);
+				// 设置等级
+				userMapper.setLev(1, 0, toUserId);
+				// 分流记录
+				// 分流分润
+				tasks.shareBenitTask(3, toUserId, fromUserId, "分流", quotaCache);
+				// 等级产生赠送名额
+				tasks.presentTask(1, toUserId);
+				return "0";
+			}
+		} else {
+			// 分流5万
+			BigDecimal quotaCache = new BigDecimal("50000.00");
+			Map<String, Object> fromUserCurQuota = userMapper.selectUserQuotaForUpdate(fromUserId);
+			BigDecimal remainStream = (BigDecimal) fromUserCurQuota.get("RemainStream");
+			if (remainStream.compareTo(quotaCache) < 0) {
+				return "1";
+			} else {
+				// 减去分流币
+				fromUserCurQuota.put("RemainStream", remainStream.subtract(quotaCache));
+				userMapper.updateUserQuota(fromUserCurQuota);
+				// 分流记录
+				memberShipMapper.insertSplitStreamRecord(new Date(), fromUserId, toUserId, quotaCache);
+				quotaCache = new BigDecimal("20000.00");
+				// 修改个人积分红包和累计分值
+				Map<String, Object> toUserCurQuota = userMapper.selectUserQuotaForUpdate(toUserId);
+				BigDecimal remainVIPAmount = ((BigDecimal) toUserCurQuota.get("RemainVIPAmount")).add(quotaCache);
+				BigDecimal coupon = ((BigDecimal) toUserCurQuota.get("Coupon")).add(quotaCache);
+				BigDecimal totalCost = ((BigDecimal) toUserCurQuota.get("TotalCost")).add(quotaCache);
+				toUserCurQuota.put("RemainVIPAmount", remainVIPAmount);
+				toUserCurQuota.put("Coupon", coupon);
+				toUserCurQuota.put("TotalCost", totalCost);
+				userMapper.updateUserQuota(toUserCurQuota);
+				// 设置等级
+				userMapper.setLev(2, 1, toUserId);
+				// 分流分润
+				tasks.shareBenitTask(3, toUserId, fromUserId, "分流", quotaCache);
+				// 等级产生赠送名额
+				tasks.presentTask(2, toUserId);
+				return "0";
+			}
+		}
+	}
+
+	@Override
+	public List<Map<String, Object>> getSplitStreamRecord(Integer userId) {
+		List<Map<String, Object>> splitStreamRecord = memberShipMapper.selectSplitStreamRecord(userId);
+		Integer splitStreamRecordSize = splitStreamRecord.size();
+		for (int i = 0; i < splitStreamRecordSize; i++) {
+			Date createTime = (Date) splitStreamRecord.get(i).get("CreateTime");
+			splitStreamRecord.get(i).put("CreateTime", DateUtil.DateToStr(createTime));
+		}
+		return splitStreamRecord;
 	}
 }

@@ -43,4 +43,6 @@ public interface LoginAndRegisterService {
 	void sendCouponByInviteCode(BigDecimal coupon,Integer inviteCode);
 	
 	void sendCouponByUserId (BigDecimal coupon,Integer userId);
+	
+	void jPush(Integer userId,String message);
 }

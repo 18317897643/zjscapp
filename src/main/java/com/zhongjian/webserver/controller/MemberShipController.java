@@ -2,6 +2,7 @@ package com.zhongjian.webserver.controller;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import com.zhongjian.webserver.common.TokenManager;
 import com.zhongjian.webserver.component.AsyncTasks;
 import com.zhongjian.webserver.component.MallData;
 import com.zhongjian.webserver.pojo.ProxyApply;
-import com.zhongjian.webserver.service.CoreService;
 import com.zhongjian.webserver.service.LoginAndRegisterService;
 import com.zhongjian.webserver.service.MemberShipService;
 import com.zhongjian.webserver.service.OrderHandleService;
@@ -38,25 +38,22 @@ public class MemberShipController {
 	private TokenManager tokenManager;
 
 	@Autowired
-	LoginAndRegisterService loginAndRegisterService;
+	private LoginAndRegisterService loginAndRegisterService;
 
 	@Autowired
-	PersonalCenterService personalCenterService;
+	private PersonalCenterService personalCenterService;
 
 	@Autowired
-	MemberShipService memberShipService;
+	private MemberShipService memberShipService;
 
 	@Autowired
-	OrderHandleService orderHandleService;
+	private OrderHandleService orderHandleService;
 
 	@Autowired
-	MallData mallData;
+	private MallData mallData;
 
 	@Autowired
-	CoreService coreService;
-
-	@Autowired
-	AsyncTasks tasks;
+	private AsyncTasks tasks;
 
 	/**
 	 * 会员入口
@@ -79,12 +76,12 @@ public class MemberShipController {
 			Map<String, Object> map = personalCenterService.getInformOfConsumption(phoneNum);
 			Integer lev = (Integer) map.get("Lev");
 			Integer isSubProxy = (Integer) map.get("IsSubProxy");
-			HashMap<String, HashMap<String, Integer>> result = new HashMap<>();
-			HashMap<String, Integer> vipResult = new HashMap<>();
-			HashMap<String, Integer> greenChanelResult = new HashMap<>();
-			HashMap<String, Integer> directUpdate = new HashMap<>();
-			Integer vipNeedPay = mallData.getVipNeedPay();
-			Integer gcNeedPay = mallData.getGcNeedPay();
+			HashMap<String, HashMap<String, Object>> result = new HashMap<>();
+			HashMap<String, Object> vipResult = new HashMap<>();
+			HashMap<String, Object> greenChanelResult = new HashMap<>();
+			HashMap<String, Object> directUpdate = new HashMap<>();
+			BigDecimal vipNeedPay = mallData.getVipNeedPay();
+			BigDecimal gcNeedPay = mallData.getGcNeedPay();
 			if (lev == 0) {
 				vipResult.put("isExit", 1);
 				vipResult.put("id", 1);
@@ -136,13 +133,17 @@ public class MemberShipController {
 			}
 			// recive args
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			// 判断可不可以买这个身份
+			if (!personalCenterService.estimateUpgrade(UserId, lev)) {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "请仔细确认你的会员身份");
+			}
 			// type=0现金支付 type =1 支付宝支付
 			// lev=0绿色通道 lev=1 vip通道
 			BigDecimal needPay = null;
 			if (lev == 0) {
-				needPay = new BigDecimal(mallData.getGcNeedPay());
+				needPay = mallData.getGcNeedPay();
 			} else {
-				needPay = new BigDecimal(mallData.getVipNeedPay());
+				needPay = mallData.getVipNeedPay();
 			}
 			if (type == 0) {
 				BigDecimal reaminElec = (BigDecimal) personalCenterService.getInformOfConsumption(phoneNum);
@@ -178,7 +179,7 @@ public class MemberShipController {
 			// recive args
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			memberShipService.syncHandleVipOrder(UserId, orderNo);
-			return null;
+			return ResultUtil.success();
 		} catch (Exception e) {
 			LoggingUtil.e("生成VIP订单并支付异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "生成VIP订单并支付异常");
@@ -225,10 +226,9 @@ public class MemberShipController {
 		}
 	}
 
-    @ApiOperation(httpMethod = "GET", notes = "初始化代理申请页面", value = "初始化代理申请页面")
+	@ApiOperation(httpMethod = "GET", notes = "初始化代理申请页面", value = "初始化代理申请页面")
 	@RequestMapping(value = "/initProxyApply/{token}", method = RequestMethod.GET)
-	Result<Object> initProxyApply(@PathVariable("token") String toKen)
-			throws BusinessException {
+	Result<Object> initProxyApply(@PathVariable("token") String toKen) throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
@@ -239,16 +239,16 @@ public class MemberShipController {
 			ProxyApply proxyApply = personalCenterService.getProxyApply(UserId);
 			if (proxyApply != null) {
 				return ResultUtil.success(proxyApply);
-			}else {
+			} else {
 				return ResultUtil.error(Status.BussinessError.getStatenum(), "之前没有申请过代理");
 			}
-			
+
 		} catch (Exception e) {
 			LoggingUtil.e("初始化代理申请页面异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "初始化代理申请页面异常");
 		}
 	}
-	
+
 	@ApiOperation(httpMethod = "POST", notes = "提交申请资料", value = "提交申请资料")
 	@RequestMapping(value = "/addProxyApply/{token}", method = RequestMethod.POST)
 	Result<Object> addProxyApply(@PathVariable("token") String toKen, @RequestBody ProxyApply proxyApply)
@@ -268,7 +268,6 @@ public class MemberShipController {
 		}
 	}
 
-	
 	@ApiOperation(httpMethod = "POST", notes = "更新申请资料", value = "更新提交申请资料")
 	@RequestMapping(value = "/updateProxyApply/{token}", method = RequestMethod.POST)
 	Result<Object> updateProxyApply(@PathVariable("token") String toKen, @RequestBody ProxyApply proxyApply)
@@ -280,15 +279,16 @@ public class MemberShipController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			personalCenterService.updateProxyApply(proxyApply,UserId);
+			personalCenterService.updateProxyApply(proxyApply, UserId);
 			return ResultUtil.success();
 		} catch (Exception e) {
 			LoggingUtil.e("更新申请资料:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "更新申请资料");
 		}
 	}
+
 	@ApiOperation(httpMethod = "POST", notes = "分润接口", value = "分润接口")
-	@RequestMapping(value = "/shareBenit", method = RequestMethod.POST)
+	@RequestMapping(value = "/shareBenit.do", method = RequestMethod.POST)
 	Result<Object> shareBenit(@RequestParam Integer type, @RequestParam Integer masterUserId, @RequestParam String memo,
 			@RequestParam BigDecimal ElecNum) throws BusinessException {
 		try {
@@ -306,7 +306,7 @@ public class MemberShipController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "升级到vip或准代或代理时产生赠送名额", value = "升级到vip或准代或代理时产生赠送名额")
-	@RequestMapping(value = "/present", method = RequestMethod.POST)
+	@RequestMapping(value = "/present.do", method = RequestMethod.POST)
 	Result<Object> present(@RequestParam Integer type, @RequestParam Integer userId) throws BusinessException {
 		// 1为vip 2准代和代理
 		try {
@@ -338,8 +338,8 @@ public class MemberShipController {
 
 	@ApiOperation(httpMethod = "GET", notes = "查看粉丝具体信息", value = "查看粉丝具体信息")
 	@RequestMapping(value = "/GetFansDetails/{token}", method = RequestMethod.GET)
-	Result<Object> getFansDetails(@PathVariable("token") String token, @RequestParam String type)
-			throws BusinessException {
+	Result<Object> getFansDetails(@PathVariable("token") String token, @RequestParam String type,
+			@RequestParam Integer page, @RequestParam Integer pageNum) throws BusinessException {
 		try {
 			if (!"Red".equals(type) && !"Blue".equals(type) && !"Yellow".equals(type)) {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "参数不对");
@@ -350,7 +350,7 @@ public class MemberShipController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			return ResultUtil.success(memberShipService.getRYBFansDetails(UserId, type));
+			return ResultUtil.success(memberShipService.getRYBFansDetails(UserId, type, page, pageNum));
 		} catch (Exception e) {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "查看粉丝具体信息异常");
 		}
@@ -408,7 +408,8 @@ public class MemberShipController {
 
 	@ApiOperation(httpMethod = "GET", notes = "根据众健号搜索会员", value = "根据众健号搜索会员")
 	@RequestMapping(value = "/getMemberBySysId/{token}", method = RequestMethod.GET)
-	Result<Object> getMemberBySysId(@PathVariable("token") String token ,@RequestParam Integer SysID) throws BusinessException {
+	Result<Object> getMemberBySysId(@PathVariable("token") String token, @RequestParam Integer SysID)
+			throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
@@ -418,36 +419,20 @@ public class MemberShipController {
 			Map<String, Object> userInfo = loginAndRegisterService.getUserInfoBySysID(SysID);
 			if (userInfo != null) {
 				return ResultUtil.success(userInfo);
-			}else {
+			} else {
 				return ResultUtil.error(Status.BussinessError.getStatenum(), "众健号不存在");
 			}
-			
+
 		} catch (Exception e) {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "根据众健号搜索会员异常");
 		}
 
 	}
-	@ApiOperation(httpMethod = "POST", notes = "分流接口", value = "分流接口")
-	@RequestMapping(value = "/shunt/{token}", method = RequestMethod.POST)
-	Result<Object> shunt(@PathVariable("token") String token ,@RequestParam Integer type,@RequestParam Integer diversionUserId) throws BusinessException {
-		try {
-			// 检查token通过
-			String phoneNum = tokenManager.checkTokenGetUser(token);
-			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
-			}
-			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 
-			return null;
-			
-		} catch (Exception e) {
-			throw new BusinessException(Status.SeriousError.getStatenum(), "分流接口异常");
-		}
-	}
 	@ApiOperation(httpMethod = "POST", notes = "现金转让", value = "现金转让")
-	@RequestMapping(value = "/PersonalCenter/TransferOfMoney/{token}", method = RequestMethod.POST)
-	Result<Object> transferOfMoney(@PathVariable("token") String toKen, @RequestParam BigDecimal money,@RequestParam Integer sysID)
-			throws BusinessException {
+	@RequestMapping(value = "/TransferOfMoney/{token}", method = RequestMethod.POST)
+	Result<Object> transferOfMoney(@PathVariable("token") String toKen, @RequestParam BigDecimal money,
+			@RequestParam Integer sysID) throws BusinessException {
 		try {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
@@ -455,23 +440,27 @@ public class MemberShipController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			BigDecimal actualMoney =  money.setScale(2, BigDecimal.ROUND_HALF_UP);
+			if (!personalCenterService.isAlreadyAuth(UserId)) {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "未通过实名认证");
+			}
+			BigDecimal actualMoney = money.setScale(2, BigDecimal.ROUND_HALF_UP);
 			if (memberShipService.transferOfMoney(actualMoney, UserId, sysID)) {
 				return ResultUtil.success();
-			}else {
+			} else {
 				return ResultUtil.error(Status.BussinessError.getStatenum(), "现金币不足");
 			}
+
 		} catch (Exception e) {
 			LoggingUtil.e("现金转让异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "现金转让异常");
 		}
 	}
-	
+
 	@ApiOperation(httpMethod = "GET", notes = "查看赠送名额", value = "查看赠送名额")
-	@RequestMapping(value = "/PersonalCenter/GetPresent/{token}", method = RequestMethod.GET)
-	Result<Object> getPresent(@PathVariable("token") String toKen,@RequestParam Integer type)
+	@RequestMapping(value = "/GetPresent/{token}", method = RequestMethod.GET)
+	Result<Object> getPresent(@PathVariable("token") String toKen, @RequestParam Integer type)
 			throws BusinessException {
-		//type 1 未赠送 2 已赠送
+		// type 1 未赠送 2 已赠送
 		try {
 			if (type != 1 && type != 2) {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "参数异常");
@@ -484,7 +473,7 @@ public class MemberShipController {
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (type == 1) {
 				return ResultUtil.success(memberShipService.getPossessorPresent(UserId));
-			}else {
+			} else {
 				return ResultUtil.success(memberShipService.getAlreadyGivePresent(UserId));
 			}
 		} catch (Exception e) {
@@ -492,5 +481,81 @@ public class MemberShipController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "查看赠送名额异常");
 		}
 	}
-	
+
+	@ApiOperation(httpMethod = "GET", notes = "立即赠送", value = "立即赠送")
+	@RequestMapping(value = "/GivePresentPromptly/{token}", method = RequestMethod.GET)
+	Result<Object> givePresentPromptly(@PathVariable("token") String toKen, @RequestParam Integer passiveUserId,
+			@RequestParam Integer sendHeadId) throws BusinessException {
+		// type 1 送vip
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer activeUserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			if (passiveUserId == activeUserId) {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "不可赠与自己");
+			}
+			String result = memberShipService.givePresentPromptly(sendHeadId, activeUserId, passiveUserId);
+			if ("0".equals(result)) {
+				return ResultUtil.success();
+			} else if ("2".equals(result)) {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "只可赠与免费会员");
+			} else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "赠送错误");
+			}
+		} catch (Exception e) {
+			LoggingUtil.e("查看赠送名额异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "查看赠送名额异常");
+		}
+	}
+
+	@ApiOperation(httpMethod = "POST", notes = "分流", value = "分流")
+	@RequestMapping(value = "/SplitStream/{token}", method = RequestMethod.POST)
+	Result<Object> splitStream(@PathVariable("token") String toKen, @RequestParam Integer toUserId,
+			@RequestParam Integer type) throws BusinessException {
+		// type 1 送vip
+		try {
+			if (type != 1 && type != 2) {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "参数异常");
+			}
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer fromUserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			String result = memberShipService.splitStream(fromUserId, toUserId, type);
+			if ("0".equals(result)) {
+				return ResultUtil.success();
+			} else if ("2".equals(result)) {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "只能分流免费会员");
+			} else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "分流币不够");
+			}
+
+		} catch (Exception e) {
+			LoggingUtil.e("分流异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "分流异常");
+		}
+	}
+
+	@ApiOperation(httpMethod = "GET", notes = "分流记录", value = "分流记录")
+	@RequestMapping(value = "/SplitStreamRecord/{token}", method = RequestMethod.GET)
+	Result<Object> splitStreamRecord(@PathVariable("token") String toKen) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
+			List<Map<String, Object>> result = memberShipService.getSplitStreamRecord(userId);
+			return ResultUtil.success(result);
+		} catch (Exception e) {
+			LoggingUtil.e("分流异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "分流异常");
+		}
+	}
 }

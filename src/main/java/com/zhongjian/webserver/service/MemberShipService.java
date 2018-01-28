@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.zhongjian.webserver.ExceptionHandle.shareBenefitException;
 
+
 public interface MemberShipService {
 
 	// 生成viporder
@@ -23,7 +24,7 @@ public interface MemberShipService {
 	Map<String, Integer> getRYBFans(Integer userId);
 
 	// 获取红黄蓝粉
-	List<Map<String, Object>> getRYBFansDetails(Integer userId, String type);
+	List<Map<String, Object>> getRYBFansDetails(Integer userId, String type,Integer page,Integer pageNum);
 
 	// 判断升级
 	boolean memberUpdate(Integer userId, Integer type) throws shareBenefitException;
@@ -39,5 +40,16 @@ public interface MemberShipService {
 	
 	// 查询已赠送名额
 	List<Map<String, Integer>> getAlreadyGivePresent(Integer userId);
+	
+	//赠送vip或者...
+	String givePresentPromptly(Integer sendHeadId, Integer activeUserId, Integer passiveUserId);
+	
+	//分流
+	String splitStream(Integer fromUserId,Integer toUserId,Integer type);
+	
+	//分流记录
+	List<Map<String, Object>> getSplitStreamRecord(Integer userId);
+	
+	
 
 }
