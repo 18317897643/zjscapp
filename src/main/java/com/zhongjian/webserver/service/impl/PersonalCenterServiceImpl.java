@@ -188,6 +188,12 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 		return true;
 	}
 
+	
+	@Override
+	public Date getGCMemberExpireTime(Integer UserId) {
+		Date expireTime = userMapper.getExpireTimeFromGcOfUser(UserId);
+		return expireTime;
+	}
 	@Override
 	public List<BillReacord> accountBill(Integer userId, String type, Integer page, Integer pageNum) {
 		page = page * pageNum;

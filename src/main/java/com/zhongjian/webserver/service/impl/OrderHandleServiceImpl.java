@@ -539,4 +539,9 @@ public class OrderHandleServiceImpl implements OrderHandleService {
 		}
 		return orderHeadDtos;
 	}
+
+	@Override
+	public Map<String, BigDecimal> getMoneyUserOfOrderhead(String orderNo) {
+		return orderMapper.getMoneyUseOfOrderhead(orderNo);
+	}
 }

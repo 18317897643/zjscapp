@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zhongjian.webserver.ExceptionHandle.BusinessException;
+import com.zhongjian.webserver.common.DateUtil;
 import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.Result;
 import com.zhongjian.webserver.common.ResultUtil;
@@ -73,11 +74,6 @@ public class PersonalCenterController {
 			List<Integer> list = personalCenterService.getUserOrderStatus(id);
 			Integer lev = (Integer) map.get("Lev");
 			Integer IsSubProxy = (Integer) map.get("IsSubProxy");
-			if (lev == 3) {
-				resultMap.put("canDistribute", 1);
-			} else {
-				resultMap.put("canDistribute", 0);
-			}
 			HashMap<String, Object> proxyApply = new HashMap<>();
 			if (lev == 2 && IsSubProxy == 1 || lev == 3) {
 				proxyApply.put("canProxyApply", 1);
@@ -112,9 +108,12 @@ public class PersonalCenterController {
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
 			Map<String, Object> map = personalCenterService.getInformOfConsumption(phoneNum);
-			boolean isGCmemeber = personalCenterService.isGCMember(UserId);
+			boolean isGCmember = personalCenterService.isGCMember(UserId);
 			resultMap.put("personDataMap", map);
-			resultMap.put("isGCmemeber", isGCmemeber);
+			resultMap.put("isGCmember", isGCmember);
+			if (isGCmember) {
+				resultMap.put("GCmemberExpireTime", DateUtil.DateToStr(personalCenterService.getGCMemberExpireTime(UserId)));
+			}
 			return ResultUtil.success(resultMap);
 		} catch (Exception e) {
 			LoggingUtil.e("我的钱包异常:" + e);
@@ -486,8 +485,28 @@ public class PersonalCenterController {
 			// 通过订单查询
 			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
 				// 继续处理订单
-				return ResultUtil.success();
-
+				Map<String, BigDecimal> moneyUseMap = orderHandleService.getMoneyUserOfOrderhead(orderNo);
+				BigDecimal platformMoney = moneyUseMap.get("PlatformMoney");
+				BigDecimal realPay = moneyUseMap.get("RealPay");
+				HashMap<String, Object> exceptResult = new HashMap<>();
+				if (realPay.compareTo(BigDecimal.ZERO) == 0) {
+					// 不需要通过支付宝付款
+					exceptResult.put("type", "1");
+					exceptResult.put("orderNo", orderNo); 
+				}else {
+					if (platformMoney.compareTo(BigDecimal.ZERO) == 0) {
+						// 不需要平台币值
+						exceptResult.put("type", "2");
+						exceptResult.put("singData",
+								orderHandleService.createAliSignature(orderNo,realPay.toString()));
+					} else {
+						// 混合支付
+						exceptResult.put("type", "3");
+						exceptResult.put("singData",
+								orderHandleService.createAliSignature(orderNo, realPay.toString()));
+					}
+				}
+				return ResultUtil.success(exceptResult);
 			} else {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "您确定是该用户生成的订单吗");
 			}

@@ -50,6 +50,8 @@ public interface OrderMapper {
 	Integer getUserIdByOrder(String orderNo);
 
 	Orderhead getOrderDetailsById(Integer id);
+	
+	Map<String, BigDecimal> getMoneyUseOfOrderhead(String orderNo);
 
 	List<Orderhead> getOrderDetailsByCurStatus(@Param("UserId") Integer userId, @Param("Condition") String condition,
 			@Param("OffSet") Integer offSet, @Param("PageNum") Integer pageNum);

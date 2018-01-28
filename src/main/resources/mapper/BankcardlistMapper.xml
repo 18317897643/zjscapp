@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhongjian.webserver.mapper.BankcardlistMapper" >
+  <resultMap id="BaseResultMap" type="com.zhongjian.webserver.pojo.Bankcardlist" >
+    <id column="Id" property="id" jdbcType="INTEGER" />
+    <result column="Account" property="account" jdbcType="VARCHAR" />
+    <result column="BankName" property="bankname" jdbcType="VARCHAR" />
+    <result column="Name" property="name" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Id, Account, BankName, Name
+  </sql>
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_bankcardlist
+    where UserId = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteBankAccount">
+    delete from tb_bankcardlist
+    where Id = #{id,jdbcType=INTEGER} and UserId =  #{userId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zhongjian.webserver.pojo.Bankcardlist" >
+    insert into tb_bankcardlist (UserId, CreateTime, 
+      Account, BankName, Name, 
+      CurStatus)
+    values ( #{userid,jdbcType=INTEGER}, #{createtime,jdbcType=TIMESTAMP}, 
+      #{account,jdbcType=VARCHAR}, #{bankname,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{curstatus,jdbcType=INTEGER})
+  </insert>
+</mapper>

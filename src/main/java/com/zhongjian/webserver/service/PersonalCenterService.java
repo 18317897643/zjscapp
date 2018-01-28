@@ -55,6 +55,8 @@ public interface PersonalCenterService {
 	
 	boolean isGCMember(Integer UserId);
 	
+	Date getGCMemberExpireTime(Integer UserId);
+	
 	List<BillReacord> accountBill(Integer userId,String type,Integer page,Integer pageNum);
 	
 	//现金体现

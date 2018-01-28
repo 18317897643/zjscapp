@@ -59,6 +59,14 @@
 		UseElecNum+UseCoupon+UsePointNum+UseVIPRemainNum from tb_orderhead
 		WHERE OrderNo = #{OrderNo}
 	</select>
+	<select id="getMoneyUseOfOrderhead" parameterType="java.lang.String"
+		resultType="java.util.Map">
+		SELECT
+		UseElecNum+UsePointNum+UseCoupon+UseVIPRemainNum
+		PlatformMoney,RealPay from tb_orderhead where OrderNo =
+		#{OrderNo,jdbcType=VARCHAR}
+	</select>
+
 	<select id="getNeedSubDetailsOfOrderHead" resultType="java.util.Map">
 		SELECT
 		UserId,UseElecNum,UseCoupon,UsePointNum,UseVIPRemainNum from
@@ -189,6 +197,7 @@
 		#{Duration} for update
 	</select>
 	<select id="getOrderIdByOrderNo" resultType="java.lang.Integer">
-		select Id from tb_orderhead where OrderNo = #{OrderNo}
+		select Id from
+		tb_orderhead where OrderNo = #{OrderNo}
 	</select>
 </mapper>

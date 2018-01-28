@@ -1,7 +1,9 @@
 package com.zhongjian.webserver.service;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alipay.api.AlipayApiException;
 import com.zhongjian.webserver.dto.OrderHeadDto;
@@ -19,10 +21,11 @@ public interface OrderHandleService {
 	
 	Integer getUserIdByOrderC(String orderNoC);
 	
-	Integer getUserIdByOrder(String orderNo);
+	Map<String, BigDecimal> getMoneyUserOfOrderhead(String orderNo);
 	
 	List<OrderHeadDto> handleOrderHeadDtoByAdressId(OrderHeadEXDto orderHeadEXDto);
 	
+	Integer getUserIdByOrder(String orderNo);
 	
 	//取消订单
 	void cancelOrder(String orderNo);
