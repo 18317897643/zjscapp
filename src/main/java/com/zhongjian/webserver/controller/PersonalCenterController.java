@@ -121,6 +121,25 @@ public class PersonalCenterController {
 		}
 	}
 
+	
+	@ApiOperation(httpMethod = "GET", notes = "查询账户个人信息", value = "查询账户个人信息")
+	@RequestMapping(value = "/PersonalCenter/GetPersonalInfo/{token}", method = RequestMethod.GET)
+	Result<Object> getPersonalInfo(@PathVariable("token") String toKen) throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+			}
+			HashMap<String, Object> resultMap = new HashMap<String, Object>();
+			Map<String, Object> map = personalCenterService.getInformOfConsumption(phoneNum);
+			resultMap.put("personDataMap", map);
+			return ResultUtil.success(resultMap);
+		} catch (Exception e) {
+			LoggingUtil.e("查询账户个人信息异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "查询账户个人信息异常");
+		}
+	}
 	@ApiOperation(httpMethod = "POST", notes = "根据token获取该用户手机号", value = "根据token获取该用户手机号")
 	@RequestMapping(value = "/PersonalCenter/getUserPhoneNum/{token}", method = RequestMethod.POST)
 	Result<Object> getUserPhoneNum(@PathVariable("token") String token) throws BusinessException {
