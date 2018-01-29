@@ -18,8 +18,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value = "/HomePage/", description = "首页相关")
-@RequestMapping(value = "/HomePage")
+@Api(value = "/v1/HomePage/", description = "首页相关")
+@RequestMapping(value = "/v1/HomePage")
 public class HomePageController {
 
 

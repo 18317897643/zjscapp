@@ -25,7 +25,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value = "/AddressManager/", description = "收货地址管理")
+@Api(value = "/v1/AddressManager/", description = "收货地址管理")
+@RequestMapping(value = "/v1/AddressManager/")
 public class AddressManagerController {
 
 	@Autowired
@@ -41,7 +42,7 @@ public class AddressManagerController {
 	private UtilMapper utilMapper;
 
 	@ApiOperation(httpMethod = "GET", notes = "获取该用户所有收货地址", value = "获取该用户所有收货地址")
-	@RequestMapping(value = "/AddressManager/getAllAddressOfUser/{token}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getAllAddressOfUser/{token}", method = RequestMethod.GET)
 	Result<Object> getAllAddressOfUser(@PathVariable String token) throws BusinessException {
 		try {
 			// 检查token通过
@@ -58,7 +59,7 @@ public class AddressManagerController {
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "根据ID获取收货地址详情", value = "根据ID获取收货地址详情")
-	@RequestMapping(value = "/AddressManager/getAddressOfUserById/{token}/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getAddressOfUserById/{token}/{id}", method = RequestMethod.GET)
 	Result<Object> getAddressOfUserById(@PathVariable("token") String token, @PathVariable("id") Integer id) throws BusinessException {
 		try {
 			// 检查token通过
@@ -74,7 +75,7 @@ public class AddressManagerController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "获取用户默认收货地址", value = "获取用户默认收货地址")
-	@RequestMapping(value = "/AddressManager/getDefaultAddressOfUser", method = RequestMethod.POST)
+	@RequestMapping(value = "/getDefaultAddressOfUser", method = RequestMethod.POST)
 	Result<Object> getDefaultAddressOfUser(@RequestParam String token) throws BusinessException {
 		try {
 			// 检查token通过
@@ -91,7 +92,7 @@ public class AddressManagerController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "添加收货地址", value = "添加收货地址")
-	@RequestMapping(value = "/AddressManager/addAddressByUser", method = RequestMethod.POST)
+	@RequestMapping(value = "/addAddressByUser", method = RequestMethod.POST)
 	Result<Object> addAddressByUser(@RequestBody Map<String, Object> addressMap) throws BusinessException {
 		try {
 			String token = (String) addressMap.get("token");
@@ -113,7 +114,7 @@ public class AddressManagerController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "删除收货地址", value = "删除收货地址")
-	@RequestMapping(value = "/AddressManager/deleteAddressById", method = RequestMethod.POST)
+	@RequestMapping(value = "/deleteAddressById", method = RequestMethod.POST)
 	Result<Object> deleteAddressById(@RequestBody Map<String, Object> map) throws BusinessException {
 		try {
 			String token = (String) map.get("token");
@@ -137,7 +138,7 @@ public class AddressManagerController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "更新收货地址", value = "更新收货地址")
-	@RequestMapping(value = "/AddressManager/updateAddressById", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateAddressById", method = RequestMethod.POST)
 	Result<Object> updateAddressById(@RequestBody Map<String, Object> addressMap) throws BusinessException {
 		try {
 			String token = (String) addressMap.get("token");
@@ -158,7 +159,7 @@ public class AddressManagerController {
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "获取plist文件", value = "获取plist文件")
-	@RequestMapping(value = "/AddressManager/getPlist", method = RequestMethod.GET)
+	@RequestMapping(value = "/getPlist", method = RequestMethod.GET)
 	Result<Object> getPlist() {
 		return ResultUtil.success(utilMapper.getPlist());
 

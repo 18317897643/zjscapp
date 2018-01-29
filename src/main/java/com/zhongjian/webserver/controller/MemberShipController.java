@@ -31,8 +31,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value = "/MemberShip/", description = "会员以及分润相关")
-@RequestMapping(value = "/MemberShip")
+@Api(value = "/v1/MemberShip/", description = "会员以及分润相关")
+@RequestMapping(value = "/v1/MemberShip")
 public class MemberShipController {
 	@Autowired
 	private TokenManager tokenManager;

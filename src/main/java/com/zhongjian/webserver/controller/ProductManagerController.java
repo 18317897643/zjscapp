@@ -26,7 +26,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value = "/ProductManager/", description = "商品相关")
+@Api(value = "/v1/ProductManager/", description = "商品相关")
+@RequestMapping(value = "/v1/ProductManager")
 public class ProductManagerController {
 	@Autowired
 	private TokenManager tokenManager;
@@ -38,7 +39,7 @@ public class ProductManagerController {
 	private ProductManagerService productManagerService;
 
 	@ApiOperation(httpMethod = "GET", notes = "获取所有商品分类", value = "获取所有商品分类")
-	@RequestMapping(value = "/ProductManager/getProductOfCategory", method = RequestMethod.GET)
+	@RequestMapping(value = "/getProductOfCategory", method = RequestMethod.GET)
 	Result<Object> getProductOfCategory() throws BusinessException {
 		try {
 			return ResultUtil.success(productManagerService.getProductOfCategory());
@@ -49,7 +50,7 @@ public class ProductManagerController {
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "获取二级分类商品", value = "获取二级分类商品")
-	@RequestMapping(value = "/ProductManager/getProductOfCategory/{SubCategoryId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getProductOfCategory/{SubCategoryId}", method = RequestMethod.GET)
 	Result<Object> getProductsOfSubCategory(@PathVariable("SubCategoryId") Integer subCategoryId,
 			@RequestParam Integer type, @RequestParam Integer page, @RequestParam Integer pageNum)
 			throws BusinessException {
@@ -77,7 +78,7 @@ public class ProductManagerController {
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "获取商品详情", value = "获取商品详情")
-	@RequestMapping(value = "/ProductManager/getProductDetails", method = RequestMethod.GET)
+	@RequestMapping(value = "/getProductDetails", method = RequestMethod.GET)
 	Result<Object> getProductDetails(@RequestParam Integer productId) throws BusinessException {
 		try {
 			// 获取商品详情
@@ -90,7 +91,7 @@ public class ProductManagerController {
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "获取商品评价详情", value = "获取商品评价详情")
-	@RequestMapping(value = "/ProductManager/getProductCommentById", method = RequestMethod.GET)
+	@RequestMapping(value = "/getProductCommentById", method = RequestMethod.GET)
 	Result<Object> getProductCommentById(@RequestParam Integer productId, @RequestParam Integer page,
 			@RequestParam Integer pageNum) throws BusinessException {
 		try {
@@ -104,7 +105,7 @@ public class ProductManagerController {
 
 	// web页面get请求获取productHtmlText
 	@ApiOperation(httpMethod = "GET", notes = "获取商品图文详情", value = "获取商品图文详情")
-	@RequestMapping(value = "/ProductManager/getProductImgAndText", method = RequestMethod.GET)
+	@RequestMapping(value = "/getProductImgAndText", method = RequestMethod.GET)
 	Result<Object> getProductImgAndText(@RequestParam Integer productId) throws BusinessException {
 		try {
 
@@ -117,7 +118,7 @@ public class ProductManagerController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "检查商品库存", value = "检查商品库存")
-	@RequestMapping(value = "/ProductManager/checkProductStoreNum", method = RequestMethod.POST)
+	@RequestMapping(value = "/checkProductStoreNum", method = RequestMethod.POST)
 	Result<Object> checkProductStoreNum(@RequestBody List<PANRequestMap> pANRequestMaps) throws BusinessException {
 		try {
 			return ResultUtil.success(productManagerService.checkProductStoreNum(pANRequestMaps));
@@ -128,7 +129,7 @@ public class ProductManagerController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "商品搜索", value = "商品搜索")
-	@RequestMapping(value = "/ProductManager/searchProduct", method = RequestMethod.POST)
+	@RequestMapping(value = "/searchProduct", method = RequestMethod.POST)
 	Result<Object> searchProduct(@RequestParam String key) throws BusinessException {
 		try {
 			List<Map<String, Object>> result = productManagerService.searchProduct(key);
@@ -144,7 +145,7 @@ public class ProductManagerController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "商品评价", value = "商品评价")
-	@RequestMapping(value = "/ProductManager/ProductCommet/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/ProductCommet/{token}", method = RequestMethod.POST)
 	Result<Object> productCommet(@PathVariable("token") String token, @RequestBody List<Map<String, Object>> productCommentMaps)
 			throws BusinessException {
 		try {

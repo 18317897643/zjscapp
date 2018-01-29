@@ -38,7 +38,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value = "/PersonalCenter/", description = "个人中心")
+@Api(value = "/v1/PersonalCenter/", description = "个人中心")
+@RequestMapping(value = "/v1/PersonalCenter")
 public class PersonalCenterController {
 
 	@Autowired
@@ -60,7 +61,7 @@ public class PersonalCenterController {
 	private OrderApplyService orderApplyService;
 
 	@ApiOperation(httpMethod = "GET", notes = "根据token获取个人中心数据", value = "初始化个人中心数据")
-	@RequestMapping(value = "/PersonalCenter/initPersonalCenterData/{token}", method = RequestMethod.GET)
+	@RequestMapping(value = "/initPersonalCenterData/{token}", method = RequestMethod.GET)
 	Result<Object> initPersonalCenterData(@PathVariable("token") String toKen) throws BusinessException {
 		try {
 			// 检查token通过
@@ -97,7 +98,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "我的钱包", value = "我的钱包数据")
-	@RequestMapping(value = "/PersonalCenter/initPersonalWallet/{token}", method = RequestMethod.GET)
+	@RequestMapping(value = "/initPersonalWallet/{token}", method = RequestMethod.GET)
 	Result<Object> initPersonalWallet(@PathVariable("token") String toKen) throws BusinessException {
 		try {
 			// 检查token通过
@@ -123,7 +124,7 @@ public class PersonalCenterController {
 
 	
 	@ApiOperation(httpMethod = "GET", notes = "查询账户个人信息", value = "查询账户个人信息")
-	@RequestMapping(value = "/PersonalCenter/GetPersonalInfo/{token}", method = RequestMethod.GET)
+	@RequestMapping(value = "/GetPersonalInfo/{token}", method = RequestMethod.GET)
 	Result<Object> getPersonalInfo(@PathVariable("token") String toKen) throws BusinessException {
 		try {
 			// 检查token通过
@@ -141,7 +142,7 @@ public class PersonalCenterController {
 		}
 	}
 	@ApiOperation(httpMethod = "POST", notes = "根据token获取该用户手机号", value = "根据token获取该用户手机号")
-	@RequestMapping(value = "/PersonalCenter/getUserPhoneNum/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/getUserPhoneNum/{token}", method = RequestMethod.POST)
 	Result<Object> getUserPhoneNum(@PathVariable("token") String token) throws BusinessException {
 		try {
 			// 检查token通过
@@ -157,7 +158,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "获取订单", value = "获取订单")
-	@RequestMapping(value = "/PersonalCenter/getOrder/{token}/{type}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getOrder/{token}/{type}", method = RequestMethod.GET)
 	Result<Object> itemsToBePaidFor(@PathVariable("token") String token, @PathVariable("type") String type,
 			@RequestParam Integer page, @RequestParam Integer pageNum) throws BusinessException {
 		try {
@@ -197,7 +198,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "获取订单详情", value = "获取订单详情")
-	@RequestMapping(value = "/PersonalCenter/getOrderDetails/{token}/{orderId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getOrderDetails/{token}/{orderId}", method = RequestMethod.GET)
 	Result<Object> getOrderDetails(@PathVariable("token") String token, @PathVariable("orderId") Integer orderId)
 			throws BusinessException {
 		try {
@@ -234,7 +235,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "购物车新增", value = "新增购物车商品规格")
-	@RequestMapping(value = "/PersonalCenter/updateShoppingCartInfo/{productId}/{SpecId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateShoppingCartInfo/{productId}/{SpecId}", method = RequestMethod.POST)
 	Result<Object> addForShoppingCart(@PathVariable("productId") Integer productId,
 			@PathVariable("SpecId") Integer specId, @RequestParam String token, @RequestParam Integer productNum)
 			throws BusinessException {
@@ -267,7 +268,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "购物车更新", value = "购物车具体物品数量更新")
-	@RequestMapping(value = "/PersonalCenter/updateShoppingCartInfo/{shoppingCartId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateShoppingCartInfo/{shoppingCartId}", method = RequestMethod.POST)
 	Result<Object> updateForShoppingCart(@PathVariable("shoppingCartId") Integer shoppingCartId,
 			@RequestParam String token, @RequestParam Integer productNum) throws BusinessException {
 		try {
@@ -297,7 +298,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "根据token和shoppingCartId来删除", value = "删除购物车数据")
-	@RequestMapping(value = "/PersonalCenter/delShoppingCartInfo", method = RequestMethod.POST)
+	@RequestMapping(value = "/delShoppingCartInfo", method = RequestMethod.POST)
 	Result<Object> delShoppingCartById(@RequestParam String token, Integer shoppingCartId) throws BusinessException {
 		try {
 			// 检查token通过
@@ -321,7 +322,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "更新头像", value = "更新头像")
-	@RequestMapping(value = "/PersonalCenter/updateHeadPhoto/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateHeadPhoto/{token}", method = RequestMethod.POST)
 	Result<Object> updateHeadPhoto(@PathVariable("token") String toKen, @RequestParam String headPhoto)
 			throws BusinessException {
 		try {
@@ -342,7 +343,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "更新昵称", value = "更新昵称")
-	@RequestMapping(value = "/PersonalCenter/updateNickName/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateNickName/{token}", method = RequestMethod.POST)
 	Result<Object> updateNickName(@PathVariable("token") String toKen, @RequestParam String nickName)
 			throws BusinessException {
 		try {
@@ -363,7 +364,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "验证支付密码", value = "验证支付密码")
-	@RequestMapping(value = "/PersonalCenter/verifyPayPassword", method = RequestMethod.POST)
+	@RequestMapping(value = "/verifyPayPassword", method = RequestMethod.POST)
 	Result<Object> verifyPayPassword(@RequestParam String toKen, String payPassword) throws BusinessException {
 		try {
 			// 检查token通过
@@ -386,7 +387,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "设置推荐人", value = "设置推荐人")
-	@RequestMapping(value = "/PersonalCenter/updateInviteCode/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateInviteCode/{token}", method = RequestMethod.POST)
 	Result<Object> updateInviteCode(@PathVariable("token") String toKen, @RequestParam Integer inviteCode)
 			throws BusinessException {
 		try {
@@ -414,7 +415,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "生成购物订单", value = "生成购物订单")
-	@RequestMapping(value = "/PersonalCenter/createBOrder/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/createBOrder/{token}", method = RequestMethod.POST)
 	Result<Object> createBOrder(@PathVariable("token") String toKen, @RequestBody OrderHeadEXDto orderHeadEXDto)
 			throws BusinessException {
 		try {
@@ -461,7 +462,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "同步处理支付父订单", value = "同步处理支付父订单")
-	@RequestMapping(value = "/PersonalCenter/syncHandleOrderC/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/syncHandleOrderC/{token}", method = RequestMethod.POST)
 	Result<Object> syncHandleOrderC(@PathVariable("token") String toKen, @RequestParam String orderNoC)
 			throws BusinessException {
 		try {
@@ -491,7 +492,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "子订单处理", value = "子订单处理")
-	@RequestMapping(value = "/PersonalCenter/HandleEOrder/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/HandleEOrder/{token}", method = RequestMethod.POST)
 	Result<Object> handleEOrder(@PathVariable("token") String toKen, @RequestParam String orderNo)
 			throws BusinessException {
 		try {
@@ -537,7 +538,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "同步处理支付子订单", value = "同步处理支付子订单")
-	@RequestMapping(value = "/PersonalCenter/syncHandleOrder/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/syncHandleOrder/{token}", method = RequestMethod.POST)
 	Result<Object> syncHandleOrder(@PathVariable("token") String toKen, @RequestParam String orderNo)
 			throws BusinessException {
 		try {
@@ -567,7 +568,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "查看该用户是否领取新人红包", value = "查看该用户是否领取新人红包")
-	@RequestMapping(value = "/PersonalCenter/checkNewExclusive/{token}", method = RequestMethod.GET)
+	@RequestMapping(value = "/checkNewExclusive/{token}", method = RequestMethod.GET)
 	Result<Object> checkNewExclusive(@PathVariable("token") String toKen) throws BusinessException {
 		try {
 			// 检查token通过
@@ -590,7 +591,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "领取新人红包", value = "领取新人红包")
-	@RequestMapping(value = "/PersonalCenter/drawNewExclusive/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/drawNewExclusive/{token}", method = RequestMethod.POST)
 	Result<Object> drawNewExclusive(@PathVariable("token") String toKen) throws BusinessException {
 		try {
 			// 检查token通过
@@ -611,7 +612,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "金额明细", value = "金额明细")
-	@RequestMapping(value = "/PersonalCenter/accountBill/{token}", method = RequestMethod.GET)
+	@RequestMapping(value = "/accountBill/{token}", method = RequestMethod.GET)
 	Result<Object> accountBill(@PathVariable("token") String toKen, @RequestParam String type,
 			@RequestParam Integer page, @RequestParam Integer pageNum) throws BusinessException {
 		try {
@@ -630,7 +631,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "取消订单", value = "取消订单")
-	@RequestMapping(value = "/PersonalCenter/cancelOrder/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/cancelOrder/{token}", method = RequestMethod.POST)
 	Result<Object> accountBill(@PathVariable("token") String toKen, @RequestParam String orderNo)
 			throws BusinessException {
 		try {
@@ -651,7 +652,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "确认收货", value = "确认收货")
-	@RequestMapping(value = "/PersonalCenter/confirmOrder/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/confirmOrder/{token}", method = RequestMethod.POST)
 	Result<Object> confirmOrder(@PathVariable("token") String toKen, @RequestParam String orderNo)
 			throws BusinessException {
 		try {
@@ -672,7 +673,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "现金提现", value = "现金提现")
-	@RequestMapping(value = "/PersonalCenter/TxElecNum/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/TxElecNum/{token}", method = RequestMethod.POST)
 	Result<Object> txElecNum(@PathVariable("token") String toKen, @RequestParam BigDecimal money,
 			@RequestParam(required = false, defaultValue = "提现") String memo, @RequestParam String txType,
 			@RequestParam String cardNo, @RequestParam String trueName,
@@ -697,7 +698,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "GET", notes = "实名认证界面", value = "实名认证界面")
-	@RequestMapping(value = "/PersonalCenter/GetCertificationInfo/{token}", method = RequestMethod.GET)
+	@RequestMapping(value = "/GetCertificationInfo/{token}", method = RequestMethod.GET)
 	Result<Object> getCertificationInfo(@PathVariable("token") String toKen) throws BusinessException {
 		try {
 			// 检查token通过
@@ -714,7 +715,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "提交实名认证申请", value = "提交实名认证申请")
-	@RequestMapping(value = "/PersonalCenter/PostCertificationInfo/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/PostCertificationInfo/{token}", method = RequestMethod.POST)
 	Result<Object> postCertificationInfo(@PathVariable("token") String toKen, @RequestBody User user)
 			throws BusinessException {
 		try {
@@ -744,7 +745,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "申请退款", value = "申请退款")
-	@RequestMapping(value = "/PersonalCenter/ApplyRefund/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/ApplyRefund/{token}", method = RequestMethod.POST)
 	Result<Object> applyRefund(@PathVariable("token") String toKen, @RequestParam String orderNo,
 			@RequestParam String memo, @RequestParam() String photo1) throws BusinessException {
 		try {
@@ -771,7 +772,7 @@ public class PersonalCenterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "申请退货", value = "申请退货")
-	@RequestMapping(value = "/PersonalCenter/ApplySaleReturn/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/ApplySaleReturn/{token}", method = RequestMethod.POST)
 	Result<Object> applySaleReturn(@PathVariable("token") String toKen, @RequestParam String orderNo,
 			@RequestParam String memo, @RequestParam(required = false, defaultValue = "") String photo1,
 			@RequestParam(required = false, defaultValue = "") String photo2,
@@ -799,7 +800,7 @@ public class PersonalCenterController {
 	}
 	
 	@ApiOperation(httpMethod = "POST", notes = "投诉建议", value = "投诉建议")
-	@RequestMapping(value = "/PersonalCenter/ComplaintAndAdvice/{token}", method = RequestMethod.POST)
+	@RequestMapping(value = "/ComplaintAndAdvice/{token}", method = RequestMethod.POST)
 	Result<Object> complaintAndAdvice(@PathVariable("token") String toKen, @RequestParam String memo) throws BusinessException {
 		try {
 			// 检查token通过

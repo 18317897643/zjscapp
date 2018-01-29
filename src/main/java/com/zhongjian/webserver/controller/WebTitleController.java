@@ -19,8 +19,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value = "/TitleManager/", description = "协议相关")
-@RequestMapping(value = "/TitleManager")
+@Api(value = "/v1/TitleManager/", description = "协议相关")
+@RequestMapping(value = "/v1/TitleManager")
 public class WebTitleController {
 
 	@Autowired

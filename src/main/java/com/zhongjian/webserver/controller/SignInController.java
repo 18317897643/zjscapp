@@ -21,8 +21,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value = "/SignIn/", description = "签到模块")
-@RequestMapping(value = "/SignIn")
+@Api(value = "/v1/SignIn/", description = "签到模块")
+@RequestMapping(value = "/v1/SignIn")
 public class SignInController {
 	@Autowired
 	private TokenManager tokenManager;

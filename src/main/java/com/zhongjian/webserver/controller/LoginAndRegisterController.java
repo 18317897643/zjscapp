@@ -29,7 +29,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value = "/LoginAndRegister/", description = "用户登录注册模块")
+@Api(value = "/v1/LoginAndRegister/", description = "用户登录注册模块")
+@RequestMapping(value = "/v1/LoginAndRegister")
 public class LoginAndRegisterController {
 
 	@Autowired
@@ -43,7 +44,7 @@ public class LoginAndRegisterController {
 	private LoginAndRegisterService loginAndRegisterService;
 
 	@ApiOperation(httpMethod = "POST", notes = "发送验证码", value = "发送验证码")
-	@RequestMapping(value = "/LoginAndRegister/SendRegisterVerifyCode", method = RequestMethod.POST)
+	@RequestMapping(value = "/SendRegisterVerifyCode", method = RequestMethod.POST)
 	Result<Object> sendRegisterVerifyCode(@RequestBody Map<String, String> phoneMap) throws BusinessException {
 		try {
 			// receive the phone
@@ -57,7 +58,7 @@ public class LoginAndRegisterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "用户注册", value = "用户注册")
-	@RequestMapping(value = "/LoginAndRegister/RegisterUser", method = RequestMethod.POST)
+	@RequestMapping(value = "/RegisterUser", method = RequestMethod.POST)
 	Result<Object> registerUser(@RequestBody Map<String, String> userMap) throws BusinessException {
 		try {
 			// receive the args
@@ -94,7 +95,7 @@ public class LoginAndRegisterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "用户登录", value = "用户登录")
-	@RequestMapping(value = "/LoginAndRegister/UserLogin", method = RequestMethod.POST)
+	@RequestMapping(value = "/UserLogin", method = RequestMethod.POST)
 	Result<Object> userLogin(@RequestBody Map<String, String> userMap, HttpServletResponse response)
 			throws BusinessException {
 		try {
@@ -120,7 +121,7 @@ public class LoginAndRegisterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "密码修改", value = "密码修改")
-	@RequestMapping(value = "/LoginAndRegister/modifyPassword", method = RequestMethod.POST)
+	@RequestMapping(value = "/modifyPassword", method = RequestMethod.POST)
 	Result<Object> modifyPassword(@RequestBody Map<String, String> passwordMap) throws BusinessException {
 		try {
 			// receive the args
@@ -150,7 +151,7 @@ public class LoginAndRegisterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "忘记密码后重新设置密码", value = "忘记密码")
-	@RequestMapping(value = "/LoginAndRegister/forgetPassword", method = RequestMethod.POST)
+	@RequestMapping(value = "/forgetPassword", method = RequestMethod.POST)
 	Result<Object> forgetPassword(@RequestBody Map<String, String> userMap) throws BusinessException {
 		try {
 			// receive the args
@@ -175,7 +176,7 @@ public class LoginAndRegisterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "发送验证码并登录", value = "手机动态密码登录")
-	@RequestMapping(value = "/LoginAndRegister/dynamicLogin", method = RequestMethod.POST)
+	@RequestMapping(value = "/dynamicLogin", method = RequestMethod.POST)
 	Result<Object> dynamicLogin(@RequestBody Map<String, String> userMap) throws BusinessException {
 		// receive the args
 		try {
@@ -199,7 +200,7 @@ public class LoginAndRegisterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "支付密码设置校验验证码", value = "支付密码设置校验验证码")
-	@RequestMapping(value = "/LoginAndRegister/verify", method = RequestMethod.POST)
+	@RequestMapping(value = "/verify", method = RequestMethod.POST)
 	Result<Object> setPayPassword(@RequestBody Map<String, String> userMap) throws BusinessException {
 		try {
 			// receive the args
@@ -225,7 +226,7 @@ public class LoginAndRegisterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "支付密码设置", value = "支付密码设置")
-	@RequestMapping(value = "/LoginAndRegister/verify/{payPasswordCertificate}", method = RequestMethod.POST)
+	@RequestMapping(value = "/verify/{payPasswordCertificate}", method = RequestMethod.POST)
 	Result<Object> setPayPassword(@PathVariable("payPasswordCertificate") String payPasswordCertificate,
 			@RequestBody User user) throws BusinessException {
 		try {
@@ -267,7 +268,7 @@ public class LoginAndRegisterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "剔除token", value = "剔除token")
-	@RequestMapping(value = "/LoginAndRegister/getRidOf.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/getRidOf.do", method = RequestMethod.POST)
 	Result<Object> logout(@RequestParam Integer userId) throws BusinessException {
 		try {
 			tokenManager.releaseUserName(loginAndRegisterService.getUserNameByUserId(userId));
@@ -279,7 +280,7 @@ public class LoginAndRegisterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "推送", value = "推送")
-	@RequestMapping(value = "/LoginAndRegister/Jpush.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/Jpush.do", method = RequestMethod.POST)
 	Result<Object> logout(@RequestParam Integer userId,@RequestParam String message) throws BusinessException {
 		try {
 			loginAndRegisterService.jPush(userId, message);

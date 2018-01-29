@@ -22,8 +22,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value = "/AccountManager/", description = "体现账号绑定")
-@RequestMapping(value = "/AccountManager")
+@Api(value = "/v1/AccountManager/", description = "体现账号绑定")
+@RequestMapping(value = "/v1/AccountManager/")
 public class AccountManagerController {
 
 	@Autowired

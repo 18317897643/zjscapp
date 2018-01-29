@@ -20,8 +20,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value = "/waterPurifier/", description = "水机模块")
-@RequestMapping(value = "/waterPurifier")
+@Api(value = "/v1/waterPurifier/", description = "水机模块")
+@RequestMapping(value = "/v1/waterPurifier")
 public class WaterPurifierController {
 
 	@Autowired

@@ -1,7 +1,7 @@
 server:
   #adress: 127.0.0.1
   port: 8080
-  context-path: /zjapp/v1
+  context-path: /zjapp
   undertow:    
     io-threads: 3
     worker-threads: 20

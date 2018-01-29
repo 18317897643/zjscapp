@@ -14,7 +14,6 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.zhongjian.webserver.ExceptionHandle.BusinessException;
 import com.zhongjian.webserver.alipay.AlipayConfig;
 import com.zhongjian.webserver.common.LoggingUtil;
-import com.zhongjian.webserver.common.Result;
 import com.zhongjian.webserver.service.OrderHandleService;
 
 import io.swagger.annotations.ApiOperation;
@@ -72,23 +71,4 @@ public class AlipayNotifyUrlController {
 		}
 	}
 
-	/**
-	 * 支付宝异步通知
-	 * 
-	 * @throws BusinessException
-	 * 
-	 */
-	@ApiOperation(httpMethod = "GET", notes = "测试接口", value = "测试接口")
-	@RequestMapping(value = "/test", method = RequestMethod.GET)
-	Result<Object> test(HttpServletRequest request) {
-		System.out.println(1);
-		return null;
-
-		// Map<String, Object>map =
-		// orderMapper.getNeedSubDetailsOfOrderHead("B20170528220557868263633");
-		//
-		// System.out.println(map.get("UserId").getClass());
-		// logMapper.insertCouponRecord(1, new Date(), new BigDecimal("2.00"),
-		// "-", "购买商品，订单号：" + "B214324342432432");
-	}
 }
