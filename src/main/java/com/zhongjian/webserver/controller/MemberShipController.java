@@ -482,8 +482,8 @@ public class MemberShipController {
 		}
 	}
 
-	@ApiOperation(httpMethod = "GET", notes = "立即赠送", value = "立即赠送")
-	@RequestMapping(value = "/GivePresentPromptly/{token}", method = RequestMethod.GET)
+	@ApiOperation(httpMethod = "POST", notes = "立即赠送", value = "立即赠送")
+	@RequestMapping(value = "/GivePresentPromptly/{token}", method = RequestMethod.POST)
 	Result<Object> givePresentPromptly(@PathVariable("token") String toKen, @RequestParam Integer passiveUserId,
 			@RequestParam Integer sendHeadId) throws BusinessException {
 		// type 1 送vip
