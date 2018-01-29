@@ -528,7 +528,7 @@
 		SELECT InviteCode ,TotalCost From tb_user where BeInviteCode = #{InviteCode}
 	</select>
 	<select id="getUserInfoBySysID" resultType="java.util.Map">
-		SELECT Id,TrueName,NickName,UserName,SysID From tb_user where SysID = #{SysID}
+		SELECT Id,HeadPhoto,TrueName,NickName,UserName,SysID From tb_user where SysID = #{SysID}
 	</select>
 	<select id="getUserIdByInviteCode" resultType="java.lang.Integer">
 		SELECT Id From tb_user where InviteCode = #{InviteCode}
