@@ -90,4 +90,3 @@ buildNumber.properties
 .classpath
 .settings
 .metadata
-src/main/resources/application.yml
