@@ -254,7 +254,7 @@ public class LoginAndRegisterController {
 	}
 
 	@ApiOperation(httpMethod = "POST", notes = "退出登录", value = "退出登录")
-	@RequestMapping(value = "/LoginAndRegister/logout", method = RequestMethod.POST)
+	@RequestMapping(value = "/logout", method = RequestMethod.POST)
 	Result<Object> logout(@RequestBody Map<String, String> tokenMap) throws BusinessException {
 		try {
 			// receive the args

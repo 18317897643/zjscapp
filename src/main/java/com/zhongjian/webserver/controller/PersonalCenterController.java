@@ -739,8 +739,8 @@ public class PersonalCenterController {
 			loginAndRegisterService.updateUser(userForUpdate);
 			return ResultUtil.success();
 		} catch (Exception e) {
-			LoggingUtil.e("实名认证界面异常:" + e);
-			throw new BusinessException(Status.SeriousError.getStatenum(), "实名认证界面异常");
+			LoggingUtil.e("提交实名认证申请异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "提交实名认证申请异常");
 		}
 	}
 
