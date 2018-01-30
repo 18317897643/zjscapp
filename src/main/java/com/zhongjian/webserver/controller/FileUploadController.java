@@ -53,7 +53,7 @@ public class FileUploadController {
 	@Value("${upload.httpCatalogue}")
 	private String httpCatalogue;
 
-	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	@RequestMapping(value = "/v1/upload", method = RequestMethod.POST)
 	public Result<Object> upload(@RequestParam("file") MultipartFile file, @RequestParam("token") String token)
 			throws BusinessException {
 		BufferedOutputStream out = null;
@@ -100,7 +100,7 @@ public class FileUploadController {
 	 * @throws BusinessException
 	 * @create 2017年12月12日
 	 */
-	@RequestMapping(value = "/upload/batch", method = RequestMethod.POST)
+	@RequestMapping(value = "/v1/upload/batch", method = RequestMethod.POST)
 	public Result<Object> batchUpload(HttpServletRequest request) throws BusinessException {
 		BufferedOutputStream stream = null;
 		List<BufferedOutputStream> listStream = null;

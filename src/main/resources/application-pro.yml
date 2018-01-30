@@ -49,3 +49,4 @@ malldata:
   vipNeedPay: 3000
   subProxyNeedPay: 50000   
   gcNeedPay: 99
+  version: 1

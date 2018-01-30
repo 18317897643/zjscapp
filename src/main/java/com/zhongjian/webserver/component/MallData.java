@@ -26,6 +26,9 @@ public class MallData {
 
 	@Value("${malldata.subProxyNeedPay}")
 	private BigDecimal subProxyNeedPay;
+	
+	@Value("${malldata.version}")
+	private Integer version;
 
 	public Integer getProductTag() {
 		return productTag;
@@ -58,6 +61,14 @@ public class MallData {
 
 	public void setSubProxyNeedPay(BigDecimal subProxyNeedPay) {
 		this.subProxyNeedPay = subProxyNeedPay;
+	}
+
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
 	}
 
 	public MallData() {
