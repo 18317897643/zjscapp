@@ -236,9 +236,9 @@ public class MemberShipController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			ProxyApply proxyApply = personalCenterService.getProxyApply(UserId);
-			if (proxyApply != null) {
-				return ResultUtil.success(proxyApply);
+			Map<String, Object> result = personalCenterService.getProxyApply(UserId);
+			if (result != null) {
+				return ResultUtil.success(result);
 			} else {
 				return ResultUtil.error(Status.BussinessError.getStatenum(), "之前没有申请过代理");
 			}

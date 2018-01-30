@@ -5,14 +5,19 @@
 		SELECT
 		CurStatus from tb_proxyapply WHERE UserId = #{UserId,jdbcType=INTEGER}
 	</select>
-	<select id="queryProxyApply" resultType="ProxyApply">
+	<select id="queryProxyApply" resultType="java.util.Map">
 		SELECT
-		Name,Phone,ProvinceId,CityId,RegionId,Address,Photo1,Photo2,Photo3,CurStatus,RefuseReason
-		FROM tb_proxyapply WHERE UserId = #{UserId,jdbcType=INTEGER}
+		pr.Name,pr.Phone,pr.ProvinceId,p.ProvinceName,pr.CityId,c.CityName,pr.RegionId,r.RegionName,pr.Address,pr.Photo1,pr.Photo2,pr.Photo3,pr.CurStatus,pr.RefuseReason
+		FROM tb_proxyapply pr,tb_province p,tb_city c,tb_region r WHERE
+		pr.UserId = #{UserId,jdbcType=INTEGER} AND pr.ProvinceId = p.Id and pr.CityId = c.Id and
+		pr.RegionId = r.Id
 	</select>
 	<update id="updateProxyApply">
-		update tb_proxyapply set Name = #{name} ,Phone = #{phone}, ProvinceId = #{provinceid} ,CityId = #{cityid},
-		RegionId = #{regionid} , Address = #{address} , Photo1 = #{photo1} , Photo2 = #{photo2} ,Photo3 = #{photo3},  
+		update tb_proxyapply set Name = #{name} ,Phone =
+		#{phone}, ProvinceId = #{provinceid} ,CityId = #{cityid},
+		RegionId =
+		#{regionid} , Address = #{address} , Photo1 = #{photo1} , Photo2 =
+		#{photo2} ,Photo3 = #{photo3},
 		CurStatus = #{curstatus} where UserId = #{userid}
 	</update>
 	<insert id="addProxyApply">

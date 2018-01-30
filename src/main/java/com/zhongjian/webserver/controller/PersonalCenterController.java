@@ -816,5 +816,4 @@ public class PersonalCenterController {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "投诉建议异常");
 		}
 	}
-
 }

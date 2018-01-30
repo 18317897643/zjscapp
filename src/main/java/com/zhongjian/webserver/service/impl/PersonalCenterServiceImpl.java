@@ -143,7 +143,7 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	}
 
 	@Override
-	public ProxyApply getProxyApply(Integer UserId) {
+	public Map<String, Object> getProxyApply(Integer UserId) {
 		return proxyApplyMapper.queryProxyApply(UserId);
 	}
 

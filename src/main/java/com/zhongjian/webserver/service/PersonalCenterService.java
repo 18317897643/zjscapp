@@ -37,7 +37,7 @@ public interface PersonalCenterService {
 	// 判断代理申请是否已经申请过了
 	boolean isAlreadyApply(Integer UserId);
 
-	ProxyApply getProxyApply(Integer UserId);
+	 Map<String, Object> getProxyApply(Integer UserId);
 	
 	void addProxyApply(ProxyApply proxyApply,Integer userId);
 
