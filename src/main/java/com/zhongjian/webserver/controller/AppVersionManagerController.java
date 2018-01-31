@@ -18,7 +18,7 @@ public class AppVersionManagerController {
 	private MallData mallData;
 
 	@ApiOperation(httpMethod = "GET", notes = "获取支持的最低版本基数", value = "获取支持的最低版本基数")
-	@RequestMapping(value = "/GetLowVersion/",method = RequestMethod.GET)
+	@RequestMapping(value = "/GetLowVersion",method = RequestMethod.GET)
 	public Integer getAppVersion() {
 		return mallData.getVersion();
 	}

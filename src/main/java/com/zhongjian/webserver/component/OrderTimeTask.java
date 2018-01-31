@@ -21,5 +21,6 @@ public class OrderTimeTask {
 	//等待收货的订单超过7天自动确认收货
 	@Scheduled(cron = "0 0 00 * * ?")
 	public void autoConfirmOrder(){
+		orderHeadService.autoConfirmOrder();
 	}
 }
