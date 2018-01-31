@@ -123,13 +123,19 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 	}
 
 	@Override
-	public boolean checkUserNameAndPayPassword(String phoneNum, String password) {
-		Integer integer = userMapper.checkUserNameAndPayPassword(phoneNum, password);
-		if (integer == null) {
-			// 不通过
-			return false;
+	public String checkUserNameAndPayPassword(String phoneNum, String password) {
+		String realPassword = userMapper.getPayPasswordByUserName(phoneNum);
+		if (realPassword == "") {
+			return "1";//没有设置 提示要设置
 		}
-		return true;
+		
+		if (password.equals(realPassword)) {
+			// 通过
+			return "0";
+		}else {
+			return "2";//不通过
+		}
+		
 	}
 
 	@Override

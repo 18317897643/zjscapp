@@ -373,12 +373,15 @@ public class PersonalCenterController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
 			if (loginAndRegisterService.userFundsIsFreeze(phoneNum)) {
-				return ResultUtil.error(Status.BussinessError.getStatenum(), "平台币值已冻结");
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "平台币值已冻结");
 			}
-			if (loginAndRegisterService.checkUserNameAndPayPassword(phoneNum, payPassword)) {
+			String flag = loginAndRegisterService.checkUserNameAndPayPassword(phoneNum, payPassword);
+			if ("0".equals(flag)) {
 				return ResultUtil.success();
-			} else {
+			} else if ("2".equals(flag)){
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "请输入正确的支付密码");
+			}else {
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "请设置支付密码");
 			}
 		} catch (Exception e) {
 			LoggingUtil.e("验证支付密码:" + e);

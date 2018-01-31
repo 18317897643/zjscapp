@@ -417,11 +417,10 @@
 		select Id from
 		tb_user where UserName = #{userName} and Password = #{password}
 	</select>
-	<select id="checkUserNameAndPayPassword" resultType="java.lang.Integer">
-		select Id
-		from
-		tb_user where UserName = #{userName} and PayPassword =
-		#{payPassword}
+	<select id="getPayPasswordByUserName" resultType="java.lang.String">
+		select
+		PayPassword from
+		tb_user where UserName = #{userName}
 	</select>
 	<update id="updatePassword">
 		update tb_user set Password = #{password} where
@@ -525,15 +524,21 @@
 		InviteCode,TotalCost FROM tb_user where Id = #{UserId}
 	</select>
 	<select id="getDownInviteAndTotalCost" resultType="java.util.Map">
-		SELECT InviteCode ,TotalCost From tb_user where BeInviteCode = #{InviteCode}
+		SELECT
+		InviteCode ,TotalCost From tb_user where BeInviteCode = #{InviteCode}
 	</select>
 	<select id="getUserInfoBySysID" resultType="java.util.Map">
-		SELECT Id,HeadPhoto,TrueName,NickName,UserName,SysID From tb_user where SysID = #{SysID}
+		SELECT
+		Id,HeadPhoto,TrueName,NickName,UserName,SysID From tb_user where SysID
+		= #{SysID}
 	</select>
 	<select id="getUserIdByInviteCode" resultType="java.lang.Integer">
-		SELECT Id From tb_user where InviteCode = #{InviteCode}
+		SELECT Id From
+		tb_user where InviteCode = #{InviteCode}
 	</select>
 	<select id="getCertificationInfo" resultType="java.util.Map">
-		SELECT IsAuth,TrueName,Phone,IDCardNo,IDCardPhoto,IDCardPhoto2,IDCardPhoto3 From tb_user where Id = #{UserId}
+		SELECT
+		IsAuth,TrueName,Phone,IDCardNo,IDCardPhoto,IDCardPhoto2,IDCardPhoto3
+		From tb_user where Id = #{UserId}
 	</select>
 </mapper>

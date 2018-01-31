@@ -26,7 +26,7 @@ public interface LoginAndRegisterService {
 
 	boolean InviteCodeIsExists(Integer inviteCode);
 	
-	boolean checkUserNameAndPayPassword(String phoneNum,String password);
+	String checkUserNameAndPayPassword(String phoneNum,String password);
 	
 	boolean userIsFreeze(String userName);
 	

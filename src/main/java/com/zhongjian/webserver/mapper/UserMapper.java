@@ -19,7 +19,7 @@ public interface UserMapper {
 
 	Integer checkUserNameAndPassword(@Param("userName") String userName, @Param("password") String password);
 
-	Integer checkUserNameAndPayPassword(@Param("userName") String userName, @Param("payPassword") String payPassword);
+	String getPayPasswordByUserName(@Param("userName") String userName);
 
 	Integer updatePassword(@Param("userName") String userName, @Param("password") String password);
 
