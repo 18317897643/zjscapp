@@ -16,7 +16,6 @@ public class DateUtil {
 			return false;
 		}
 	}
-
 	public static String DateToStr(Date date) {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String str = format.format(date);

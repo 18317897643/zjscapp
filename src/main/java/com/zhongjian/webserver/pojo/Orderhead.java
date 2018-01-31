@@ -14,14 +14,14 @@ public class Orderhead {
 
     private String orderno;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date createtime;
 
     private Integer userid;
 
     private Integer isdistributed;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date receivedtime;
 
     private Integer discount;
@@ -60,7 +60,7 @@ public class Orderhead {
 
     private String logisticsinfo;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date senddate;
 
     private String memo;

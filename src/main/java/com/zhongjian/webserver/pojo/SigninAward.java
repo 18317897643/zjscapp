@@ -12,7 +12,7 @@ public class SigninAward {
 
     private Integer userid;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
     private Date date;
 
     private Integer sevendaysaward;

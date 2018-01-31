@@ -12,7 +12,7 @@ public class Article {
     
     private String memo;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
 	public Date getCreatetime() {
 		return createtime;
 	}

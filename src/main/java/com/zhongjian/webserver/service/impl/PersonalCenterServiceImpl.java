@@ -197,17 +197,18 @@ public class PersonalCenterServiceImpl implements PersonalCenterService {
 	@Override
 	public List<BillReacord> accountBill(Integer userId, String type, Integer page, Integer pageNum) {
 		page = page * pageNum;
+		List<BillReacord> lists = null;
 		if ("coupon".equals(type)) {
-			return userMapper.getCouponBill(userId, page, pageNum);
+			lists = userMapper.getCouponBill(userId, page, pageNum);
 		} else if ("points".equals(type)) {
-			return userMapper.getPointBill(userId, page, pageNum);
+			lists = userMapper.getPointBill(userId, page, pageNum);
 		} else if ("vip".equals(type)) {
-			return userMapper.getVipBill(userId, page, pageNum);
+			lists =  userMapper.getVipBill(userId, page, pageNum);
 		} else if ("elec".equals(type)) {
-			return userMapper.getElecBill(userId, page, pageNum);
+			lists = userMapper.getElecBill(userId, page, pageNum);
 		} else {
-			return null;
 		}
+		return lists; 
 	}
 
 	@Override
