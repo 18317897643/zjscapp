@@ -114,6 +114,6 @@
 		(#{CreateTime,jdbcType=TIMESTAMP},#{FromUserId},#{ToUserId},#{Amount},0)
 	</insert>
 	<select id="selectSplitStreamRecord" resultType="java.util.Map">
-		select CreateTime,ToUserId,Amount from tb_splitstreamrecord where FromUserId = #{FromUserId}
+		select CreateTime,ToUserId,Amount from tb_splitstreamrecord where FromUserId = #{FromUserId} order by CreateTime DESC
 	</select>
 </mapper>

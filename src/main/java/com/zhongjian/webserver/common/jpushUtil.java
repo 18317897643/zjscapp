@@ -19,8 +19,8 @@ import cn.jpush.api.push.model.notification.IosNotification;
 import cn.jpush.api.push.model.notification.Notification;
 
 public class jpushUtil {
-	private static final String APPKEY = "eb052fb348b318ff664351b6";  
-    private static final String MASTERSECRET = "2c2d64109181b031fbf1da35";
+	private static final String APPKEY = "4c4a4dfcb0acdaa52da3a5e5";  
+    private static final String MASTERSECRET = "074094ee7eae51a99de0e306";
 	/**
 	 * 给所有平台的所有用户发通知
 	 */
