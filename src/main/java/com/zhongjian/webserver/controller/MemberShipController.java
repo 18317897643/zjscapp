@@ -84,11 +84,11 @@ public class MemberShipController {
 			if (lev == 0) {
 				vipResult.put("isExit", 1);
 				vipResult.put("id", 1);
-				vipResult.put("lev", 0);
+				vipResult.put("lev", 1);
 				vipResult.put("needPay", vipNeedPay);
 				greenChanelResult.put("isExit", 1);
 				greenChanelResult.put("id", 2);
-				vipResult.put("lev", 1);
+				greenChanelResult.put("lev", 0);
 				greenChanelResult.put("gcNeedPay", gcNeedPay);
 			} else {
 				vipResult.put("isExit", 0);
