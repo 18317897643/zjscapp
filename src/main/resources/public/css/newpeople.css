@@ -19,7 +19,7 @@ table {border-collapse:collapse;border-spacing:0;}
 .container{
     width: 7.5rem;
     height: 15rem;
-    background: url("../image/np-background.jpg") center no-repeat;
+    background: url("../image/np-background.png") center no-repeat;
     background-size: 7.5rem 15rem;
     overflow: hidden;
 }
