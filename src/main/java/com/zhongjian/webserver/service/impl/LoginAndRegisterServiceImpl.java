@@ -175,6 +175,7 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 			BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(addCoupon);
 			curQuota.put("Coupon", remainCoupon);
 			userMapper.updateUserQuota(curQuota);
+			logMapper.insertCouponRecord(userId, new Date(), addCoupon, "+", "新平台回馈红包");
 			return 1;
 		}
 		return 0;
