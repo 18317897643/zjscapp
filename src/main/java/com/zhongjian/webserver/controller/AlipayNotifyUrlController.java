@@ -33,7 +33,7 @@ public class AlipayNotifyUrlController {
 	 * 
 	 */
 	@ApiOperation(httpMethod = "POST", notes = "支付宝异步通知接口", value = "支付宝异步通知接口")
-	@RequestMapping(value = "/notify_url", method = RequestMethod.POST)
+	@RequestMapping(value = "/v1/notify_url", method = RequestMethod.POST)
 	public String notifyUrl(HttpServletRequest request) throws BusinessException {
 		try {
 			// 1.从支付宝回调的request域中取值
