@@ -40,7 +40,6 @@ public class TokenManagerConfig {
 				fr = new FileReader(file);
 				br = new BufferedReader(fr);
 				String tokenJson = br.readLine();
-				System.out.println("读取到的json是" + tokenJson);
 				TokenManager tokenManager = GsonUtil.GsonToBean(tokenJson, TokenManager.class);
 				return tokenManager;
 			} catch (Exception e) {
