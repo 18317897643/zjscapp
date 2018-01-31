@@ -346,6 +346,8 @@ public class MemberShipServiceImpl implements MemberShipService {
 			// 设置等级
 			userMapper.setLev(1, 0, passiveUserId);
 			// 记录赠送
+			logMapper.insertCouponRecord(passiveUserId, new Date(), addBigDecimal, "+", "获得VIP赠送");
+			logMapper.insertVipRemainRecord(passiveUserId, new Date(), addBigDecimal, "+", "获得VIP赠送");
 			// 4个数据
 			memberShipMapper.insertSendHeadRecord(sendHeadId, passiveUserId, lev, new Date());
 			return "0";
@@ -387,6 +389,8 @@ public class MemberShipServiceImpl implements MemberShipService {
 				// 设置等级
 				userMapper.setLev(1, 0, toUserId);
 				// 分流记录
+				logMapper.insertCouponRecord(toUserId, new Date(), quotaCache, "+", "获得3000分流");
+				logMapper.insertVipRemainRecord(toUserId, new Date(), quotaCache, "+", "获得3000分流");
 				// 分流分润
 				tasks.shareBenitTask(3, toUserId, fromUserId, "分流", quotaCache);
 				// 等级产生赠送名额
@@ -418,6 +422,8 @@ public class MemberShipServiceImpl implements MemberShipService {
 				userMapper.updateUserQuota(toUserCurQuota);
 				// 设置等级
 				userMapper.setLev(2, 1, toUserId);
+				logMapper.insertCouponRecord(toUserId, new Date(), quotaCache, "+", "获得50000分流");
+				logMapper.insertVipRemainRecord(toUserId, new Date(), quotaCache, "+", "获得50000分流");
 				// 分流分润
 				tasks.shareBenitTask(3, toUserId, fromUserId, "分流", quotaCache);
 				// 等级产生赠送名额

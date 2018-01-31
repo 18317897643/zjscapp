@@ -71,7 +71,6 @@ public class MemberShipController {
 			if (phoneNum == null) {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
 			}
-
 			// 获取用户等级信息
 			Map<String, Object> map = personalCenterService.getInformOfConsumption(phoneNum);
 			Integer lev = (Integer) map.get("Lev");
@@ -85,15 +84,12 @@ public class MemberShipController {
 			if (lev == 0) {
 				vipResult.put("isExit", 1);
 				vipResult.put("id", 1);
+				vipResult.put("lev", 0);
 				vipResult.put("needPay", vipNeedPay);
-				Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-				if (personalCenterService.isGCMember(UserId)) {
-					greenChanelResult.put("isExit", 0);
-				} else {
-					greenChanelResult.put("isExit", 1);
-					greenChanelResult.put("id", 2);
-					greenChanelResult.put("gcNeedPay", gcNeedPay);
-				}
+				greenChanelResult.put("isExit", 1);
+				greenChanelResult.put("id", 2);
+				vipResult.put("lev", 1);
+				greenChanelResult.put("gcNeedPay", gcNeedPay);
 			} else {
 				vipResult.put("isExit", 0);
 				greenChanelResult.put("isExit", 0);
@@ -107,8 +103,9 @@ public class MemberShipController {
 				directUpdate.put("type", 2);// type等于2 准代理
 			} else if (lev == 2 && isSubProxy == 1) {
 				directUpdate.put("isExit", 1);
-				directUpdate.put("type", 3);// type等于2 代理
+				directUpdate.put("type", 3);// type等于3 代理
 			} else {
+				directUpdate.put("isExit", 0);
 				directUpdate.put("type", -1);// type等于-1 不存在这个按钮
 			}
 			result.put("GC", greenChanelResult);

@@ -79,7 +79,7 @@ public class LoginAndRegisterController {
 				} else {
 					if (loginAndRegisterService.InviteCodeIsExists(inviteCodeInteger)) {
 						loginAndRegisterService.registerUser(phoneNum, password, inviteCodeInteger);
-						loginAndRegisterService.sendCouponByInviteCode(new BigDecimal("100.00"), inviteCodeInteger);
+						loginAndRegisterService.sendCouponByInviteCode(new BigDecimal("100.00"), inviteCodeInteger,"新人推荐");
 					} else {
 						return ResultUtil.error(Status.BussinessError.getStatenum(), "邀请码不存在");
 					}

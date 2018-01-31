@@ -41,9 +41,9 @@ public class WaterPurifierServiceImpl implements WaterPurifierService {
 		Integer type = (Integer) codeInfo.get("Type");
 		if (waterPurifierMapper.deleteCode(codeNo) == 1) {
 			if (type == 1) {
-				LoginAndRegisterService.sendCouponByUserId(new BigDecimal("980.00"), userId);
+				LoginAndRegisterService.sendCouponByUserId(new BigDecimal("980.00"), userId,"水机充值兑换红包");
 			}else {
-				LoginAndRegisterService.sendCouponByUserId(new BigDecimal("1280.00"), userId);
+				LoginAndRegisterService.sendCouponByUserId(new BigDecimal("1280.00"), userId,"水机充值兑换红包");
 			}
 			return "0";
 		}else {

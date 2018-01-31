@@ -1,7 +1,6 @@
 package com.zhongjian.webserver.controller;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -406,7 +405,7 @@ public class PersonalCenterController {
 				userForUpdate.setBeinvitecode(inviteCode);
 				userForUpdate.setUsername(phoneNum);
 				loginAndRegisterService.updateUser(userForUpdate);
-				loginAndRegisterService.sendCouponByUserId(new BigDecimal("100.00"), inviteCode);
+				loginAndRegisterService.sendCouponByInviteCode(new BigDecimal("100.00"), inviteCode,"新人推荐红包");
 				return ResultUtil.success();
 			} else {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "邀请码不存在");

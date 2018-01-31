@@ -14,6 +14,7 @@ import com.zhongjian.webserver.common.ExpiryMap;
 import com.zhongjian.webserver.common.SendSmsUtil;
 import com.zhongjian.webserver.common.TokenManager;
 import com.zhongjian.webserver.common.jpushUtil;
+import com.zhongjian.webserver.mapper.LogMapper;
 import com.zhongjian.webserver.mapper.UserMapper;
 import com.zhongjian.webserver.pojo.User;
 import com.zhongjian.webserver.service.LoginAndRegisterService;
@@ -27,7 +28,11 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 	@Autowired
 	private UserMapper userMapper;
 
-	@Autowired TokenManager tokenManager;
+	@Autowired 
+	private TokenManager tokenManager;
+	
+	@Autowired
+	private LogMapper logMapper;
 	
 	private AtomicInteger sysID = null;
 
@@ -65,7 +70,6 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 		User user = new User();
 		user.setUsername(phoneNum);
 		user.setPassword(password);
-		user.setPhone(phoneNum);
 		user.setBeinvitecode(inviteCode);
 		user.setInvitecode(currentThreadSysID);
 		user.setHeadphoto("/upload/pics/nohead.png");
@@ -197,22 +201,23 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 
 	@Override
 	@Transactional
-	public void sendCouponByInviteCode(BigDecimal sendCoupon, Integer inviteCode) {
+	public void sendCouponByInviteCode(BigDecimal sendCoupon, Integer inviteCode,String memo) {
 		Integer userId = userMapper.getUserIdByInviteCode(inviteCode);
 		Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(userId);
 		BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(sendCoupon);
 		curQuota.put("Coupon", remainCoupon);
 		userMapper.updateUserQuota(curQuota);
+		logMapper.insertCouponRecord(userId, new Date(), sendCoupon, "+", memo);
 	}
 
 	@Override
 	@Transactional
-	public void sendCouponByUserId(BigDecimal sendCoupon, Integer userId) {
+	public void sendCouponByUserId(BigDecimal sendCoupon, Integer userId ,String memo) {
 		Map<String, Object> curQuota = userMapper.selectUserQuotaForUpdate(userId);
 		BigDecimal remainCoupon = ((BigDecimal) curQuota.get("Coupon")).add(sendCoupon);
 		curQuota.put("Coupon", remainCoupon);
 		userMapper.updateUserQuota(curQuota);
-
+		logMapper.insertCouponRecord(userId, new Date(), sendCoupon, "+", memo);
 	}
 
 	@Override

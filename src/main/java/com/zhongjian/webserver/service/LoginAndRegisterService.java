@@ -40,9 +40,9 @@ public interface LoginAndRegisterService {
 	
 	Map<String, Object> getUserInfoBySysID(Integer sysID);
 	
-	void sendCouponByInviteCode(BigDecimal coupon,Integer inviteCode);
+	void sendCouponByInviteCode(BigDecimal coupon,Integer inviteCode,String memo);
 	
-	void sendCouponByUserId (BigDecimal coupon,Integer userId);
+	void sendCouponByUserId (BigDecimal coupon,Integer userId,String memo);
 	
 	void jPush(Integer userId,String message);
 }
