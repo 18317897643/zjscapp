@@ -42,14 +42,14 @@ $(function() {
     if (theRequest.token != "") {
         token = theRequest.token;
         $('.waterPurifierBtn').on('click',function () {
-            $.post('/zjapp/v1/waterPurifier/drawCupon/' + token ,{code: $('.waterPurifierText').val()}, function (res) {
+            $.post('/zjapp/v1/waterPurifier/drawCupon/' + token ,{codeNo: $('.waterPurifierText').val()}, function (res) {
                 if ( res.error_code == 0 ){
                     alert("领取成功！");
                     setTimeout('$(".tip").fadeOut()', 1500);
                 }else if ( res.error_code == 1 ){
-                    alert("请使用正确的兑换码！");
+                    alert(res.error_message);
                 }else {
-                    alert("该兑换码已被领取！");
+                    alert(res.error_message);
                 }
             });
         })

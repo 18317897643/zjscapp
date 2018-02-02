@@ -46,7 +46,7 @@ public class CoreServiceImpl implements CoreService {
 	@Override
 	@Transactional
 	public void shareBenit(Integer type, Integer masterUserId, Integer slaveUserId, String memo, BigDecimal ElecNum) {
-		Map<BigDecimal, Integer> resultMap = null;
+		Map<Integer, BigDecimal> resultMap = null;
 		if (type == 1) {
 			//订单消费  购买会员 后台手动加积分
 			resultMap = normalBenifit(masterUserId);
@@ -56,7 +56,8 @@ public class CoreServiceImpl implements CoreService {
 			Map<String, Integer> map = coreMapper.selectHigherLev(masterUserId);
 			if (map != null) {
 				if (map.get("Lev") == 3) {
-					resultMap.put(new BigDecimal("0.10"), map.get("Id"));
+					Integer curUserId = map.get("Id");
+					resultMap.put(curUserId, new BigDecimal("0.10").add(resultMap.get(curUserId)==null?BigDecimal.ZERO:resultMap.get(curUserId)));
 				}
 			}
 
@@ -74,10 +75,10 @@ public class CoreServiceImpl implements CoreService {
 		if (resultMap.size() != 0) {
 			BigDecimal percent10 = new BigDecimal("0.10");
 			BigDecimal percent90 = new BigDecimal("0.90");
-			for (Entry<BigDecimal, Integer> entry : resultMap.entrySet()) {
+			for (Entry<Integer, BigDecimal> entry : resultMap.entrySet()) {
 				// 查出自己的等级再决定分润到购物币或者现金币
-				BigDecimal percent = entry.getKey();
-				Integer userId = entry.getValue();
+				BigDecimal percent = entry.getValue();
+				Integer userId = entry.getKey();
 				Integer lev = (Integer) (userMapper.selectPersonalInformById(userId).get("Lev"));
 				Boolean isGCMember = personalCenterService.isGCMember(userId);
 				Date date = new Date();
@@ -148,9 +149,9 @@ public class CoreServiceImpl implements CoreService {
 		}
 	}
 
-	private Map<BigDecimal, Integer> normalBenifit(Integer masterUserId) {
+	private Map<Integer, BigDecimal> normalBenifit(Integer masterUserId) {
 
-		Map<BigDecimal, Integer> resultMap = new HashMap<>();
+		Map<Integer, BigDecimal> resultMap = new HashMap<>();
 		Integer queryUserId = masterUserId;
 		Integer i = 0;
 		Integer flag = 0;
@@ -164,22 +165,22 @@ public class CoreServiceImpl implements CoreService {
 			Integer curUserlev = map.get("Lev");
 			// 蓝粉和黄粉的分润
 			if (i == 2) {
-				resultMap.put(new BigDecimal("0.10"), curUserId);
+				resultMap.put(curUserId, new BigDecimal("0.10").add(resultMap.get(curUserId)==null?BigDecimal.ZERO:resultMap.get(curUserId)));
 			} else if (i == 3) {
-				resultMap.put(new BigDecimal("0.20"), curUserId);
+				resultMap.put(curUserId, new BigDecimal("0.20").add(resultMap.get(curUserId)==null?BigDecimal.ZERO:resultMap.get(curUserId)));
 			}
 			// 给代理和准代理的分润
 			if (curUserlev == 3) {
 				if (flag == 0) {
-					resultMap.put(new BigDecimal("0.16"), curUserId);
+					resultMap.put(curUserId, new BigDecimal("0.16").add(resultMap.get(curUserId)==null?BigDecimal.ZERO:resultMap.get(curUserId)));
 					flag = 1;
 				} else if (flag == 2) {
-					resultMap.put(new BigDecimal("0.10"), curUserId);
+					resultMap.put(curUserId, new BigDecimal("0.10").add(resultMap.get(curUserId)==null?BigDecimal.ZERO:resultMap.get(curUserId)));
 					flag = 1;
 				}
 			} else if (curUserlev == 2) {
 				if (flag == 0) {
-					resultMap.put(new BigDecimal("0.06"), curUserId);
+					resultMap.put(curUserId, new BigDecimal("0.06").add(resultMap.get(curUserId)==null?BigDecimal.ZERO:resultMap.get(curUserId)));
 					flag = 2;
 				}
 			}
@@ -191,8 +192,8 @@ public class CoreServiceImpl implements CoreService {
 		return resultMap;
 	}
 
-	private Map<BigDecimal, Integer> abNormalBenifit(Integer masterUserId) {
-		Map<BigDecimal, Integer> resultMap = new HashMap<>();
+	private Map<Integer, BigDecimal> abNormalBenifit(Integer masterUserId) {
+		Map<Integer, BigDecimal> resultMap = new HashMap<>();
 		Integer queryUserId = masterUserId;
 		Integer i = 0;
 		Integer flag = 0;
@@ -206,14 +207,14 @@ public class CoreServiceImpl implements CoreService {
 			Integer curUserlev = map.get("Lev");
 			// 蓝粉和黄粉的分润
 			if (i == 2) {
-				resultMap.put(new BigDecimal("0.10"), curUserId);
+				resultMap.put(curUserId, new BigDecimal("0.10").add(resultMap.get(curUserId)==null?BigDecimal.ZERO:resultMap.get(curUserId)));
 			} else if (i == 3) {
-				resultMap.put(new BigDecimal("0.20"), curUserId);
+				resultMap.put(curUserId, new BigDecimal("0.20").add(resultMap.get(curUserId)==null?BigDecimal.ZERO:resultMap.get(curUserId)));
 			}
 			// 给代理和准代理的分润
 			if (curUserlev == 3 || curUserlev == 2) {
 				if (flag == 0) {
-					resultMap.put(new BigDecimal("0.06"), curUserId);
+					resultMap.put(curUserId, new BigDecimal("0.06").add(resultMap.get(curUserId)==null?BigDecimal.ZERO:resultMap.get(curUserId)));
 					flag = 1;
 				}
 			}
