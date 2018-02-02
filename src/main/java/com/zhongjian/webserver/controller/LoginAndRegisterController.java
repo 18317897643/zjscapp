@@ -129,7 +129,7 @@ public class LoginAndRegisterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			String oldPassword = passwordMap.get("oldPassword");
 			String newPassword = passwordMap.get("newPassword");
@@ -209,7 +209,7 @@ public class LoginAndRegisterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			if (loginAndRegisterService.checkVerifyCode(phoneNum, verifyCode)) {
 				// 更改支付密码凭证
@@ -235,7 +235,7 @@ public class LoginAndRegisterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			// 如果凭证不对
 			if (!payPasswordCertificate.equals(payPasswordModifyMap.get(toKen))) {

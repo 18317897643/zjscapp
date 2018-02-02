@@ -43,7 +43,7 @@ public class AccountManagerController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他地方登录");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			accountManagerService.addAliAccount(userId, account, name);
@@ -62,7 +62,7 @@ public class AccountManagerController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他地方登录");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (accountManagerService.deleteAliAccount(id, userId) == 1) {
@@ -85,7 +85,7 @@ public class AccountManagerController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他地方登录");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			accountManagerService.addBankAccount(userId, account, bankName, name);
@@ -104,7 +104,7 @@ public class AccountManagerController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他地方登录");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (accountManagerService.deleteBankAccount(id, userId) == 1) {
@@ -128,7 +128,7 @@ public class AccountManagerController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他地方登录");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			HashMap<String, Object> resultMap = new HashMap<>();

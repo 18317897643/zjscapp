@@ -40,7 +40,7 @@ public class WaterPurifierController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			String flag = waterPurifierService.drawWaterPurifierCupon(UserId, codeNo);

@@ -30,11 +30,6 @@ public class WebTitleController {
 	@RequestMapping(value = "/getProtocol", method = RequestMethod.GET)
 	Result<Object> getProtocol(@RequestParam Integer id,HttpServletResponse response) throws BusinessException {
 		try {
-			response.addHeader("Access-Control-Allow-Origin", "*");
-			response.addHeader("Access-Control-Allow-Methods", "*");
-			response.addHeader("Access-Control-Max-Age", "100");
-			response.addHeader("Access-Control-Allow-Headers", "Content-Type");
-			response.addHeader("Access-Control-Allow-Credentials", "false");
 			return ResultUtil.success(webTitleService.getProtocol(id));
 		} catch (Exception e) {
 			LoggingUtil.e("获取各种协议异常:" + e);

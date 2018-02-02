@@ -69,7 +69,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			// 获取用户等级信息
 			Map<String, Object> map = personalCenterService.getInformOfConsumption(phoneNum);
@@ -126,7 +126,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			// recive args
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
@@ -171,7 +171,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			// recive args
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
@@ -194,7 +194,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// 生成订单
@@ -213,7 +213,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			return ResultUtil.success(personalCenterService.isAlreadyApply(UserId));
@@ -230,7 +230,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			Map<String, Object> result = personalCenterService.getProxyApply(UserId);
@@ -254,7 +254,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			personalCenterService.addProxyApply(proxyApply, UserId);
@@ -273,7 +273,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			personalCenterService.updateProxyApply(proxyApply, UserId);
@@ -324,7 +324,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			return ResultUtil.success(memberShipService.getRYBFans(UserId));
@@ -344,7 +344,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			return ResultUtil.success(memberShipService.getRYBFansDetails(UserId, type, page, pageNum));
@@ -364,7 +364,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			Map<String, Object> map = personalCenterService.getInformOfConsumption(phoneNum);
@@ -411,7 +411,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Map<String, Object> userInfo = loginAndRegisterService.getUserInfoBySysID(SysID);
 			if (userInfo != null) {
@@ -434,7 +434,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (!personalCenterService.isAlreadyAuth(UserId)) {
@@ -465,7 +465,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (type == 1) {
@@ -488,7 +488,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer activeUserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (passiveUserId == activeUserId) {
@@ -520,7 +520,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer fromUserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			String result = memberShipService.splitStream(fromUserId, toUserId, type);
@@ -545,7 +545,7 @@ public class MemberShipController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			List<Map<String, Object>> result = memberShipService.getSplitStreamRecord(userId);

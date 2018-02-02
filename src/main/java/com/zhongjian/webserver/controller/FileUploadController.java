@@ -61,7 +61,7 @@ public class FileUploadController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			if (!file.isEmpty()) {
 				// 这里只是简单例子，文件直接输出到项目路径下。
@@ -109,7 +109,7 @@ public class FileUploadController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
 			List<String> newfileNameList = new ArrayList<String>();

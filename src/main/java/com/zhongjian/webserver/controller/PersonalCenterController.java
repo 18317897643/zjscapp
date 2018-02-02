@@ -67,7 +67,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
 			Map<String, Object> map = personalCenterService.getInformOfConsumption(phoneNum);
@@ -104,7 +104,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
@@ -130,7 +130,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			HashMap<String, Object> resultMap = new HashMap<String, Object>();
 			Map<String, Object> map = personalCenterService.getInformOfConsumption(phoneNum);
@@ -148,7 +148,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			return ResultUtil.success(phoneNum);
 		} catch (Exception e) {
@@ -170,7 +170,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			List<Orderhead> orderHead = null;
@@ -205,7 +205,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			return ResultUtil.success(personalCenterService.getOrderDetailsById(orderId));
 		} catch (Exception e) {
@@ -221,7 +221,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			// 获取用户Id
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
@@ -243,7 +243,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			List<PANRequestMap> pANRequestMaps = new ArrayList<>();
 			PANRequestMap pANRequestMap = new PANRequestMap();
@@ -275,7 +275,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			// 根据shoppingCartId查出productId
 			Integer productId = personalCenterService.getProductIdByShoppingId(shoppingCartId);
@@ -304,7 +304,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			// 获取用户Id
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
@@ -329,7 +329,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			User userForUpdate = new User();
 			userForUpdate.setHeadphoto(headPhoto);
@@ -350,7 +350,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			User userForUpdate = new User();
 			userForUpdate.setNickname(nickName);
@@ -370,7 +370,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			if (loginAndRegisterService.userFundsIsFreeze(phoneNum)) {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "平台币值已冻结");
@@ -397,7 +397,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			// 判断一下inviteCode是否存在系统
 			if (loginAndRegisterService.InviteCodeIsExists(inviteCode)) {
@@ -425,7 +425,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// result中有总金额和单号，再去拼接签名返回给客户端
@@ -472,7 +472,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// 通过订单查询
@@ -502,7 +502,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// 通过订单查询
@@ -548,7 +548,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// 通过订单查询
@@ -577,7 +577,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (loginAndRegisterService.userNewExclusiveIsDraw(userId)) {
@@ -600,7 +600,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (loginAndRegisterService.drawNewExclusive(userId) == 1) {
@@ -622,7 +622,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// 业务层返回各类型消费明细
@@ -641,7 +641,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
@@ -662,7 +662,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
@@ -685,7 +685,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (!personalCenterService.isAlreadyAuth(UserId)) {
@@ -707,7 +707,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			return ResultUtil.success(personalCenterService.getCertificationInfo(UserId));
@@ -725,7 +725,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (personalCenterService.isAlreadyAuth(UserId)) {
@@ -755,7 +755,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			Integer userId = orderHandleService.getUserIdByOrder(orderNo);
@@ -784,7 +784,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			if (UserId.equals(orderHandleService.getUserIdByOrder(orderNo))) {
@@ -809,7 +809,7 @@ public class PersonalCenterController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			personalCenterService.complaintAndAdvice( UserId, memo);

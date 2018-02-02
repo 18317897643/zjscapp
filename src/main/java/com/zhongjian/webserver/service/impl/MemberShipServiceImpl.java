@@ -149,8 +149,8 @@ public class MemberShipServiceImpl implements MemberShipService {
 		Integer inviteCode = (Integer) (userMapper.selectPersonalInformById(userId).get("InviteCode"));
 		HashMap<String, Integer> datas = new HashMap<>();
 		datas.put("Red", memberShipMapper.getRedFans(inviteCode));
-		datas.put("Yellow", memberShipMapper.getRedFans(inviteCode));
-		datas.put("Blue", memberShipMapper.getRedFans(inviteCode));
+		datas.put("Yellow", memberShipMapper.getYellowFans(inviteCode));
+		datas.put("Blue", memberShipMapper.getBlueFans(inviteCode));
 		return datas;
 	}
 

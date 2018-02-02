@@ -134,7 +134,7 @@ public class ProductManagerController {
 		try {
 			List<Map<String, Object>> result = productManagerService.searchProduct(key);
 			if (result == null) {
-				return ResultUtil.error(Status.BussinessError.getStatenum(), "搜不到");
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "无搜索结果");
 			} else {
 				return ResultUtil.success(result);
 			}
@@ -152,7 +152,7 @@ public class ProductManagerController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			productManagerService.addProductComment(UserId, productCommentMaps);

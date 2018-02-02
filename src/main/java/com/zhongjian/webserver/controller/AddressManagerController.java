@@ -48,7 +48,7 @@ public class AddressManagerController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			return ResultUtil.success(addressManagerService.getAllAddressByUserId(userId));
@@ -65,7 +65,7 @@ public class AddressManagerController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			return ResultUtil.success(addressManagerService.getAddressById(id));
 		} catch (Exception e) {
@@ -81,7 +81,7 @@ public class AddressManagerController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			return ResultUtil.success(addressManagerService.getDefaultAddressById(userId));
@@ -99,7 +99,7 @@ public class AddressManagerController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			addressMap.put("UserId", userId);
@@ -122,7 +122,7 @@ public class AddressManagerController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// 删除收货地址
@@ -145,7 +145,7 @@ public class AddressManagerController {
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(token);
 			if (phoneNum == null) {
-				return ResultUtil.error(Status.TokenError.getStatenum(), "token已过期");
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer userId = loginAndRegisterService.getUserIdByUserName(phoneNum);
 			// 更新收货地址
