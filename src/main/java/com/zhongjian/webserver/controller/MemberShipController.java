@@ -92,7 +92,9 @@ public class MemberShipController {
 				greenChanelResult.put("gcNeedPay", gcNeedPay);
 			} else {
 				vipResult.put("isExit", 0);
+				vipResult.put("needPay", vipNeedPay);
 				greenChanelResult.put("isExit", 0);
+				greenChanelResult.put("gcNeedPay", gcNeedPay);
 			}
 			// 直接升级的等级判断
 			if (lev == 0) {
