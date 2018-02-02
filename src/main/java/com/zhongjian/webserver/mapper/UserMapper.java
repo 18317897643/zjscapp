@@ -36,6 +36,8 @@ public interface UserMapper {
 	String getUserNameByUserId(Integer userId);
 
 	Integer updateByUserNameSelective(User user);
+	
+	Integer updateUserNameByOldUserName(@Param("UserName") String userName, @Param("OldUserName") String oldUserName);
 
 	Integer InviteCodeIsExists(Integer inviteCode);
 

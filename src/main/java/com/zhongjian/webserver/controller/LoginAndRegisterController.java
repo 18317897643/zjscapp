@@ -79,7 +79,8 @@ public class LoginAndRegisterController {
 				} else {
 					if (loginAndRegisterService.InviteCodeIsExists(inviteCodeInteger)) {
 						loginAndRegisterService.registerUser(phoneNum, password, inviteCodeInteger);
-						loginAndRegisterService.sendCouponByInviteCode(new BigDecimal("100.00"), inviteCodeInteger,"新人推荐");
+						loginAndRegisterService.sendCouponByInviteCode(new BigDecimal("100.00"), inviteCodeInteger,
+								"新人推荐");
 					} else {
 						return ResultUtil.error(Status.BussinessError.getStatenum(), "邀请码不存在");
 					}
@@ -253,6 +254,59 @@ public class LoginAndRegisterController {
 		}
 	}
 
+	@ApiOperation(httpMethod = "POST", notes = "手机号更换校验验证码", value = "手机号更换校验验证码")
+	@RequestMapping(value = "/verifyUpdateUserName", method = RequestMethod.POST)
+	Result<Object> updateUserName(@RequestBody Map<String, String> userMap) throws BusinessException {
+		try {
+			// receive the args
+			String toKen = userMap.get("token");
+			String verifyCode = userMap.get("verifyCode");
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(toKen);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
+			}
+			if (loginAndRegisterService.checkVerifyCode(phoneNum, verifyCode)) {
+				// 更改支付密码凭证
+				String payPasswordCertificate = UUID.randomUUID().toString();
+				payPasswordModifyMap.put(toKen, payPasswordCertificate);
+				return ResultUtil.success(payPasswordCertificate);
+			} else {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "验证码错误");
+			}
+		} catch (Exception e) {
+			LoggingUtil.e("手机号更换校验验证码异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "手机号更换校验验证码异常");
+		}
+	}
+
+	@ApiOperation(httpMethod = "POST", notes = "手机号更换设置", value = "手机号更换设置")
+	@RequestMapping(value = "/verifyUpdateUserName/{payPasswordCertificate}", method = RequestMethod.POST)
+	Result<Object> updateUserName(@PathVariable("payPasswordCertificate") String payPasswordCertificate,
+			@RequestParam String token, @RequestParam String verifyCode, @RequestParam String userName)
+			throws BusinessException {
+		try {
+			// 检查token通过
+			String phoneNum = tokenManager.checkTokenGetUser(token);
+			if (phoneNum == null) {
+				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
+			}
+			// 如果凭证不对
+			if (!payPasswordCertificate.equals(payPasswordModifyMap.get(token))) {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "凭证已失效");
+			}
+			if (!loginAndRegisterService.checkVerifyCode(userName, verifyCode)) {
+				return ResultUtil.error(Status.GeneralError.getStatenum(), "验证码错误");
+			}
+			payPasswordModifyMap.remove(token);
+			loginAndRegisterService.updateUserName(userName, phoneNum);
+			return ResultUtil.success();
+		} catch (Exception e) {
+			LoggingUtil.e("手机号更换设置异常:" + e);
+			throw new BusinessException(Status.SeriousError.getStatenum(), "手机号更换设置异常");
+		}
+	}
+
 	@ApiOperation(httpMethod = "POST", notes = "退出登录", value = "退出登录")
 	@RequestMapping(value = "/logout", method = RequestMethod.POST)
 	Result<Object> logout(@RequestBody Map<String, String> tokenMap) throws BusinessException {
@@ -281,7 +335,7 @@ public class LoginAndRegisterController {
 
 	@ApiOperation(httpMethod = "POST", notes = "推送", value = "推送")
 	@RequestMapping(value = "/Jpush.do", method = RequestMethod.POST)
-	Result<Object> logout(@RequestParam Integer userId,@RequestParam String message) throws BusinessException {
+	Result<Object> logout(@RequestParam Integer userId, @RequestParam String message) throws BusinessException {
 		try {
 			loginAndRegisterService.jPush(userId, message);
 			return ResultUtil.success();

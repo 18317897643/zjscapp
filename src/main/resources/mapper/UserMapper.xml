@@ -281,6 +281,9 @@
 			</if>
 		</trim>
 	</insert>
+	<update id="updateUserNameByOldUserName">
+		update tb_user UserName = #{UserName} where UserName = #{OldUserName}
+	</update>
 	<update id="updateByUserNameSelective" parameterType="User">
 		update tb_user
 		<set>
