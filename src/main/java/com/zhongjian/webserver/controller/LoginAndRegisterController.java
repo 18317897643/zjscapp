@@ -202,11 +202,11 @@ public class LoginAndRegisterController {
 
 	@ApiOperation(httpMethod = "POST", notes = "支付密码设置校验验证码", value = "支付密码设置校验验证码")
 	@RequestMapping(value = "/verify", method = RequestMethod.POST)
-	Result<Object> setPayPassword(@RequestBody Map<String, String> userMap) throws BusinessException {
+	Result<Object> setPayPassword(@RequestBody Map<String, String> dataMap) throws BusinessException {
 		try {
 			// receive the args
-			String toKen = userMap.get("token");
-			String verifyCode = userMap.get("verifyCode");
+			String toKen = dataMap.get("token");
+			String verifyCode = dataMap.get("verifyCode");
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
@@ -240,7 +240,7 @@ public class LoginAndRegisterController {
 			}
 			// 如果凭证不对
 			if (!payPasswordCertificate.equals(payPasswordModifyMap.get(toKen))) {
-				return ResultUtil.error(Status.GeneralError.getStatenum(), "凭证已失效");
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "已超时,请重新操作");
 			}
 			payPasswordModifyMap.remove(toKen);
 			User userForUpdate = new User();
@@ -256,11 +256,11 @@ public class LoginAndRegisterController {
 
 	@ApiOperation(httpMethod = "POST", notes = "手机号更换校验验证码", value = "手机号更换校验验证码")
 	@RequestMapping(value = "/verifyUpdateUserName", method = RequestMethod.POST)
-	Result<Object> updateUserName(@RequestBody Map<String, String> userMap) throws BusinessException {
+	Result<Object> updateUserName(@RequestBody Map<String, String> dataMap) throws BusinessException {
 		try {
 			// receive the args
-			String toKen = userMap.get("token");
-			String verifyCode = userMap.get("verifyCode");
+			String toKen = dataMap.get("token");
+			String verifyCode = dataMap.get("verifyCode");
 			// 检查token通过
 			String phoneNum = tokenManager.checkTokenGetUser(toKen);
 			if (phoneNum == null) {
@@ -270,6 +270,8 @@ public class LoginAndRegisterController {
 				// 更改支付密码凭证
 				String payPasswordCertificate = UUID.randomUUID().toString();
 				payPasswordModifyMap.put(toKen, payPasswordCertificate);
+				LoggingUtil.i("凭证" + toKen + " " + payPasswordCertificate);
+				
 				return ResultUtil.success(payPasswordCertificate);
 			} else {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "验证码错误");
@@ -292,8 +294,9 @@ public class LoginAndRegisterController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			// 如果凭证不对
+			LoggingUtil.i(payPasswordModifyMap.get(token));
 			if (!payPasswordCertificate.equals(payPasswordModifyMap.get(token))) {
-				return ResultUtil.error(Status.GeneralError.getStatenum(), "凭证已失效");
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "已超时,请重新操作");
 			}
 			if (!loginAndRegisterService.checkVerifyCode(userName, verifyCode)) {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "验证码错误");

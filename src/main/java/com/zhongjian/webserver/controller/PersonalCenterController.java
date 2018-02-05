@@ -691,8 +691,11 @@ public class PersonalCenterController {
 			if (!personalCenterService.isAlreadyAuth(UserId)) {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "未通过实名认证");
 			}
-			personalCenterService.txElecNum(UserId, money, memo, txType, cardNo, trueName, bankName);
-			return ResultUtil.success();
+			if (personalCenterService.txElecNum(UserId, money, memo, txType, cardNo, trueName, bankName)) {
+				return ResultUtil.success();
+			}else{
+				return ResultUtil.error(Status.BussinessError.getStatenum(), "提现金额不够");
+			}
 		} catch (Exception e) {
 			LoggingUtil.e("现金提现异常:" + e);
 			throw new BusinessException(Status.SeriousError.getStatenum(), "现金提现异常");
