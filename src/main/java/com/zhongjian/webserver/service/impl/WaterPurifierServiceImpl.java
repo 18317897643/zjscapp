@@ -43,7 +43,7 @@ public class WaterPurifierServiceImpl implements WaterPurifierService {
 			if (type == 1) {
 				LoginAndRegisterService.sendCouponByUserId(new BigDecimal("980.00"), userId,"水机充值兑换红包");
 			}else {
-				LoginAndRegisterService.sendCouponByUserId(new BigDecimal("1280.00"), userId,"水机充值兑换红包");
+				LoginAndRegisterService.sendCouponByUserId(new BigDecimal("1200.00"), userId,"水机充值兑换红包");
 			}
 			return "0";
 		}else {
