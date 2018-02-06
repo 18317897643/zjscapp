@@ -81,7 +81,7 @@ function reguser() {
                             if (data.error_code == 0) {
                                 hideload();
                                 alert('恭喜您注册成功');
-                                jumpDown();
+                                //jumpDown();
                             }
                             else {
                                 hideload();

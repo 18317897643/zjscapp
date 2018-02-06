@@ -19,7 +19,45 @@ table {border-collapse:collapse;border-spacing:0;}
 .container{
     width: 7.5rem;
     height: 17.29rem;
-    background: url("../image/fans.jpg") center no-repeat;
+    background: url("../image/fans.png") center no-repeat;
     background-size: 7.5rem 17.29rem;
     overflow: hidden;
+}
+.fans-btn{
+    display: block;
+    position: relative;
+    top: 55%;
+    left: 31%;
+    /*transform: translate(-50%, -50%);*/
+    width: 3.02rem;
+    height: 0.8rem;
+    background: url("../image/smallbtn.png") center no-repeat;
+    background-size: 3.02rem 0.8rem;
+    cursor: pointer;
+}
+
+@-webkit-keyframes scaleDraw {
+    0% {
+        transform:scale(1);
+        -webkit-transform:scale(1);
+    }
+    25% {
+        transform:scale(1.2);
+        -webkit-transform:scale(1.2);
+    }
+    50% {
+        transform:scale(1);
+        -webkit-transform:scale(1);
+    }
+    75% {
+        transform:scale(1.2);
+        -webkit-transform:scale(1.2);
+    }
+}
+.fans-btn{
+    -webkit-animation-name: scaleDraw;
+    -webkit-animation-timing-function: ease-in-out;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-duration: 2s;
+    -webkit-animation-direction: alternate;
 }
