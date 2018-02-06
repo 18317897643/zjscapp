@@ -141,6 +141,7 @@ public class ProductManagerServiceImpl implements ProductManagerService {
 			productComment.setUserid(userId);
 			productCommentMapper.insertSelective(productComment);
 
+			//评价图片
 			Object photo = null;
 			photo = productCommentMap.get("photo1");
 			if (photo != null) {
@@ -158,6 +159,8 @@ public class ProductManagerServiceImpl implements ProductManagerService {
 				String photoStr = (String) photo;
 				productCommentMapper.insertProductCommetPhoto(productComment.getId(), photoStr);
 			}
+			//添加销量
+			productMapper.updateProductCommentNum(productId);
 
 		}
 

@@ -130,6 +130,10 @@
 		and CurStatus = 1 ORDER BY CreateTime DESC limit
 		#{page},#{pageNum}
 	</select>
+	<update id="updateProductCommentNum">
+		update tb_product set CommentNum = CommentNum + 1 where Id = #{Id}
+	</update>
+
 	<select id="getUserInfo" resultType="User" parameterType="java.lang.Integer">
 		SELECT
 		TrueName,HeadPhoto from tb_user
@@ -170,7 +174,8 @@
 	</select>
 
 	<select id="searchProduct" resultType="java.util.Map">
-		SELECT Price,OldPrice,ElecNum,ProductName,Tag,Photo from (SELECT
+		SELECT
+		Price,OldPrice,ElecNum,ProductName,Tag,Photo from (SELECT
 		Id,Price,OldPrice,ElecNum,ProductName,Tag from tb_product where
 		ProductName LIKE #{Key}) tmpp,tb_productphoto pp where tmpp.Id =
 		pp.ProductId

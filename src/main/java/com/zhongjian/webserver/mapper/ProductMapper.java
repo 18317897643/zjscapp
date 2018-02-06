@@ -33,5 +33,7 @@ public interface ProductMapper {
 	Integer getMemberTag();
 	
 	List<Map<String, Object>> searchProduct(String key);
+	
+	void updateProductCommentNum(Integer productId);
     	
 }

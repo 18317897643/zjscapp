@@ -135,7 +135,7 @@ public class LoginAndRegisterServiceImpl implements LoginAndRegisterService {
 	@Override
 	public String checkUserNameAndPayPassword(String phoneNum, String password) {
 		String realPassword = userMapper.getPayPasswordByUserName(phoneNum);
-		if (realPassword == "") {
+		if ("".equals(realPassword)) {
 			return "1";//没有设置 提示要设置
 		}
 		
