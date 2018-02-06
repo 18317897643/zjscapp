@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.zhongjian.webserver.pojo.Product;
 import com.zhongjian.webserver.pojo.ProductCategory;
-import com.zhongjian.webserver.pojo.ProductComment;
+import com.zhongjian.webserver.pojo.ProductCommentShow;
 import com.zhongjian.webserver.pojo.Tag;
 
 public interface ProductMapper {
@@ -16,7 +16,7 @@ public interface ProductMapper {
 	
 	Product findById(Integer id);
 	
-	List<ProductComment> selectProductcommentById(@Param("productId") Integer productId,@Param("page") Integer page,@Param("pageNum") Integer pageNum);
+	List<ProductCommentShow> selectProductcommentById(@Param("productId") Integer productId,@Param("page") Integer page,@Param("pageNum") Integer pageNum);
 	
 	String findProductHtmlTextById(Integer id);
 	

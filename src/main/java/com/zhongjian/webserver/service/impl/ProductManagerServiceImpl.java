@@ -18,6 +18,7 @@ import com.zhongjian.webserver.mapper.ProductMapper;
 import com.zhongjian.webserver.pojo.Product;
 import com.zhongjian.webserver.pojo.ProductCategory;
 import com.zhongjian.webserver.pojo.ProductComment;
+import com.zhongjian.webserver.pojo.ProductCommentShow;
 import com.zhongjian.webserver.service.ProductManagerService;
 
 @Service
@@ -40,8 +41,8 @@ public class ProductManagerServiceImpl implements ProductManagerService {
 	@Override
 	public HashMap<String, Object> getProductDetails(Integer productId) {
 		Product product = productMapper.findById(productId);
-		List<ProductComment> productComments = productMapper.selectProductcommentById(productId, 0, 1);
-		ProductComment productComment = null;
+		List<ProductCommentShow> productComments = productMapper.selectProductcommentById(productId, 0, 1);
+		ProductCommentShow productComment = null;
 		if (productComments.size() > 0) {
 			productComment = productComments.get(0);
 		}
@@ -59,7 +60,7 @@ public class ProductManagerServiceImpl implements ProductManagerService {
 	}
 
 	@Override
-	public List<ProductComment> getProductComment(Integer productId, Integer page, Integer pageNum) {
+	public List<ProductCommentShow> getProductComment(Integer productId, Integer page, Integer pageNum) {
 		page = page * pageNum;
 		return productMapper.selectProductcommentById(productId, page, pageNum);
 	}

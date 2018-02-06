@@ -18,7 +18,7 @@ import com.zhongjian.webserver.common.ResultUtil;
 import com.zhongjian.webserver.common.Status;
 import com.zhongjian.webserver.common.TokenManager;
 import com.zhongjian.webserver.dto.PANRequestMap;
-import com.zhongjian.webserver.pojo.ProductComment;
+import com.zhongjian.webserver.pojo.ProductCommentShow;
 import com.zhongjian.webserver.service.LoginAndRegisterService;
 import com.zhongjian.webserver.service.ProductManagerService;
 
@@ -95,7 +95,7 @@ public class ProductManagerController {
 	Result<Object> getProductCommentById(@RequestParam Integer productId, @RequestParam Integer page,
 			@RequestParam Integer pageNum) throws BusinessException {
 		try {
-			List<ProductComment> productComments = productManagerService.getProductComment(productId, page, pageNum);
+			List<ProductCommentShow> productComments = productManagerService.getProductComment(productId, page, pageNum);
 			return ResultUtil.success(productComments);
 		} catch (Exception e) {
 			LoggingUtil.e("获取商品评价详情异常:" + e);

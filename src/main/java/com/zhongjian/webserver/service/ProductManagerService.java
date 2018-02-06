@@ -7,7 +7,7 @@ import java.util.Map;
 import com.zhongjian.webserver.dto.PANRequestMap;
 import com.zhongjian.webserver.dto.PANResponseMap;
 import com.zhongjian.webserver.pojo.ProductCategory;
-import com.zhongjian.webserver.pojo.ProductComment;
+import com.zhongjian.webserver.pojo.ProductCommentShow;
 
 public interface ProductManagerService {
 	
@@ -15,7 +15,7 @@ public interface ProductManagerService {
 	
 	HashMap<String, Object> getProductDetails(Integer productId);
 	
-	List<ProductComment> getProductComment(Integer productId, Integer page, Integer pageNum);
+	List<ProductCommentShow> getProductComment(Integer productId, Integer page, Integer pageNum);
 	
 	String getProductHtmlText(Integer id);
 	

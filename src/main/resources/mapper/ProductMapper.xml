@@ -33,7 +33,7 @@
 		</collection>
 	</resultMap>
 
-	<resultMap type="ProductComment" id="ProductCommentMap">
+	<resultMap type="ProductCommentShow" id="ProductCommentMap">
 		<result column="Id" property="id" />
 		<result column="Price" property="price" />
 		<result column="Memo" property="memo" />
