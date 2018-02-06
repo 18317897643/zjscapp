@@ -43,7 +43,7 @@ public class WaterPurifierController {
 				return ResultUtil.error(Status.TokenError.getStatenum(), "账号在其他终端登录");
 			}
 			Integer UserId = loginAndRegisterService.getUserIdByUserName(phoneNum);
-			String flag = waterPurifierService.drawWaterPurifierCupon(UserId, codeNo);
+			String flag = waterPurifierService.drawWaterPurifierCupon(UserId, codeNo.toUpperCase());
 			if ("0".equals(flag)) {
 				return ResultUtil.success();
 			}else if ("-1".equals(flag)) {

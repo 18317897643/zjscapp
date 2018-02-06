@@ -742,6 +742,7 @@ public class PersonalCenterController {
 			userForUpdate.setIdcardphoto2(user.getIdcardphoto2());
 			userForUpdate.setIdcardphoto3(user.getIdcardphoto3());
 			userForUpdate.setUsername(phoneNum);
+			userForUpdate.setIsauth(1);
 			loginAndRegisterService.updateUser(userForUpdate);
 			return ResultUtil.success();
 		} catch (Exception e) {
