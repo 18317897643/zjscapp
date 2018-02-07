@@ -78,9 +78,9 @@ public class SignInServiceImpl implements SignInService {
 			if (monthDifference == 0 && dayDifference == 1) {
 				String currentYearMonth = null;
 				if (curretMonth < 10) {
-					currentYearMonth = curretYear + "-0" + curretMonth + "%";
+					currentYearMonth = curretYear + "-0" + curretMonth;
 				} else {
-					currentYearMonth = curretYear + "-" + curretMonth + "%";
+					currentYearMonth = curretYear + "-" + curretMonth;
 				}
 
 				SigninAward signinAward = signInMapper.getAwardsByUserId(UserId, currentYearMonth);
@@ -197,9 +197,9 @@ public class SignInServiceImpl implements SignInService {
 		int curretMonth = curretDateTimeCalendar.get(Calendar.MONTH) + 1;
 		String currentYearMonth = null;
 		if (curretMonth < 10) {
-			currentYearMonth = curretYear + "-0" + curretMonth + "%";
+			currentYearMonth = curretYear + "-0" + curretMonth;
 		} else {
-			currentYearMonth = curretYear + "-" + curretMonth + "%";
+			currentYearMonth = curretYear + "-" + curretMonth;
 		}
 		return currentYearMonth;
 	}

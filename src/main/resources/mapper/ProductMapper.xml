@@ -175,7 +175,7 @@
 
 	<select id="searchProduct" resultType="java.util.Map">
 		SELECT
-		Price,OldPrice,ElecNum,ProductName,Tag,Photo from (SELECT
+		tmpp.Id,Price,OldPrice,ElecNum,ProductName,Tag,Photo from (SELECT
 		Id,Price,OldPrice,ElecNum,ProductName,Tag from tb_product where
 		ProductName LIKE #{Key}) tmpp,tb_productphoto pp where tmpp.Id =
 		pp.ProductId

@@ -18,13 +18,15 @@
 	<select id="getAwardsByUserId" resultType="SigninAward">
 		SELECT
 		Sevendaysaward,Fourteendaysaward,Thirtydaysaward FROM tb_signinaward
-		WHERE UserId = #{UserId,jdbcType=INTEGER} AND Date LIKE
+		WHERE UserId = #{UserId,jdbcType=INTEGER} AND
+		date_format(Date,'%Y-%m') =
 		#{CurrentDate,jdbcType=VARCHAR}
 	</select>
 	<select id="getTheMonthSignData" resultType="java.sql.Date">
 		SELECT SignTime FROM
 		tb_signin where UserId = #{UserId,jdbcType=INTEGER} AND
-		SignTime like
+		SignTime
+		date_format(Date,'%Y-%m') =
 		#{CurrentDate,jdbcType=VARCHAR}
 	</select>
 	<insert id="addSigninTermediateByUserId">
@@ -37,7 +39,8 @@
 	</insert>
 	<update id="updateSigninTermediateByUserId">
 		UPDATE tb_signintermediate SET LastSignTime =
-		#{LastSignTime,jdbcType=DATE},ContinueDay = ContinueDay + 1 where UserId =
+		#{LastSignTime,jdbcType=DATE},ContinueDay = ContinueDay + 1 where
+		UserId =
 		#{UserId,jdbcType=INTEGER}
 	</update>
 	<update id="reSetContinueDayByUserId">
@@ -48,31 +51,34 @@
 	<update id="updateSigninAwardSeven">
 		UPDATE tb_signinaward SET Sevendaysaward =
 		#{Sevendaysaward,jdbcType=INTEGER} WHERE UserId =
-		#{UserId,jdbcType=INTEGER} AND Date LIKE
-		#{CurrentDate,jdbcType=VARCHAR} AND Sevendaysaward = #{Condition}
+		#{UserId,jdbcType=INTEGER} AND date_format(Date,'%Y-%m') =
+		#{CurrentDate,jdbcType=VARCHAR}
+		AND Sevendaysaward = #{Condition}
 	</update>
 	<update id="updateSigninAwardFourteen">
 		UPDATE tb_signinaward SET Fourteendaysaward =
 		#{Fourteendaysaward,jdbcType=INTEGER} WHERE UserId =
-		#{UserId,jdbcType=INTEGER} AND Date
-		LIKE
+		#{UserId,jdbcType=INTEGER} AND date_format(Date,'%Y-%m') =
 		#{CurrentDate,jdbcType=VARCHAR}
-		AND Fourteendaysaward = #{Condition}
+		AND
+		Fourteendaysaward = #{Condition}
 	</update>
 	<update id="updateSigninAwardThirty">
 		UPDATE tb_signinaward SET Thirtydaysaward =
 		#{Thirtydaysaward,jdbcType=INTEGER} WHERE UserId =
-		#{UserId,jdbcType=INTEGER} AND Date
-		LIKE
+		#{UserId,jdbcType=INTEGER} AND date_format(Date,'%Y-%m') =
 		#{CurrentDate,jdbcType=VARCHAR}
-		AND Thirtydaysaward = #{Condition}
+		AND
+		Thirtydaysaward = #{Condition}
 	</update>
 	<delete id="deleteDatedSignInData">
-		DELETE FROM tb_signin where SignTime NOT LIKE
+		DELETE FROM tb_signin where
+		date_format(SignTime,'%Y-%m') !=
 		#{CurrentDate,jdbcType=VARCHAR}
+
 	</delete>
 	<delete id="deleteDatedSignAwardData">
-		DELETE FROM tb_signinaward where Date NOT LIKE
+		DELETE FROM tb_signinaward where date_format(Date,'%Y-%m') !=
 		#{CurrentDate,jdbcType=VARCHAR}
 	</delete>
 </mapper>
