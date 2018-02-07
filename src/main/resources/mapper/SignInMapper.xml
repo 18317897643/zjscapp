@@ -25,8 +25,7 @@
 	<select id="getTheMonthSignData" resultType="java.sql.Date">
 		SELECT SignTime FROM
 		tb_signin where UserId = #{UserId,jdbcType=INTEGER} AND
-		SignTime
-		date_format(Date,'%Y-%m') =
+		date_format(SignTime,'%Y-%m') =
 		#{CurrentDate,jdbcType=VARCHAR}
 	</select>
 	<insert id="addSigninTermediateByUserId">
