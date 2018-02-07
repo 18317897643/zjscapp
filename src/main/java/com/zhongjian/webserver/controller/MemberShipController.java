@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.zhongjian.webserver.ExceptionHandle.BusinessException;
+import com.zhongjian.webserver.ExceptionHandle.shareBenefitException;
 import com.zhongjian.webserver.common.LoggingUtil;
 import com.zhongjian.webserver.common.Result;
 import com.zhongjian.webserver.common.ResultUtil;
@@ -400,6 +401,8 @@ public class MemberShipController {
 				return ResultUtil.error(Status.GeneralError.getStatenum(), "您还没有达到升级条件，要加油了");
 			}
 
+		} catch (shareBenefitException e) {
+			throw new BusinessException(Status.BussinessError.getStatenum(), "您的红粉太少啦！");
 		} catch (Exception e) {
 			throw new BusinessException(Status.SeriousError.getStatenum(), "直接升级异常");
 		}
