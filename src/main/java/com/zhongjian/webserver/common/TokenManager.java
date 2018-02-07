@@ -54,30 +54,23 @@ public class TokenManager {
 
 	public boolean checkToken(String toKen) {
 		boolean pass = false;
-		Set<Entry<String, String>> set = user_token.entrySet();
-		Iterator<Entry<String, String>> iterator = set.iterator();
-		while (iterator.hasNext()) {
-			Map.Entry<String, String> entry = (Map.Entry<String, String>) iterator.next();
-			if (entry.getValue().equals(toKen)) {
-				String userName = (String) entry.getKey();
+		for (Object o : user_token.keySet()) {
+			if (toKen.equals(user_token.get(o))) {
+				String userName = (String) o;
 				tokenList.remove(userName);
 				tokenList.add(userName);
 				pass = true;
 				break;
 			}
-
 		}
 		return pass;
 	}
 
 	public String checkTokenGetUser(String toKen) {
-		Set<Entry<String, String>> set = user_token.entrySet();
-		Iterator<Entry<String, String>> iterator = set.iterator();
 		String theUsername = null;
-		while (iterator.hasNext()) {
-			Map.Entry<String, String> entry = (Map.Entry<String, String>) iterator.next();
-			if (entry.getValue().equals(toKen)) {
-				String userName = (String) entry.getKey();
+		for (Object o : user_token.keySet()) {
+			if (toKen.equals(user_token.get(o))) {
+				String userName = (String) o;
 				tokenList.remove(userName);
 				tokenList.add(userName);
 				theUsername = userName;
@@ -85,6 +78,21 @@ public class TokenManager {
 			}
 		}
 		return theUsername;
+		// Set<Entry<String, String>> set = user_token.entrySet();
+		// Iterator<Entry<String, String>> iterator = set.iterator();
+		// String theUsername = null;
+		// while (iterator.hasNext()) {
+		// Map.Entry<String, String> entry = (Map.Entry<String, String>)
+		// iterator.next();
+		// if (entry.getValue().equals(toKen)) {
+		// String userName = (String) entry.getKey();
+		// tokenList.remove(userName);
+		// tokenList.add(userName);
+		// theUsername = userName;
+		// break;
+		// }
+		// }
+		// return theUsername;
 	}
 
 	// 清除一个toKen
@@ -109,10 +117,11 @@ public class TokenManager {
 		user_token.remove(userName);
 		tokenList.remove(userName);
 	}
+
 	/**
 	 * 根据userName查找token
 	 */
-	
+
 	public String getTokenByUserName(String userName) {
 		return user_token.get(userName);
 	}
